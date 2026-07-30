@@ -26,5 +26,15 @@ collections:
               - { label: "Description", name: "blurb", widget: "text" }
               - { label: "YouTube video URL", name: "videoUrl", widget: "string", required: false, hint: "Paste the full link, e.g. https://www.youtube.com/watch?v=CFMEgACaiTo. Leave blank if there's no video." }
               - { label: "Cover image", name: "imageUrl", widget: "image", required: false, hint: "Optional. Upload a photo to use as this project's thumbnail — overrides the YouTube thumbnail when set, and clicking still plays the video if a video URL is set above." }
+              - label: "Cover image framing"
+                name: "imagePosition"
+                widget: "select"
+                required: false
+                default: "center"
+                hint: "The thumbnail crops to a wide rectangle. If the important part of your photo (like a title) gets cut off, change which edge stays in view."
+                options:
+                  - { label: "Keep top in view", value: "top" }
+                  - { label: "Keep center in view", value: "center" }
+                  - { label: "Keep bottom in view", value: "bottom" }
               - { label: "External link URL", name: "linkUrl", widget: "string", required: false, hint: "Optional, e.g. a product page or the book's Amazon link." }
               - { label: "External link label", name: "linkLabel", widget: "string", required: false, hint: "Text shown for the link above. Only used if a link URL is set." }

@@ -310,8 +310,10 @@
         ? p.videoUrl
         : (p.linkUrl || '#');
 
+      const position = ['top', 'bottom'].includes(p.imagePosition) ? p.imagePosition : 'center';
+
       const thumbHtml = p.imageUrl
-        ? `<img class="thumb" src="${p.imageUrl}" alt="${p.title}">`
+        ? `<img class="thumb" style="object-position:${position}" src="${p.imageUrl}" alt="${p.title}">`
         : videoId
         ? `<img class="thumb" src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${p.title}">`
         : `<div class="no-video">${linkIcon}<span>external link</span></div>`;
