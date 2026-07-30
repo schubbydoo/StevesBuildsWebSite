@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Steve's Builds — Image Fit Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d0f;
+    --panel:#14171a;
+    --line:#2a3136;
+    --text:#e8ebed;
+    --muted:#8b969c;
+    --accent:#39ff88;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Space Grotesk',sans-serif;
+    margin:0;
+    padding:50px 6vw 100px;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+  .tag{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    display:inline-block;
+    border:2px solid var(--accent);
+    padding:3px 10px;
+    border-radius:6px;
+    margin-bottom:18px;
+  }
+  h1{font-size:28px;font-weight:700;margin:0 0 10px;}
+  .note{color:var(--muted);font-size:14px;line-height:1.6;max-width:600px;margin-bottom:26px;}
+  .drop-zone{
+    border:2px dashed var(--line);
+    border-radius:12px;
+    padding:24px;
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:20px;
+    cursor:pointer;
+  }
+  .drop-zone.drag{border-color:var(--accent);color:var(--accent);}
+  input[type="file"]{display:none;}
+  .stage-wrap{
+    background:var(--panel);
+    border:2px solid var(--line);
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+  }
+  canvas{
+    display:block;
+    width:100%;
+    max-width:640px;
+    aspect-ratio:16/9;
+    margin:0 auto;
+    border-radius:8px;
+    cursor:grab;
+    touch-action:none;
+    background:#000;
+  }
+  canvas.dragging{cursor:grabbing;}
+  .controls{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    max-width:640px;
+    margin:18px auto 0;
+  }
+  .controls label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:1px;
+    white-space:nowrap;
+  }
+  input[type="range"]{flex:1;}
+  .toolbar{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  button{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    border-radius:8px;
+    border:2px solid var(--line);
+    background:var(--panel);
+    color:var(--text);
+    padding:10px 16px;
+    cursor:pointer;
+  }
+  button:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--line);}
+  .btn-primary{border-color:var(--accent);color:var(--accent);}
+  .btn-primary:hover{box-shadow:4px 4px 0 var(--accent);}
+  .btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+  .status{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    color:var(--accent);
+    margin-top:14px;
+    min-height:18px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">image fit tool</span>
+  <h1>Frame a photo for a project card</h1>
+  <p class="note">Load a photo, drag it to reposition, and use the slider to zoom. The frame below is the exact shape of a project card on the site (a wide rectangle) — anything not covered by the photo shows as black, just like it will on the live site. When it looks right, download the result and upload that file through the "Cover image" button in /admin as usual.</p>
+
+  <div class="drop-zone" id="drop-zone">Click to choose a photo, or drag one here</div>
+  <input type="file" id="file-input" accept="image/*">
+
+  <div class="stage-wrap">
+    <canvas id="stage" width="1280" height="720"></canvas>
+    <div class="controls">
+      <label>Zoom</label>
+      <input type="range" id="zoom" min="20" max="300" value="100">
+      <label id="zoom-out">100%</label>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button id="reset-btn">Reset position &amp; zoom</button>
+    <button class="btn-primary" id="download-btn" disabled>Download finished image</button>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+  const canvas = document.getElementById('stage');
+  const ctx = canvas.getContext('2d');
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+  const zoomSlider = document.getElementById('zoom');
+  const zoomOut = document.getElementById('zoom-out');
+  const resetBtn = document.getElementById('reset-btn');
+  const downloadBtn = document.getElementById('download-btn');
+  const statusEl = document.getElementById('status');
+
+  const OUT_W = 1280, OUT_H = 720;
+
+  let img = null;
+  let baseScale = 1;
+  let scale = 1;
+  let offsetX = 0, offsetY = 0;
+  let dragging = false;
+  let dragStartX = 0, dragStartY = 0;
+  let startOffsetX = 0, startOffsetY = 0;
+
+  function render(){
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, OUT_W, OUT_H);
+    if (!img) return;
+    const w = img.width * scale;
+    const h = img.height * scale;
+    const x = OUT_W / 2 - w / 2 + offsetX;
+    const y = OUT_H / 2 - h / 2 + offsetY;
+    ctx.drawImage(img, x, y, w, h);
+  }
+
+  function loadFile(file){
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const image = new Image();
+      image.onload = () => {
+        img = image;
+        baseScale = Math.min(OUT_W / img.width, OUT_H / img.height);
+        scale = baseScale;
+        offsetX = 0;
+        offsetY = 0;
+        zoomSlider.value = 100;
+        zoomOut.textContent = '100%';
+        downloadBtn.disabled = false;
+        statusEl.textContent = '';
+        render();
+      };
+      image.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  ['dragenter', 'dragover'].forEach(evt =>
+    dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add('drag'); })
+  );
+  ['dragleave', 'drop'].forEach(evt =>
+    dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.remove('drag'); })
+  );
+  dropZone.addEventListener('drop', e => loadFile(e.dataTransfer.files[0]));
+
+  zoomSlider.addEventListener('input', () => {
+    const pct = Number(zoomSlider.value);
+    zoomOut.textContent = pct + '%';
+    scale = baseScale * (pct / 100);
+    render();
+  });
+
+  function canvasPoint(e){
+    const rect = canvas.getBoundingClientRect();
+    const px = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const py = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+    return { x: px * (OUT_W / rect.width), y: py * (OUT_H / rect.height) };
+  }
+
+  function dragStart(e){
+    if (!img) return;
+    dragging = true;
+    canvas.classList.add('dragging');
+    const p = canvasPoint(e);
+    dragStartX = p.x; dragStartY = p.y;
+    startOffsetX = offsetX; startOffsetY = offsetY;
+  }
+  function dragMove(e){
+    if (!dragging) return;
+    e.preventDefault();
+    const p = canvasPoint(e);
+    offsetX = startOffsetX + (p.x - dragStartX);
+    offsetY = startOffsetY + (p.y - dragStartY);
+    render();
+  }
+  function dragEnd(){
+    dragging = false;
+    canvas.classList.remove('dragging');
+  }
+
+  canvas.addEventListener('mousedown', dragStart);
+  window.addEventListener('mousemove', dragMove);
+  window.addEventListener('mouseup', dragEnd);
+  canvas.addEventListener('touchstart', dragStart, { passive: true });
+  window.addEventListener('touchmove', dragMove, { passive: false });
+  window.addEventListener('touchend', dragEnd);
+
+  resetBtn.addEventListener('click', () => {
+    if (!img) return;
+    scale = baseScale;
+    offsetX = 0;
+    offsetY = 0;
+    zoomSlider.value = 100;
+    zoomOut.textContent = '100%';
+    render();
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'project-cover.jpg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      statusEl.textContent = 'Downloaded — upload this file via the Cover image button in /admin.';
+    }, 'image/jpeg', 0.92);
+  });
+
+  render();
+</script>
+</body>
+</html>
