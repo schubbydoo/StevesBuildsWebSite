@@ -1,7 +1,7 @@
 {
   "projects": [
     {
-      "title": "A bedtime story, published",
+      "title": "Published Children's Book",
       "blurb": "A children's book my daughter Sara and I created together. I wrote the story, based on one of many I used to make up while tucking the kids in at night. Sara illustrated it and published it — she's the one who gets paid for any sale.",
       "videoUrl": "",
       "imageUrl": "/admin/uploads/Scary-Go-Round Cover for ebook.jpg",
@@ -19,7 +19,7 @@
       "linkLabel": ""
     },
     {
-      "title": "Motorcycle ghost projector",
+      "title": "Floor Projector for Motorcycle",
       "blurb": "An aftermarket car door projector, repurposed for a motorcycle. I swapped its light sensor for a motion detector, so at night, whenever motion is detected behind a parked bike, it projects an illuminated image onto the ground.",
       "videoUrl": "https://www.youtube.com/watch?v=Nt7yD1vNoDU",
       "imageUrl": "/admin/uploads/FloorProjectionEnhanced.JPG",
@@ -28,7 +28,7 @@
       "linkLabel": ""
     },
     {
-      "title": "The Poeteer",
+      "title": "The Poeteer, a poetry camera",
       "blurb": "An AI poetry camera that captions what it sees and writes a poem about it, then prints the poem out a slot in the back. Built in a box-camera format mixing old and new tech: a laser-cut, engraved wooden box with 18 different 3D-modeled and printed parts. My daughter Sara made it beautiful with the engraving and medallion design. Built on instructions and code generously shared by the original creators of the poetry camera.",
       "videoUrl": "https://www.youtube.com/watch?v=rDC_ntIztuI",
       "imageUrl": "/admin/uploads/ThePoeteerISO_YoutubeThumbnail.jpg",
@@ -37,7 +37,7 @@
       "linkLabel": "The original poetry camera"
     },
     {
-      "title": "Custom animatronic",
+      "title": "Custom Animated Nosferatu Animatronic",
       "blurb": "An animatronic purchased from Home Depot, given a new control box so I can make him move however and say whatever I want. This video shows a custom greeting programmed for an Orlando art gallery event.",
       "videoUrl": "https://www.youtube.com/watch?v=3RVeEv6GfzQ",
       "imageUrl": "",
@@ -46,7 +46,7 @@
       "linkLabel": ""
     },
     {
-      "title": "AI Zoltar",
+      "title": "AI Zoltar Speaks Animatronic",
       "blurb": "A desktop animatronic Zoltar, built from scratch and inspired by the 1988 movie Big. Powered by three different AI models to understand a wish, formulate a response, and — unlike the movie version — speak it out loud. He'll warn you of the dangers of your wish, but grant it anyway, always in rhyme.",
       "videoUrl": "https://www.youtube.com/watch?v=CFMEgACaiTo",
       "imageUrl": "",
@@ -55,7 +55,7 @@
       "linkLabel": ""
     },
     {
-      "title": "The Great and Powerful Oz fireplace",
+      "title": "The Great and Powerful Oz Magic Fireplace",
       "blurb": "Turns our fireplace into a haunted one. A 42-inch TV displays a demon-possessed fire, and you can summon the great and powerful Oz from The Wizard of Oz. I mashed audio snippets from the movie with an image of Oz using HeyGen AI to animate it, played through a Neumi media player that can trigger multiple videos in succession.",
       "videoUrl": "https://www.youtube.com/watch?v=Bc3qSVIfOtU",
       "imageUrl": "",
