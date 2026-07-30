@@ -170,6 +170,23 @@
     line-height:1;
   }
   .modal-close:hover{border-color:var(--accent);color:var(--accent);}
+  .play-badge{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+  }
+  .play-badge svg{
+    width:56px;
+    height:56px;
+    color:#fff;
+    background:rgba(11,13,15,0.55);
+    border:2px solid var(--accent);
+    border-radius:50%;
+    padding:14px;
+  }
   .stamp{
     position:absolute;
     top:10px;
@@ -274,6 +291,7 @@
   });
 
   const linkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4L10 14"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg>`;
+  const playIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
 
   function renderProjects(projects){
     const grid = document.getElementById('project-grid');
@@ -285,9 +303,15 @@
         ? `https://www.youtube.com/watch?v=${p.videoId}`
         : (p.linkUrl || '#');
 
-      const thumbHtml = p.videoId
+      const thumbHtml = p.imageUrl
+        ? `<img class="thumb" src="${p.imageUrl}" alt="${p.title}">`
+        : p.videoId
         ? `<img class="thumb" src="https://img.youtube.com/vi/${p.videoId}/hqdefault.jpg" alt="${p.title}">`
         : `<div class="no-video">${linkIcon}<span>external link</span></div>`;
+
+      const playBadgeHtml = (p.imageUrl && p.videoId)
+        ? `<div class="play-badge">${playIcon}</div>`
+        : '';
 
       const extraLinkHtml = (p.linkUrl && p.videoId)
         ? `<a class="extra-link" href="${p.linkUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation();">${p.linkLabel || 'Learn more'}</a>`
@@ -301,6 +325,7 @@
       card.innerHTML = `
         <div class="thumb-wrap">
           ${thumbHtml}
+          ${playBadgeHtml}
           <span class="stamp">${num}</span>
         </div>
         <div class="card-body">

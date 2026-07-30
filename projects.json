@@ -5,77 +5,88 @@
       "blurb": "A children's book my daughter Sara and I created together. I wrote the story, based on one of many I used to make up while tucking the kids in at night. Sara illustrated it and published it — she's the one who gets paid for any sale.",
       "videoId": "",
       "linkUrl": "https://a.co/d/7hrRLil",
-      "linkLabel": "View the book"
+      "linkLabel": "View the book",
+      "imageUrl": ""
     },
     {
       "title": "Memory Spark Station",
       "blurb": "A machine for audio trivia games, like an old-school \"Name That Tune.\" Upload any audio clips — music, movie lines, speeches, birthday wishes — describe them, organize them into tracks, and assign the tracks to knob positions. It even prints a guess worksheet and answer key.",
       "videoId": "_uoRrCs0vg8",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "imageUrl": ""
     },
     {
       "title": "Motorcycle ghost projector",
       "blurb": "An aftermarket car door projector, repurposed for a motorcycle. I swapped its light sensor for a motion detector, so at night, whenever motion is detected behind a parked bike, it projects an illuminated image onto the ground.",
       "videoId": "Nt7yD1vNoDU",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "imageUrl": ""
     },
     {
       "title": "The Poeteer",
       "blurb": "An AI poetry camera that captions what it sees and writes a poem about it, then prints the poem out a slot in the back. Built in a box-camera format mixing old and new tech: a laser-cut, engraved wooden box with 18 different 3D-modeled and printed parts. My daughter Sara made it beautiful with the engraving and medallion design. Built on instructions and code generously shared by the original creators of the poetry camera.",
       "videoId": "rDC_ntIztuI",
       "linkUrl": "https://poetry.camera/",
-      "linkLabel": "The original poetry camera"
+      "linkLabel": "The original poetry camera",
+      "imageUrl": ""
     },
     {
       "title": "Custom animatronic",
       "blurb": "An animatronic purchased from Home Depot, given a new control box so I can make him move however and say whatever I want. This video shows a custom greeting programmed for an Orlando art gallery event.",
       "videoId": "3RVeEv6GfzQ",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "imageUrl": ""
     },
     {
       "title": "AI Zoltar",
       "blurb": "A desktop animatronic Zoltar, built from scratch and inspired by the 1988 movie Big. Powered by three different AI models to understand a wish, formulate a response, and — unlike the movie version — speak it out loud. He'll warn you of the dangers of your wish, but grant it anyway, always in rhyme.",
       "videoId": "CFMEgACaiTo",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "imageUrl": ""
     },
     {
       "title": "The Great and Powerful Oz fireplace",
       "blurb": "Turns our fireplace into a haunted one. A 42-inch TV displays a demon-possessed fire, and you can summon the great and powerful Oz from The Wizard of Oz. I mashed audio snippets from the movie with an image of Oz using HeyGen AI to animate it, played through a Neumi media player that can trigger multiple videos in succession.",
       "videoId": "Bc3qSVIfOtU",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "imageUrl": ""
     },
     {
       "title": "Eyes Behind the Mask",
       "blurb": "A mask my father, Henry Schubert, created in 2006. I built the shadow box display and added a motion sensor and electronic eyes — walk near it and the eyes bring the mask to life. The eyes use small displays driven by a microcontroller, an idea and code pulled from another generous maker. I liked them so much I used the same eyes on The Poeteer and Zoltar.",
       "videoId": "s9rZtciYDH0",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "imageUrl": ""
     },
     {
       "title": "Haunted mirror",
       "blurb": "Halloween has taken on a new role since retirement — we now host an annual party that's become a neighborhood favorite, and this is one of the props built for it. A two-way mirror with a monitor behind it plays a looping black video until you linger too long, triggering the Grim Reaper to appear and taunt you. Built with Neumi, the media player company, adapting my own distance sensor circuit to trigger the video.",
       "videoId": "v6xZ96RwSsM",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "imageUrl": ""
     },
     {
       "title": "Pepper's Ghost lantern",
       "blurb": "Inspired by the Haunted Mansion's spinning Victorian dancers, this recreates the Pepper's Ghost illusion inside a decorative lantern, reflecting the Madam Leota video and an AI-generated Ghost Host introduction into your field of view.",
       "videoId": "ze-UO9cmed8",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "imageUrl": ""
     },
     {
       "title": "Ghost Host doorbell",
       "blurb": "My first prop dabbling with AI video, since replaced by the Pepper's Ghost lantern above. An AI-animated image of Nosferatu paired with the voice of the Haunted Mansion's Ghost Host — pairing a face that was never heard (Nosferatu debuted in a 1929 silent film) with a voice that was never seen. Triggered by a push button decorated to look and sound like a haunted doorbell.",
       "videoId": "VUCKlXbT8hA",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "imageUrl": ""
     }
   ]
 }
