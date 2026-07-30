@@ -293,27 +293,34 @@
   const linkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4L10 14"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg>`;
   const playIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
 
+  function extractYouTubeId(url){
+    if (!url) return '';
+    const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,15})/);
+    return match ? match[1] : '';
+  }
+
   function renderProjects(projects){
     const grid = document.getElementById('project-grid');
     grid.innerHTML = '';
 
     projects.forEach((p, i) => {
       const num = String(i + 1).padStart(2, '0');
-      const href = p.videoId
-        ? `https://www.youtube.com/watch?v=${p.videoId}`
+      const videoId = extractYouTubeId(p.videoUrl);
+      const href = videoId
+        ? p.videoUrl
         : (p.linkUrl || '#');
 
       const thumbHtml = p.imageUrl
         ? `<img class="thumb" src="${p.imageUrl}" alt="${p.title}">`
-        : p.videoId
-        ? `<img class="thumb" src="https://img.youtube.com/vi/${p.videoId}/hqdefault.jpg" alt="${p.title}">`
+        : videoId
+        ? `<img class="thumb" src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${p.title}">`
         : `<div class="no-video">${linkIcon}<span>external link</span></div>`;
 
-      const playBadgeHtml = (p.imageUrl && p.videoId)
+      const playBadgeHtml = (p.imageUrl && videoId)
         ? `<div class="play-badge">${playIcon}</div>`
         : '';
 
-      const extraLinkHtml = (p.linkUrl && p.videoId)
+      const extraLinkHtml = (p.linkUrl && videoId)
         ? `<a class="extra-link" href="${p.linkUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation();">${p.linkLabel || 'Learn more'}</a>`
         : '';
 
@@ -336,10 +343,10 @@
         </div>
       `;
 
-      if (p.videoId) {
+      if (videoId) {
         card.addEventListener('click', e => {
           e.preventDefault();
-          openVideoModal(p.videoId);
+          openVideoModal(videoId);
         });
       }
 
