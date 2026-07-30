@@ -104,14 +104,72 @@
     width:100%;
     aspect-ratio:16/9;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
-    font-family:'JetBrains Mono',monospace;
-    font-size:13px;
-    letter-spacing:2px;
+    gap:10px;
     color:var(--muted);
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:20px 20px;
+  }
+  .no-video svg{width:28px;height:28px;stroke:var(--muted);}
+  .no-video span{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:2px;
     text-transform:uppercase;
   }
+  .modal-backdrop{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    z-index:100;
+    align-items:center;
+    justify-content:center;
+    padding:70px 5vw 5vw;
+  }
+  .modal-backdrop.open{display:flex;}
+  .modal-box{
+    position:relative;
+    width:100%;
+    max-width:960px;
+  }
+  .modal-video-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    background:#000;
+    border:2px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:7px 7px 0 var(--accent);
+  }
+  .modal-video-wrap iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+  }
+  .modal-close{
+    position:absolute;
+    top:-48px;
+    right:0;
+    background:var(--panel);
+    border:2px solid var(--line);
+    color:var(--text);
+    font-family:'JetBrains Mono',monospace;
+    font-size:20px;
+    width:38px;
+    height:38px;
+    border-radius:8px;
+    cursor:pointer;
+    line-height:1;
+  }
+  .modal-close:hover{border-color:var(--accent);color:var(--accent);}
   .stamp{
     position:absolute;
     top:10px;
@@ -177,6 +235,15 @@
 </main>
 <footer>STEVE SCHUBERT · SHSCHUBERT@GMAIL.COM</footer>
 
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal-box">
+    <button class="modal-close" id="modal-close" aria-label="Close video">&times;</button>
+    <div class="modal-video-wrap">
+      <iframe id="modal-iframe" src="" title="Project video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
 <script>
   fetch('projects.json')
     .then(res => res.json())
@@ -185,6 +252,28 @@
       document.getElementById('project-grid').innerHTML =
         '<p class="empty">Couldn\'t load projects.json — ' + err.message + '</p>';
     });
+
+  const modalBackdrop = document.getElementById('modal-backdrop');
+  const modalIframe = document.getElementById('modal-iframe');
+  const modalClose = document.getElementById('modal-close');
+
+  function openVideoModal(videoId){
+    modalIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+    modalBackdrop.classList.add('open');
+  }
+  function closeVideoModal(){
+    modalBackdrop.classList.remove('open');
+    modalIframe.src = '';
+  }
+  modalClose.addEventListener('click', closeVideoModal);
+  modalBackdrop.addEventListener('click', e => {
+    if (e.target === modalBackdrop) closeVideoModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeVideoModal();
+  });
+
+  const linkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4L10 14"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg>`;
 
   function renderProjects(projects){
     const grid = document.getElementById('project-grid');
@@ -198,7 +287,7 @@
 
       const thumbHtml = p.videoId
         ? `<img class="thumb" src="https://img.youtube.com/vi/${p.videoId}/hqdefault.jpg" alt="${p.title}">`
-        : `<div class="no-video">no video</div>`;
+        : `<div class="no-video">${linkIcon}<span>external link</span></div>`;
 
       const extraLinkHtml = (p.linkUrl && p.videoId)
         ? `<a class="extra-link" href="${p.linkUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation();">${p.linkLabel || 'Learn more'}</a>`
@@ -221,6 +310,14 @@
           ${extraLinkHtml}
         </div>
       `;
+
+      if (p.videoId) {
+        card.addEventListener('click', e => {
+          e.preventDefault();
+          openVideoModal(p.videoId);
+        });
+      }
+
       grid.appendChild(card);
     });
   }
