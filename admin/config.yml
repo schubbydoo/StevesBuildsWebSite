@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+backend:
+  name: github
+  repo: schubbydoo/StevesBuildsWebSite
+  branch: main
+
+media_folder: admin/uploads
+public_folder: /admin/uploads
+
+collections:
+  - name: "projects"
+    label: "Homepage projects"
+    files:
+      - name: "projects"
+        label: "Project list"
+        file: "projects.json"
+        fields:
+          - label: "Projects"
+            name: "projects"
+            widget: "list"
+            label_singular: "Project"
+            summary: "{{title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "blurb", widget: "text" }
+              - { label: "YouTube video ID", name: "videoId", widget: "string", required: false, hint: "From the video URL — e.g. CFMEgACaiTo from youtube.com/watch?v=CFMEgACaiTo. Leave blank if there's no video." }
+              - { label: "External link URL", name: "linkUrl", widget: "string", required: false, hint: "Optional, e.g. a product page or the book's Amazon link." }
+              - { label: "External link label", name: "linkLabel", widget: "string", required: false, hint: "Text shown for the link above. Only used if a link URL is set." }

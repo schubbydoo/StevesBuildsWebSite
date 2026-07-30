@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Steve's Builds — Retired, Wired, and Inspired</title>
+<meta name="description" content="Animatronics, AI props, and Halloween machines built in retirement.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d0f;
+    --panel:#14171a;
+    --line:#2a3136;
+    --text:#e8ebed;
+    --muted:#8b969c;
+    --accent:#39ff88;
+    --accent2:#ff6a3d;
+    --accent3:#4d8dff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Space Grotesk',sans-serif;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:40px 40px;
+    background-attachment:fixed;
+  }
+  a{color:inherit;}
+  header{
+    padding:80px 8vw 60px;
+    max-width:1100px;
+    margin:0 auto;
+  }
+  .tag{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--accent);
+    font-size:13px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    display:inline-block;
+    border:2px solid var(--accent);
+    padding:4px 12px;
+    border-radius:6px;
+    margin-bottom:24px;
+    box-shadow:4px 4px 0 var(--accent);
+  }
+  h1{
+    font-size:clamp(36px,6vw,64px);
+    font-weight:700;
+    line-height:1.05;
+    margin-bottom:20px;
+  }
+  h1 span{color:var(--accent);}
+  .sub{
+    color:var(--muted);
+    font-size:18px;
+    max-width:560px;
+    line-height:1.6;
+  }
+  main{
+    max-width:1100px;
+    margin:0 auto;
+    padding:0 8vw 100px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:34px;
+  }
+  .card{
+    background:var(--panel);
+    border:2px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:7px 7px 0 var(--line);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    cursor:pointer;
+    display:block;
+    text-decoration:none;
+  }
+  .card:nth-child(3n+1):hover{ border-color:var(--accent); box-shadow:9px 9px 0 var(--accent); }
+  .card:nth-child(3n+2):hover{ border-color:var(--accent2); box-shadow:9px 9px 0 var(--accent2); }
+  .card:nth-child(3n+3):hover{ border-color:var(--accent3); box-shadow:9px 9px 0 var(--accent3); }
+  .card:hover{
+    transform:translate(-4px,-4px);
+  }
+  .thumb-wrap{
+    position:relative;
+    border-bottom:2px solid var(--line);
+    background:#0e1113;
+  }
+  .thumb{
+    width:100%;
+    aspect-ratio:16/9;
+    object-fit:cover;
+    display:block;
+    filter:saturate(0.85) contrast(1.05);
+  }
+  .no-video{
+    width:100%;
+    aspect-ratio:16/9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    letter-spacing:2px;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+  .stamp{
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:#0b0d0f;
+    color:var(--accent);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    padding:4px 9px;
+    border-radius:6px;
+    border:2px solid var(--accent);
+  }
+  .card-body{padding:20px 22px 24px;}
+  .card-body .num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--accent2);
+    letter-spacing:1px;
+  }
+  .card-body h3{
+    font-size:19px;
+    font-weight:500;
+    margin:8px 0 8px;
+  }
+  .card-body p{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.55;
+  }
+  .card-body .extra-link{
+    display:inline-block;
+    margin-top:12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--accent3);
+    text-decoration:underline;
+  }
+  .empty{
+    color:var(--muted);
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+  }
+  footer{
+    text-align:center;
+    padding:40px;
+    color:var(--muted);
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+<header>
+  <span class="tag">retired, wired, and inspired</span>
+  <h1>I build things that <span>shouldn't work</span>.<br>They work anyway.</h1>
+  <p class="sub">Animatronics, AI props, and Halloween machines built in retirement — one bad idea at a time.</p>
+</header>
+<main>
+  <div class="grid" id="project-grid">
+    <p class="empty">Loading projects…</p>
+  </div>
+</main>
+<footer>STEVE SCHUBERT · SHSCHUBERT@GMAIL.COM</footer>
+
+<script>
+  fetch('projects.json')
+    .then(res => res.json())
+    .then(data => renderProjects(data.projects || []))
+    .catch(err => {
+      document.getElementById('project-grid').innerHTML =
+        '<p class="empty">Couldn\'t load projects.json — ' + err.message + '</p>';
+    });
+
+  function renderProjects(projects){
+    const grid = document.getElementById('project-grid');
+    grid.innerHTML = '';
+
+    projects.forEach((p, i) => {
+      const num = String(i + 1).padStart(2, '0');
+      const href = p.videoId
+        ? `https://www.youtube.com/watch?v=${p.videoId}`
+        : (p.linkUrl || '#');
+
+      const thumbHtml = p.videoId
+        ? `<img class="thumb" src="https://img.youtube.com/vi/${p.videoId}/hqdefault.jpg" alt="${p.title}">`
+        : `<div class="no-video">no video</div>`;
+
+      const extraLinkHtml = (p.linkUrl && p.videoId)
+        ? `<a class="extra-link" href="${p.linkUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation();">${p.linkLabel || 'Learn more'}</a>`
+        : '';
+
+      const card = document.createElement('a');
+      card.className = 'card';
+      card.href = href;
+      card.target = '_blank';
+      card.rel = 'noopener';
+      card.innerHTML = `
+        <div class="thumb-wrap">
+          ${thumbHtml}
+          <span class="stamp">${num}</span>
+        </div>
+        <div class="card-body">
+          <div class="num">PROJECT ${num}</div>
+          <h3>${p.title}</h3>
+          <p>${p.blurb}</p>
+          ${extraLinkHtml}
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+</script>
+</body>
+</html>
