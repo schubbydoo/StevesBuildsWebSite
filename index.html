@@ -147,6 +147,34 @@
     overflow:hidden;
     box-shadow:7px 7px 0 var(--accent);
   }
+  .coming-soon{
+    display:none;
+    position:absolute;
+    inset:0;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    text-align:center;
+    padding:20px;
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  .coming-soon svg{width:40px;height:40px;stroke:var(--accent);}
+  .coming-soon .cs-title{
+    font-size:20px;
+    font-weight:500;
+    max-width:480px;
+  }
+  .coming-soon .cs-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
   .modal-video-wrap iframe{
     position:absolute;
     inset:0;
@@ -360,9 +388,14 @@
 
 <div class="modal-backdrop" id="modal-backdrop">
   <div class="modal-box">
-    <button class="modal-close" id="modal-close" aria-label="Close video">&times;</button>
+    <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
     <div class="modal-video-wrap">
       <iframe id="modal-iframe" src="" title="Project video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="coming-soon" id="modal-coming-soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 3.5"/></svg>
+        <div class="cs-title" id="coming-soon-title"></div>
+        <div class="cs-label">coming soon</div>
+      </div>
     </div>
   </div>
 </div>
@@ -415,14 +448,27 @@
   const modalBackdrop = document.getElementById('modal-backdrop');
   const modalIframe = document.getElementById('modal-iframe');
   const modalClose = document.getElementById('modal-close');
+  const modalComingSoon = document.getElementById('modal-coming-soon');
+  const comingSoonTitle = document.getElementById('coming-soon-title');
 
   function openVideoModal(videoId){
+    modalComingSoon.style.display = 'none';
+    modalIframe.style.display = 'block';
     modalIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+    modalBackdrop.classList.add('open');
+  }
+  function openComingSoonModal(title){
+    modalIframe.style.display = 'none';
+    modalIframe.src = '';
+    comingSoonTitle.textContent = title || '';
+    modalComingSoon.style.display = 'flex';
     modalBackdrop.classList.add('open');
   }
   function closeVideoModal(){
     modalBackdrop.classList.remove('open');
     modalIframe.src = '';
+    modalIframe.style.display = 'block';
+    modalComingSoon.style.display = 'none';
   }
   modalClose.addEventListener('click', closeVideoModal);
   modalBackdrop.addEventListener('click', e => {
@@ -433,6 +479,7 @@
   });
 
   const linkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4L10 14"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg>`;
+  const clockIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 3.5"/></svg>`;
 
   function extractYouTubeId(url){
     if (!url) return '';
@@ -457,7 +504,9 @@
         ? `<img class="thumb" style="object-position:${position}" src="${p.imageUrl}" alt="${p.title}">`
         : videoId
         ? `<img class="thumb" src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${p.title}">`
-        : `<div class="no-video">${linkIcon}<span>external link</span></div>`;
+        : p.linkUrl
+        ? `<div class="no-video">${linkIcon}<span>external link</span></div>`
+        : `<div class="no-video">${clockIcon}<span>coming soon</span></div>`;
 
       const extraLinkHtml = (p.linkUrl && videoId)
         ? `<a class="extra-link" href="${p.linkUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation();">${p.linkLabel || 'Learn more'}</a>`
@@ -492,6 +541,11 @@
         card.addEventListener('click', e => {
           e.preventDefault();
           openVideoModal(videoId);
+        });
+      } else if (!p.linkUrl) {
+        card.addEventListener('click', e => {
+          e.preventDefault();
+          openComingSoonModal(p.title);
         });
       }
 
