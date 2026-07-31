@@ -2,5 +2,30 @@
   "name": "Steve Schubert",
   "photoUrl": "/admin/uploads/ContactWebsiteImage.jpg",
   "email": "shschubert@gmail.com",
-  "socials": []
+  "socials": {
+    "instagram": {
+      "enabled": false,
+      "url": ""
+    },
+    "facebook": {
+      "enabled": false,
+      "url": ""
+    },
+    "youtube": {
+      "enabled": false,
+      "url": ""
+    },
+    "tiktok": {
+      "enabled": false,
+      "url": ""
+    },
+    "twitter": {
+      "enabled": false,
+      "url": ""
+    },
+    "linkedin": {
+      "enabled": false,
+      "url": ""
+    }
+  }
 }

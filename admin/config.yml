@@ -32,14 +32,46 @@ collections:
           - { label: "Email", name: "email", widget: "string", required: false }
           - label: "Social links"
             name: "socials"
-            widget: "list"
+            widget: "object"
             required: false
-            label_singular: "Social link"
-            summary: "{{label}}"
-            hint: "Optional. Add one entry per platform (Instagram, YouTube, etc.) — leave empty if you don't have any yet."
+            hint: "Check a platform on to show its icon, and paste the URL. Unchecking hides the icon without losing the saved URL."
             fields:
-              - { label: "Platform name", name: "label", widget: "string", hint: "e.g. Instagram, YouTube, Facebook" }
-              - { label: "URL", name: "url", widget: "string" }
+              - label: "Instagram"
+                name: "instagram"
+                widget: "object"
+                fields:
+                  - { label: "Show icon", name: "enabled", widget: "boolean", default: false }
+                  - { label: "URL", name: "url", widget: "string", required: false }
+              - label: "Facebook"
+                name: "facebook"
+                widget: "object"
+                fields:
+                  - { label: "Show icon", name: "enabled", widget: "boolean", default: false }
+                  - { label: "URL", name: "url", widget: "string", required: false }
+              - label: "YouTube"
+                name: "youtube"
+                widget: "object"
+                fields:
+                  - { label: "Show icon", name: "enabled", widget: "boolean", default: false }
+                  - { label: "URL", name: "url", widget: "string", required: false }
+              - label: "TikTok"
+                name: "tiktok"
+                widget: "object"
+                fields:
+                  - { label: "Show icon", name: "enabled", widget: "boolean", default: false }
+                  - { label: "URL", name: "url", widget: "string", required: false }
+              - label: "X (Twitter)"
+                name: "twitter"
+                widget: "object"
+                fields:
+                  - { label: "Show icon", name: "enabled", widget: "boolean", default: false }
+                  - { label: "URL", name: "url", widget: "string", required: false }
+              - label: "LinkedIn"
+                name: "linkedin"
+                widget: "object"
+                fields:
+                  - { label: "Show icon", name: "enabled", widget: "boolean", default: false }
+                  - { label: "URL", name: "url", widget: "string", required: false }
 
   - name: "projects"
     label: "Homepage projects"

@@ -342,32 +342,47 @@
   }
   .profile-info{display:flex;flex-direction:column;gap:2px;}
   .profile-name{font-size:15px;font-weight:500;}
-  .profile-email{
-    font-family:'JetBrains Mono',monospace;
-    font-size:13px;
-    color:var(--muted);
-    text-decoration:none;
-  }
-  .profile-email:hover{color:var(--accent);}
   .profile-socials{
     display:flex;
-    gap:10px;
-    margin-left:auto;
+    align-items:flex-start;
+    gap:14px;
     flex-wrap:wrap;
+    margin-left:auto;
   }
-  .social-pill{
-    font-family:'JetBrains Mono',monospace;
-    font-size:12px;
-    color:var(--text);
+  @media (min-width:700px){
+    .profile-socials{ margin-left:0; }
+  }
+  .contact-icon{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
     text-decoration:none;
-    border:2px solid var(--line);
-    border-radius:8px;
-    padding:6px 12px;
+    color:var(--text);
   }
-  .social-pill:hover{border-color:var(--accent);color:var(--accent);}
+  .contact-icon-circle{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:2px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--panel);
+    flex-shrink:0;
+  }
+  .contact-icon-circle svg{width:18px;height:18px;}
+  .contact-icon:hover .contact-icon-circle{border-color:var(--accent);color:var(--accent);}
+  .contact-icon-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .contact-icon:hover .contact-icon-label{color:var(--accent);}
   .social-placeholder{
-    width:32px;
-    height:32px;
+    width:38px;
+    height:38px;
     border-radius:50%;
     border:2px dashed var(--line);
   }
@@ -417,25 +432,66 @@
     .then(renderProfile)
     .catch(() => {});
 
+  const mailIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>`;
+
+  const SOCIAL_META = {
+    instagram: {
+      label: 'Instagram',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.7" fill="currentColor" stroke="none"/></svg>`
+    },
+    facebook: {
+      label: 'Facebook',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M14 8.3h-1.3c-.7 0-1.2.5-1.2 1.3v1.9H14l-.3 2H11.5V19H9.3v-5.5H8v-2h1.3V9.6c0-1.7 1.1-3 2.9-3H14v1.7z" fill="currentColor" stroke="none"/></svg>`
+    },
+    youtube: {
+      label: 'YouTube',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="4"/><path d="M10.5 9.5v5l4.5-2.5z" fill="currentColor" stroke="none"/></svg>`
+    },
+    tiktok: {
+      label: 'TikTok',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4v10.6a3 3 0 1 1-2-2.9"/><path d="M13 4c.5 2.5 2.4 4.1 5 4.3"/></svg>`
+    },
+    twitter: {
+      label: 'X (Twitter)',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l14 14"/><path d="M19 5L5 19"/></svg>`
+    },
+    linkedin: {
+      label: 'LinkedIn',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7.5 10.5V17M7.5 7.5v.01M11 17v-4a2 2 0 0 1 4 0v4M11 13v4"/></svg>`
+    }
+  };
+
   function renderProfile(profile){
     const bar = document.getElementById('profile-bar');
     const photo = profile.photoUrl
       ? `<img class="profile-photo" src="${profile.photoUrl}" alt="${profile.name || ''}">`
       : '';
-    const email = profile.email
-      ? `<a class="profile-email" href="mailto:${profile.email}">${profile.email}</a>`
+
+    const emailHtml = profile.email
+      ? `<a class="contact-icon" href="mailto:${profile.email}" title="Email">
+           <span class="contact-icon-circle">${mailIcon}</span>
+           <span class="contact-icon-label">${profile.email}</span>
+         </a>`
       : '';
-    const socials = (profile.socials && profile.socials.length)
-      ? profile.socials.map(s => `<a class="social-pill" href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`).join('')
+
+    const socials = profile.socials || {};
+    const socialIconsHtml = Object.keys(SOCIAL_META)
+      .filter(key => socials[key] && socials[key].enabled && socials[key].url)
+      .map(key => `<a class="contact-icon" href="${socials[key].url}" target="_blank" rel="noopener" title="${SOCIAL_META[key].label}">
+             <span class="contact-icon-circle">${SOCIAL_META[key].icon}</span>
+           </a>`)
+      .join('');
+
+    const contactHtml = (emailHtml || socialIconsHtml)
+      ? emailHtml + socialIconsHtml
       : '<span class="social-placeholder"></span><span class="social-placeholder"></span><span class="social-placeholder"></span>';
 
     bar.innerHTML = `
       ${photo}
       <div class="profile-info">
         <div class="profile-name">${profile.name || ''}</div>
-        ${email}
       </div>
-      <div class="profile-socials">${socials}</div>
+      <div class="profile-socials">${contactHtml}</div>
     `;
   }
 
