@@ -346,9 +346,9 @@
 <body>
 <div class="profile-bar" id="profile-bar"></div>
 <header>
-  <span class="tag">retired, wired, and inspired</span>
-  <h1>I build things that <span>shouldn't work</span>.<br>They work anyway.</h1>
-  <p class="sub">Animatronics, AI props, and Halloween machines built in retirement — one bad idea at a time.</p>
+  <span class="tag" id="hero-tag">retired, wired, and inspired</span>
+  <h1 id="hero-headline">I build things that <span>shouldn't work</span>.<br>They work anyway.</h1>
+  <p class="sub" id="hero-subtitle">Animatronics, AI props, and Halloween machines built in retirement — one bad idea at a time.</p>
 </header>
 <nav class="category-nav" id="category-nav"></nav>
 <main>
@@ -368,6 +368,15 @@
 </div>
 
 <script>
+  fetch('hero.json')
+    .then(res => res.json())
+    .then(hero => {
+      if (hero.tag) document.getElementById('hero-tag').innerHTML = hero.tag;
+      if (hero.headline) document.getElementById('hero-headline').innerHTML = hero.headline;
+      if (hero.subtitle) document.getElementById('hero-subtitle').innerHTML = hero.subtitle;
+    })
+    .catch(() => {});
+
   fetch('profile.json')
     .then(res => res.json())
     .then(renderProfile)
