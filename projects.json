@@ -13,7 +13,7 @@
       "title": "Memory Spark Station",
       "blurb": "A machine for audio trivia games, like an old-school \"Name That Tune.\" Upload any audio clips — music, movie lines, speeches, birthday wishes — describe them, organize them into tracks, and assign the tracks to knob positions. It even prints a guess worksheet and answer key.",
       "videoUrl": "https://www.youtube.com/watch?v=_uoRrCs0vg8",
-      "imageUrl": "",
+      "imageUrl": "/admin/uploads/MSSWebsiteSized.JPG",
       "imagePosition": "center",
       "linkUrl": "",
       "linkLabel": ""
@@ -95,6 +95,15 @@
       "blurb": "My first prop dabbling with AI video, since replaced by the Pepper's Ghost lantern above. An AI-animated image of Nosferatu paired with the voice of the Haunted Mansion's Ghost Host — pairing a face that was never heard (Nosferatu debuted in a 1929 silent film) with a voice that was never seen. Triggered by a push button decorated to look and sound like a haunted doorbell.",
       "videoUrl": "https://www.youtube.com/watch?v=VUCKlXbT8hA",
       "imageUrl": "",
+      "imagePosition": "center",
+      "linkUrl": "",
+      "linkLabel": ""
+    },
+    {
+      "title": "The Spectral Hotline",
+      "blurb": "Bridging the gap between reality and imagination, the Spectral Hotline allows the caller to dial figments of my imagination, including those who have anxiously awaited someone to answer their call from beyond.[insert evil laugh here].",
+      "videoUrl": "",
+      "imageUrl": "/admin/uploads/PhoneWebsiteSized.JPG",
       "imagePosition": "center",
       "linkUrl": "",
       "linkLabel": ""
