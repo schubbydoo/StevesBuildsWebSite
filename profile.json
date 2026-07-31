@@ -8,7 +8,7 @@
       "url": ""
     },
     "facebook": {
-      "enabled": false,
+      "enabled": true,
       "url": ""
     },
     "youtube": {
