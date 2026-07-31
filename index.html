@@ -237,9 +237,59 @@
     font-size:12px;
     border-top:1px solid var(--line);
   }
+  .profile-bar{
+    max-width:1100px;
+    margin:0 auto;
+    padding:24px 8vw 0;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .profile-photo{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--line);
+    background:var(--panel);
+    flex-shrink:0;
+  }
+  .profile-info{display:flex;flex-direction:column;gap:2px;}
+  .profile-name{font-size:15px;font-weight:500;}
+  .profile-email{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    color:var(--muted);
+    text-decoration:none;
+  }
+  .profile-email:hover{color:var(--accent);}
+  .profile-socials{
+    display:flex;
+    gap:10px;
+    margin-left:auto;
+    flex-wrap:wrap;
+  }
+  .social-pill{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--text);
+    text-decoration:none;
+    border:2px solid var(--line);
+    border-radius:8px;
+    padding:6px 12px;
+  }
+  .social-pill:hover{border-color:var(--accent);color:var(--accent);}
+  .social-placeholder{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    border:2px dashed var(--line);
+  }
 </style>
 </head>
 <body>
+<div class="profile-bar" id="profile-bar"></div>
 <header>
   <span class="tag">retired, wired, and inspired</span>
   <h1>I build things that <span>shouldn't work</span>.<br>They work anyway.</h1>
@@ -262,6 +312,33 @@
 </div>
 
 <script>
+  fetch('profile.json')
+    .then(res => res.json())
+    .then(renderProfile)
+    .catch(() => {});
+
+  function renderProfile(profile){
+    const bar = document.getElementById('profile-bar');
+    const photo = profile.photoUrl
+      ? `<img class="profile-photo" src="${profile.photoUrl}" alt="${profile.name || ''}">`
+      : '';
+    const email = profile.email
+      ? `<a class="profile-email" href="mailto:${profile.email}">${profile.email}</a>`
+      : '';
+    const socials = (profile.socials && profile.socials.length)
+      ? profile.socials.map(s => `<a class="social-pill" href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`).join('')
+      : '<span class="social-placeholder"></span><span class="social-placeholder"></span><span class="social-placeholder"></span>';
+
+    bar.innerHTML = `
+      ${photo}
+      <div class="profile-info">
+        <div class="profile-name">${profile.name || ''}</div>
+        ${email}
+      </div>
+      <div class="profile-socials">${socials}</div>
+    `;
+  }
+
   fetch('projects.json')
     .then(res => res.json())
     .then(data => renderProjects(data.projects || []))

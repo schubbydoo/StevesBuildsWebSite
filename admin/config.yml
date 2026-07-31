@@ -9,6 +9,27 @@ media_folder: admin/uploads
 public_folder: /admin/uploads
 
 collections:
+  - name: "profile"
+    label: "Contact info"
+    files:
+      - name: "profile"
+        label: "Contact info"
+        file: "profile.json"
+        fields:
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Photo", name: "photoUrl", widget: "image", required: false, hint: "Shown at the top of the site." }
+          - { label: "Email", name: "email", widget: "string", required: false }
+          - label: "Social links"
+            name: "socials"
+            widget: "list"
+            required: false
+            label_singular: "Social link"
+            summary: "{{label}}"
+            hint: "Optional. Add one entry per platform (Instagram, YouTube, etc.) — leave empty if you don't have any yet."
+            fields:
+              - { label: "Platform name", name: "label", widget: "string", hint: "e.g. Instagram, YouTube, Facebook" }
+              - { label: "URL", name: "url", widget: "string" }
+
   - name: "projects"
     label: "Homepage projects"
     files:
