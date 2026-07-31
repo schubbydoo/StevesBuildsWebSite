@@ -268,11 +268,34 @@
     cursor:pointer;
   }
   .category-pill:hover{border-color:var(--accent);color:var(--accent);}
-  @keyframes card-pulse{
-    0%, 100%{ box-shadow:7px 7px 0 var(--line); border-color:var(--line); }
-    50%{ box-shadow:7px 7px 0 var(--accent); border-color:var(--accent); }
+  .category-pill.active{
+    border-color:var(--accent);
+    color:var(--accent);
+    background:rgba(57,255,136,0.1);
   }
-  .card.jump-highlight{ animation:card-pulse 0.6s ease-in-out 2; }
+  .clear-pill{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    color:var(--muted);
+    background:transparent;
+    border:2px dashed var(--line);
+    border-radius:8px;
+    padding:7px 14px;
+    cursor:pointer;
+    display:none;
+  }
+  .clear-pill:hover{border-color:var(--accent2);color:var(--accent2);}
+  .card{ transition:transform .18s ease, box-shadow .25s ease, border-color .25s ease, opacity .25s ease; }
+  .card.tag-match{
+    border-color:var(--accent) !important;
+    box-shadow:7px 7px 0 var(--accent) !important;
+  }
+  .card.tag-dim{ opacity:0.3; }
+  @keyframes card-pulse{
+    0%, 100%{ box-shadow:7px 7px 0 var(--accent); }
+    50%{ box-shadow:12px 12px 0 var(--accent); }
+  }
+  .card.tag-match-pulse{ animation:card-pulse 0.5s ease-in-out 2; }
   .empty{
     color:var(--muted);
     font-family:'JetBrains Mono',monospace;
@@ -492,6 +515,8 @@
     renderCategoryNav(projects);
   }
 
+  let activeCategory = null;
+
   function renderCategoryNav(projects){
     const nav = document.getElementById('category-nav');
     const seen = new Set();
@@ -500,23 +525,57 @@
 
     if (!categories.length) { nav.innerHTML = ''; return; }
 
-    nav.innerHTML = `<span class="category-nav-label">Jump to:</span>` +
-      categories.map(c => `<button type="button" class="category-pill" data-jump="${c}">${c}</button>`).join('');
+    nav.innerHTML = `<span class="category-nav-label">Highlight:</span>` +
+      categories.map(c => `<button type="button" class="category-pill" data-jump="${c}">${c}</button>`).join('') +
+      `<button type="button" class="clear-pill" id="clear-filter">✕ clear</button>`;
 
     nav.querySelectorAll('.category-pill').forEach(btn => {
-      btn.addEventListener('click', () => jumpToCategory(btn.dataset.jump));
+      btn.addEventListener('click', () => toggleCategory(btn.dataset.jump));
     });
+    document.getElementById('clear-filter').addEventListener('click', clearCategoryFilter);
   }
 
-  function jumpToCategory(category){
-    const cards = document.querySelectorAll('#project-grid .card');
-    const target = Array.from(cards).find(card =>
-      card.dataset.categories.split('|').includes(category)
-    );
-    if (!target) return;
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    target.classList.add('jump-highlight');
-    setTimeout(() => target.classList.remove('jump-highlight'), 1300);
+  function toggleCategory(category){
+    if (activeCategory === category) {
+      clearCategoryFilter();
+      return;
+    }
+    activeCategory = category;
+    const cards = Array.from(document.querySelectorAll('#project-grid .card'));
+    let firstMatch = null;
+
+    cards.forEach(card => {
+      const cats = card.dataset.categories ? card.dataset.categories.split('|') : [];
+      const isMatch = cats.includes(category);
+      card.classList.toggle('tag-match', isMatch);
+      card.classList.toggle('tag-dim', !isMatch);
+      card.classList.remove('tag-match-pulse');
+      if (isMatch && !firstMatch) firstMatch = card;
+    });
+
+    updatePillStates();
+
+    if (firstMatch) {
+      firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstMatch.classList.add('tag-match-pulse');
+      setTimeout(() => firstMatch.classList.remove('tag-match-pulse'), 1000);
+    }
+  }
+
+  function clearCategoryFilter(){
+    activeCategory = null;
+    document.querySelectorAll('#project-grid .card').forEach(card => {
+      card.classList.remove('tag-match', 'tag-dim', 'tag-match-pulse');
+    });
+    updatePillStates();
+  }
+
+  function updatePillStates(){
+    document.querySelectorAll('.category-pill').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.jump === activeCategory);
+    });
+    const clearBtn = document.getElementById('clear-filter');
+    if (clearBtn) clearBtn.style.display = activeCategory ? 'inline-flex' : 'none';
   }
 </script>
 </body>
