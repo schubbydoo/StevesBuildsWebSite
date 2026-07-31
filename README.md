@@ -35,7 +35,8 @@ No files to download, no git, no manual uploads.
 In `/admin/`, under **Contact info**: your name, photo, email, and social links.
 
 - **Photo**: upload directly, or use the image framing tool first (see below) to size and position it exactly how you want before uploading.
-- **Social links**: add one entry per platform (label + URL). Leave this empty and the site shows three faint dashed placeholder circles reserving the space; add entries and they become real clickable links automatically — no code changes ever needed for this.
+- **Email**: shown as a mail icon with the address written underneath it, right next to your name.
+- **Social links**: six fixed platforms (Instagram, Facebook, YouTube, TikTok, X/Twitter, LinkedIn), each with a "Show icon" checkbox and a URL box. Check the box and add a URL to make that platform's icon appear; unchecking hides it again without losing the saved URL. If nothing is checked, the site shows three faint dashed placeholder circles reserving the space instead. Adding a brand-new platform beyond these six means asking me to add a field for it — this list isn't open-ended the way project categories are.
 
 ### Homepage projects
 
