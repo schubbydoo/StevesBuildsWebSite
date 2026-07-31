@@ -105,6 +105,16 @@
       "linkLabel": ""
     },
     {
+      "title": "Gallery Wall Digital Frame",
+      "blurb": "The Gallery Wall project was inspired by the MacOS Sliding Tiles screensaver. I found that it is a great way to show a number of images in an interesting way and I have a big-screen TV in my studio that would be a great addition to the decor. I built a similar application that runs on the Raspberry Pi, connects to my iCloud album and displays images in three different configurations, sliding tiles, 3-framed image format, and full screen. I can schedule it to turn on and off and synchronize with iCloud. It takes locally uploaded images as well.",
+      "categories": [],
+      "videoUrl": "",
+      "imageUrl": "/admin/uploads/GalleryWallWebsite.JPG",
+      "imagePosition": "center",
+      "linkUrl": "",
+      "linkLabel": ""
+    },
+    {
       "title": "Floor Projector for Motorcycle",
       "blurb": "An aftermarket car door projector, repurposed for a motorcycle. I swapped its light sensor for a motion detector, so at night, whenever motion is detected behind a parked bike, it projects an illuminated image onto the ground.",
       "categories": [
