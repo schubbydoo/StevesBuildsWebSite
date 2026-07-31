@@ -75,6 +75,7 @@
     max-width:640px;
     margin:18px auto 0;
   }
+  .controls + .controls{margin-top:12px;}
   .controls label{
     font-family:'JetBrains Mono',monospace;
     font-size:12px;
@@ -83,6 +84,15 @@
     white-space:nowrap;
   }
   input[type="range"]{flex:1;}
+  select{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:14px;
+    background:var(--panel);
+    color:var(--text);
+    border:2px solid var(--line);
+    border-radius:8px;
+    padding:8px 12px;
+  }
   .toolbar{
     display:flex;
     gap:12px;
@@ -116,13 +126,20 @@
 <body>
 <div class="wrap">
   <span class="tag">image fit tool</span>
-  <h1>Frame a photo for a project card</h1>
-  <p class="note">Load a photo, drag it to reposition, and use the slider to zoom. The frame below is the exact shape of a project card on the site (a wide rectangle) — anything not covered by the photo shows as black, just like it will on the live site. When it looks right, download the result and upload that file through the "Cover image" button in /admin as usual.</p>
+  <h1>Frame a photo for the site</h1>
+  <p class="note">Load a photo, drag it to reposition, and use the slider to zoom. The frame below matches the exact shape it'll be shown in on the site — anything not covered by the photo shows as black, just like it will on the live site. When it looks right, download the result and upload that file through the matching upload button in /admin.</p>
 
   <div class="drop-zone" id="drop-zone">Click to choose a photo, or drag one here</div>
   <input type="file" id="file-input" accept="image/*">
 
   <div class="stage-wrap">
+    <div class="controls">
+      <label>Frame</label>
+      <select id="shape">
+        <option value="wide">Project card (wide)</option>
+        <option value="square">Contact photo (circle)</option>
+      </select>
+    </div>
     <canvas id="stage" width="1280" height="720"></canvas>
     <div class="controls">
       <label>Zoom</label>
@@ -148,8 +165,10 @@
   const resetBtn = document.getElementById('reset-btn');
   const downloadBtn = document.getElementById('download-btn');
   const statusEl = document.getElementById('status');
+  const shapeSelect = document.getElementById('shape');
 
-  const OUT_W = 1280, OUT_H = 720;
+  let shape = 'wide';
+  let OUT_W = 1280, OUT_H = 720;
 
   let img = null;
   let baseScale = 1;
@@ -159,16 +178,48 @@
   let dragStartX = 0, dragStartY = 0;
   let startOffsetX = 0, startOffsetY = 0;
 
-  function render(){
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, OUT_W, OUT_H);
+  function drawBase(targetCtx, w, h){
+    targetCtx.fillStyle = '#000';
+    targetCtx.fillRect(0, 0, w, h);
     if (!img) return;
-    const w = img.width * scale;
-    const h = img.height * scale;
-    const x = OUT_W / 2 - w / 2 + offsetX;
-    const y = OUT_H / 2 - h / 2 + offsetY;
-    ctx.drawImage(img, x, y, w, h);
+    const iw = img.width * scale;
+    const ih = img.height * scale;
+    const x = w / 2 - iw / 2 + offsetX;
+    const y = h / 2 - ih / 2 + offsetY;
+    targetCtx.drawImage(img, x, y, iw, ih);
   }
+
+  function render(){
+    drawBase(ctx, OUT_W, OUT_H);
+    if (shape === 'square'){
+      ctx.save();
+      ctx.strokeStyle = 'rgba(57,255,136,0.9)';
+      ctx.setLineDash([10, 8]);
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(OUT_W / 2, OUT_H / 2, OUT_W / 2 - 2, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function applyShape(){
+    shape = shapeSelect.value;
+    if (shape === 'square'){ OUT_W = 800; OUT_H = 800; canvas.style.aspectRatio = '1/1'; }
+    else { OUT_W = 1280; OUT_H = 720; canvas.style.aspectRatio = '16/9'; }
+    canvas.width = OUT_W;
+    canvas.height = OUT_H;
+    if (img){
+      baseScale = Math.min(OUT_W / img.width, OUT_H / img.height);
+      scale = baseScale;
+      offsetX = 0;
+      offsetY = 0;
+      zoomSlider.value = 100;
+      zoomOut.textContent = '100%';
+    }
+    render();
+  }
+  shapeSelect.addEventListener('change', applyShape);
 
   function loadFile(file){
     if (!file || !file.type.startsWith('image/')) return;
@@ -256,16 +307,23 @@
   });
 
   downloadBtn.addEventListener('click', () => {
-    canvas.toBlob(blob => {
+    const off = document.createElement('canvas');
+    off.width = OUT_W;
+    off.height = OUT_H;
+    drawBase(off.getContext('2d'), OUT_W, OUT_H);
+
+    off.toBlob(blob => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'project-cover.jpg';
+      a.download = shape === 'square' ? 'contact-photo.jpg' : 'project-cover.jpg';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      statusEl.textContent = 'Downloaded — upload this file via the Cover image button in /admin.';
+      statusEl.textContent = shape === 'square'
+        ? 'Downloaded — upload this via the Photo button under Contact info in /admin.'
+        : 'Downloaded — upload this via the Cover image button in /admin.';
     }, 'image/jpeg', 0.92);
   });
 
