@@ -45,6 +45,12 @@ collections:
             fields:
               - { label: "Title", name: "title", widget: "string" }
               - { label: "Description", name: "blurb", widget: "text" }
+              - label: "Categories"
+                name: "categories"
+                widget: "list"
+                required: false
+                field: { label: "Category", name: "category", widget: "string" }
+                hint: "Tags like Animatronics, Video, Audio, Interactive, AI, Writing. These build the jump-to index at the top of the site — type a new word here any time to create a new category automatically."
               - { label: "YouTube video URL", name: "videoUrl", widget: "string", required: false, hint: "Paste the full link, e.g. https://www.youtube.com/watch?v=CFMEgACaiTo. Leave blank if there's no video." }
               - { label: "Cover image", name: "imageUrl", widget: "image", required: false, hint: "Optional. Upload a photo to use as this project's thumbnail — overrides the YouTube thumbnail when set, and clicking still plays the video if a video URL is set above." }
               - label: "Cover image framing"

@@ -224,6 +224,55 @@
     color:var(--accent3);
     text-decoration:underline;
   }
+  .card-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:10px;
+  }
+  .card-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--muted);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:2px 7px;
+  }
+  .category-nav{
+    max-width:1100px;
+    margin:0 auto;
+    padding:0 8vw 10px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+  }
+  .category-nav-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-right:4px;
+  }
+  .category-pill{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    color:var(--text);
+    background:var(--panel);
+    border:2px solid var(--line);
+    border-radius:8px;
+    padding:7px 14px;
+    cursor:pointer;
+  }
+  .category-pill:hover{border-color:var(--accent);color:var(--accent);}
+  @keyframes card-pulse{
+    0%, 100%{ box-shadow:7px 7px 0 var(--line); border-color:var(--line); }
+    50%{ box-shadow:7px 7px 0 var(--accent); border-color:var(--accent); }
+  }
+  .card.jump-highlight{ animation:card-pulse 0.6s ease-in-out 2; }
   .empty{
     color:var(--muted);
     font-family:'JetBrains Mono',monospace;
@@ -295,6 +344,7 @@
   <h1>I build things that <span>shouldn't work</span>.<br>They work anyway.</h1>
   <p class="sub">Animatronics, AI props, and Halloween machines built in retirement — one bad idea at a time.</p>
 </header>
+<nav class="category-nav" id="category-nav"></nav>
 <main>
   <div class="grid" id="project-grid">
     <p class="empty">Loading projects…</p>
@@ -403,11 +453,17 @@
         ? `<a class="extra-link" href="${p.linkUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation();">${p.linkLabel || 'Learn more'}</a>`
         : '';
 
+      const categories = Array.isArray(p.categories) ? p.categories.filter(Boolean) : [];
+      const tagsHtml = categories.length
+        ? `<div class="card-tags">${categories.map(c => `<span class="card-tag">${c}</span>`).join('')}</div>`
+        : '';
+
       const card = document.createElement('a');
       card.className = 'card';
       card.href = href;
       card.target = '_blank';
       card.rel = 'noopener';
+      card.dataset.categories = categories.join('|');
       card.innerHTML = `
         <div class="thumb-wrap">
           ${thumbHtml}
@@ -418,6 +474,7 @@
           <div class="num">PROJECT ${num}</div>
           <h3>${p.title}</h3>
           <p>${p.blurb}</p>
+          ${tagsHtml}
           ${extraLinkHtml}
         </div>
       `;
@@ -431,6 +488,35 @@
 
       grid.appendChild(card);
     });
+
+    renderCategoryNav(projects);
+  }
+
+  function renderCategoryNav(projects){
+    const nav = document.getElementById('category-nav');
+    const seen = new Set();
+    projects.forEach(p => (p.categories || []).forEach(c => c && seen.add(c)));
+    const categories = Array.from(seen).sort((a, b) => a.localeCompare(b));
+
+    if (!categories.length) { nav.innerHTML = ''; return; }
+
+    nav.innerHTML = `<span class="category-nav-label">Jump to:</span>` +
+      categories.map(c => `<button type="button" class="category-pill" data-jump="${c}">${c}</button>`).join('');
+
+    nav.querySelectorAll('.category-pill').forEach(btn => {
+      btn.addEventListener('click', () => jumpToCategory(btn.dataset.jump));
+    });
+  }
+
+  function jumpToCategory(category){
+    const cards = document.querySelectorAll('#project-grid .card');
+    const target = Array.from(cards).find(card =>
+      card.dataset.categories.split('|').includes(category)
+    );
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.classList.add('jump-highlight');
+    setTimeout(() => target.classList.remove('jump-highlight'), 1300);
   }
 </script>
 </body>

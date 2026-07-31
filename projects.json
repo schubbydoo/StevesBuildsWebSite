@@ -7,7 +7,10 @@
       "imageUrl": "/admin/uploads/ScaryGoRoundWebsite.jpg",
       "imagePosition": "top",
       "linkUrl": "https://a.co/d/7hrRLil",
-      "linkLabel": "View the book"
+      "linkLabel": "View the book",
+      "categories": [
+        "Writing"
+      ]
     },
     {
       "title": "AI Zoltar Speaks Animatronic",
@@ -16,7 +19,11 @@
       "imageUrl": "/admin/uploads/ZoltarWebsiteSized.JPG",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Animatronics",
+        "AI"
+      ]
     },
     {
       "title": "The Poeteer, a poetry camera",
@@ -25,7 +32,11 @@
       "imageUrl": "/admin/uploads/WebsitePoetryCamera.jpg",
       "imagePosition": "center",
       "linkUrl": "https://poetry.camera/",
-      "linkLabel": "The original poetry camera"
+      "linkLabel": "The original poetry camera",
+      "categories": [
+        "AI",
+        "Interactive"
+      ]
     },
     {
       "title": "The Spectral Hotline",
@@ -34,7 +45,12 @@
       "imageUrl": "/admin/uploads/PhoneWebsiteSized.JPG",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Audio",
+        "AI",
+        "Interactive"
+      ]
     },
     {
       "title": "Memory Spark Station",
@@ -43,7 +59,11 @@
       "imageUrl": "/admin/uploads/MSSWebsiteSized.JPG",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Audio",
+        "Interactive"
+      ]
     },
     {
       "title": "Custom Animated Nosferatu Animatronic",
@@ -52,7 +72,10 @@
       "imageUrl": "/admin/uploads/NosferatuWebsiteSized.JPG",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Animatronics"
+      ]
     },
     {
       "title": "Haunted mirror",
@@ -61,7 +84,11 @@
       "imageUrl": "",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Video",
+        "Interactive"
+      ]
     },
     {
       "title": "Floor Projector for Motorcycle",
@@ -70,7 +97,11 @@
       "imageUrl": "/admin/uploads/FloorProjectionEnhanced.JPG",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Video",
+        "Interactive"
+      ]
     },
     {
       "title": "Pepper's Ghost lantern",
@@ -79,7 +110,10 @@
       "imageUrl": "",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Video"
+      ]
     },
     {
       "title": "Ghost Host doorbell",
@@ -88,7 +122,12 @@
       "imageUrl": "",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Video",
+        "AI",
+        "Interactive"
+      ]
     },
     {
       "title": "Eyes Behind the Mask",
@@ -97,7 +136,11 @@
       "imageUrl": "",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Animatronics",
+        "Interactive"
+      ]
     },
     {
       "title": "The Great and Powerful Oz Magic Fireplace",
@@ -106,7 +149,11 @@
       "imageUrl": "",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
+      "linkLabel": "",
+      "categories": [
+        "Video",
+        "AI"
+      ]
     }
   ]
 }
