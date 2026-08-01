@@ -1,8 +1,8 @@
 # Steve's Builds — site + admin
 
-Live site: **https://stevesbuilds.shschubert.workers.dev**
-Admin (bookmark this): **https://stevesbuilds.shschubert.workers.dev/admin/**
-Image framing tool (bookmark this too): **https://stevesbuilds.shschubert.workers.dev/admin/image-tool.html**
+Live site: **https://stevesbuildswebsite.shschubert.workers.dev**
+Admin (bookmark this): **https://stevesbuildswebsite.shschubert.workers.dev/admin/**
+Image framing tool (bookmark this too): **https://stevesbuildswebsite.shschubert.workers.dev/admin/image-tool.html**
 GitHub repo: **https://github.com/schubbydoo/StevesBuildsWebSite**
 
 ## The two-minute version
@@ -72,7 +72,7 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 
 Clicking Publish in `/admin/` uses a GitHub token stored in your browser to commit directly to this repo (no server of mine involved). That push triggers Cloudflare's GitHub integration, which rebuilds and redeploys the site automatically, usually live within a minute or two.
 
-**If a change doesn't show up after a few minutes**: open the Cloudflare dashboard → Workers & Pages → `stevesbuilds` → **Deployments** tab, and check "Recent builds." If one shows an error or timeout, click its "···" menu → **Retry build**. This has happened once before (an infrastructure hiccup, not a real config problem) and a retry fixed it immediately.
+**If a change doesn't show up after a few minutes**: open the Cloudflare dashboard → Workers & Pages → `stevesbuildswebsite` → **Deployments** tab, and check "Recent builds." If one shows an error or timeout, click its "···" menu → **Retry build**. This has happened once before (an infrastructure hiccup, not a real config problem) and a retry fixed it immediately.
 
 ## Signing into /admin on a new device
 
