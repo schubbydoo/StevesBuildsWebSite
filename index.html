@@ -340,17 +340,13 @@
     background:var(--panel);
     flex-shrink:0;
   }
-  .profile-info{display:flex;flex-direction:column;gap:2px;}
+  .profile-info{display:flex;flex-direction:column;gap:8px;}
   .profile-name{font-size:15px;font-weight:500;}
   .profile-socials{
     display:flex;
     align-items:flex-start;
     gap:14px;
     flex-wrap:wrap;
-    margin-left:auto;
-  }
-  @media (min-width:700px){
-    .profile-socials{ margin-left:0; }
   }
   .contact-icon{
     display:flex;
@@ -490,8 +486,8 @@
       ${photo}
       <div class="profile-info">
         <div class="profile-name">${profile.name || ''}</div>
+        <div class="profile-socials">${contactHtml}</div>
       </div>
-      <div class="profile-socials">${contactHtml}</div>
     `;
   }
 
