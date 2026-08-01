@@ -105,6 +105,20 @@
       "linkLabel": ""
     },
     {
+      "title": "Haunted Portrait",
+      "blurb": "I always loved the Haunted Mansion's portraits that came to life. I created one with an old digital frame and a motion sensor to bring the portrait to life. This is a digital painting of me that my daughter had done some years ago. I thought it would be fun to bring me to life, delivering a warning and a clue to how to escape the haunted house they dared to enter.",
+      "categories": [
+        "Video",
+        "AI",
+        "Interactive"
+      ],
+      "videoUrl": "https://youtube.com/shorts/SDPwxjcqXag",
+      "imageUrl": "/admin/uploads/HauntedPortraitWebsite.jpg",
+      "imagePosition": "center",
+      "linkUrl": "",
+      "linkLabel": ""
+    },
+    {
       "title": "Gallery Wall Digital Frame",
       "blurb": "The Gallery Wall project was inspired by the macOS Sliding Tiles screensaver. I found that it is a great way to show several images in an interesting way. I have a big-screen TV in my studio that I wanted to contribute to the studio's artistic theme. I built a similar sliding tiles application that runs on the Raspberry Pi, can load images locally or from iCloud, and displays images in three different configurations. It can display in a sliding-tile-like collage, a 3-frame and full-screen image format. A WebUI allows the user to schedule when to turn on and off the image display, manage the Wifi network and image files, screen display format and synchronize with an iCloud album.",
       "categories": [],
