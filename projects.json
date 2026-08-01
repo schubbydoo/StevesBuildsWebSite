@@ -120,11 +120,11 @@
     },
     {
       "title": "Gallery Wall Digital Frame",
-      "blurb": "The Gallery Wall project was inspired by the macOS Sliding Tiles screensaver. I found that it is a great way to show several images in an interesting way. I have a big-screen TV in my studio that I wanted to contribute to the studio's artistic theme. I built a similar sliding tiles application that runs on the Raspberry Pi, can load images locally or from iCloud, and displays images in three different configurations. It can display in a sliding-tile-like collage, a 3-frame and full-screen image format. A WebUI allows the user to schedule when to turn on and off the image display, manage the Wifi network and image files, screen display format and synchronize with an iCloud album.",
+      "blurb": "The Gallery Wall project was inspired by the macOS Sliding Tiles screensaver. I found that it is a great way to show several images in an interesting way. I have a big-screen TV in my studio that I wanted to contribute to the studio's artistic theme. I built a similar sliding tiles application that runs on the Raspberry Pi, can load images locally or from iCloud, and displays images in three different configurations. It can display in a sliding-tile-like collage, a 3-frame, and a full-screen image format. A WebUI allows the user to schedule when to turn on and off the image display, manage the Wifi network and image files, screen display format and synchronize with an iCloud album.",
       "categories": [
         "Video"
       ],
-      "videoUrl": "",
+      "videoUrl": "https://youtube.com/shorts/Zpe923QbOFo?feature=share",
       "imageUrl": "/admin/uploads/GalleryWallWebsite.JPG",
       "imagePosition": "center",
       "linkUrl": "",
