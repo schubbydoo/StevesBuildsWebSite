@@ -12,7 +12,7 @@ The original `https://stevesbuildswebsite.shschubert.workers.dev` address still 
 Everything below is detail for reference. Day to day, this is the whole workflow:
 
 1. Open `/admin/`.
-2. Edit "Contact info" or "Homepage projects."
+2. Edit "Homepage header," "Contact info," or "Homepage projects."
 3. Click **Publish**.
 4. Wait about a minute — the site rebuilds and updates itself automatically.
 
@@ -20,7 +20,8 @@ No files to download, no git, no manual uploads.
 
 ## What's in this repo
 
-- `index.html` — the live site. Loads `profile.json` and `projects.json` at page load and renders everything from them.
+- `index.html` — the live site. Loads `hero.json`, `profile.json`, and `projects.json` at page load and renders everything from them.
+- `hero.json` — the pill tag, headline, and subtitle at the very top of the site.
 - `profile.json` — your name, photo, email, and social links (shown in the bar at the top of the site).
 - `projects.json` — the list of projects (title, description, categories, video, cover image, links). This is the bulk of the site's content.
 - `admin/index.html` + `admin/config.yml` — Sveltia CMS, a real content-management tool pointed at this GitHub repo. This is what renders the `/admin/` page.
@@ -31,6 +32,14 @@ No files to download, no git, no manual uploads.
 - `.assetsignore` — keeps `.git` and build artifacts out of the publicly deployed files.
 
 ## Editing content
+
+### Homepage header
+
+In `/admin/`, under **Homepage header**: the small pill tag, the big headline, and the subtitle line right under it — this is the very top of the site (currently "Strange Machine Labs").
+
+- **Small label** — the small pill above the headline (currently "retired, wired, and inspired").
+- **Headline** — the big bold text. You can wrap a word in `<span>...</span>` to highlight it in green, and use `<br>` for a line break — e.g. `Strange <span>Machine</span> Labs`.
+- **Subtitle** — the muted line underneath. Plain text, no HTML needed.
 
 ### Contact info
 
@@ -47,7 +56,7 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 - **Title / Description** — the basics.
 - **Categories** — free-typed tags (Animatronics, Video, Audio, Interactive, AI, Writing, or anything new you type). These automatically build the "Highlight" pill row at the top of the site — no config changes needed to add a new category, just type it on any project.
 - **YouTube video URL** — paste the full link. Leave blank if there's no video.
-- **Cover image** — optional. If set, this photo becomes the tile's thumbnail instead of the YouTube auto-thumbnail. If the project also has a video, the tile still plays the video when clicked (a small play icon overlays the photo as a hint).
+- **Cover image** — optional. If set, this photo becomes the tile's thumbnail instead of the YouTube auto-thumbnail. If the project also has a video, the tile still plays the video when clicked.
 - **Cover image framing** — top/center/bottom, for nudging which part of a photo stays visible when it's cropped to the tile's wide shape. If you use the image framing tool to pre-compose the photo, you can usually just leave this on "center."
 - **External link URL / label** — for anything that isn't a video (the book's Amazon link, a link to the original project you built on, etc.).
 
@@ -69,6 +78,7 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 - **Video playback**: clicking any tile with a video opens it in an on-page overlay (no new tab). Esc, the × button, or clicking outside closes it.
 - **Category highlighting**: clicking a pill in the "Highlight" row scrolls to the first matching project, gives every matching tile a green glow, and dims everything else — nothing is hidden, just visually called out. Click the same pill again, or the "✕ clear" pill, to reset.
 - **External links** (no video): shown with a small external-link icon instead of a broken-looking blank thumbnail.
+- **Coming Soon**: a project with neither a video nor a link opens a "Coming Soon" overlay when clicked, instead of doing nothing or jumping the page around.
 - **QR code**: a scannable QR code sits next to your contact info at the top of the site, encoding `https://strangemachinelabs.com`, so visitors can share the site with a friend on the spot. It's hardcoded into `index.html` (not CMS-managed) since it never needs to change — ask me if you ever want it pointed at a different URL.
 
 ## How publishing actually works
