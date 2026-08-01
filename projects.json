@@ -40,6 +40,18 @@
       "linkLabel": "The original poetry camera"
     },
     {
+      "title": "ELOS Aliens Beyond, Sci-Fi Book Self-Published",
+      "blurb": "This is a book that my father-in-law, Ed, wrote back in the early 80s. The manuscript has been stored away until 2023. His daughters, Teena and Tierra, along with me, did the editing. My daughter, Sara, did the illustrations and formatting in preparation to publish. After nearly 40 years, It's now available as a paperback or ebook.",
+      "categories": [
+        "Writing"
+      ],
+      "videoUrl": "",
+      "imageUrl": "/admin/uploads/ELOS_FullCoverWebsiteSized.jpg",
+      "imagePosition": "center",
+      "linkUrl": "https://a.co/d/098lj1LA",
+      "linkLabel": ""
+    },
+    {
       "title": "The Spectral Hotline",
       "blurb": "Bridging the gap between reality and imagination, the Spectral Hotline allows the caller to dial characters of my imagination, including those who have anxiously awaited someone to answer their call from beyond. [Queue an evil laugh].",
       "categories": [
@@ -64,18 +76,6 @@
       "imageUrl": "/admin/uploads/MSSWebsiteSized.JPG",
       "imagePosition": "center",
       "linkUrl": "",
-      "linkLabel": ""
-    },
-    {
-      "title": "ELOS Aliens Beyond, Sci-Fi Book Self-Published",
-      "blurb": "This is a book that my father-in-law, Ed, wrote back in the early 80s. The manuscript has been stored away until 2023. His daughters, Teena and Tierra, along with me, did the editing. My daughter, Sara, did the illustrations and formatting in preparation to publish. After nearly 40 years, It's now available as a paperback or ebook.",
-      "categories": [
-        "Writing"
-      ],
-      "videoUrl": "",
-      "imageUrl": "/admin/uploads/ELOS_FullCoverWebsiteSized.jpg",
-      "imagePosition": "center",
-      "linkUrl": "https://a.co/d/098lj1LA",
       "linkLabel": ""
     },
     {
@@ -109,8 +109,8 @@
       "blurb": "I always loved the Haunted Mansion's portraits that came to life. I created one with an old digital frame and a motion sensor to bring the portrait to life. This is a digital painting of me that my daughter had done some years ago. I thought it would be fun to bring me to life, delivering a warning and a clue to how to escape the haunted house they dared to enter.",
       "categories": [
         "Video",
-        "AI",
-        "Interactive"
+        "Interactive",
+        "AI"
       ],
       "videoUrl": "https://youtube.com/shorts/SDPwxjcqXag",
       "imageUrl": "/admin/uploads/HauntedPortraitWebsite.jpg",
@@ -121,7 +121,9 @@
     {
       "title": "Gallery Wall Digital Frame",
       "blurb": "The Gallery Wall project was inspired by the macOS Sliding Tiles screensaver. I found that it is a great way to show several images in an interesting way. I have a big-screen TV in my studio that I wanted to contribute to the studio's artistic theme. I built a similar sliding tiles application that runs on the Raspberry Pi, can load images locally or from iCloud, and displays images in three different configurations. It can display in a sliding-tile-like collage, a 3-frame and full-screen image format. A WebUI allows the user to schedule when to turn on and off the image display, manage the Wifi network and image files, screen display format and synchronize with an iCloud album.",
-      "categories": [],
+      "categories": [
+        "Video"
+      ],
       "videoUrl": "",
       "imageUrl": "/admin/uploads/GalleryWallWebsite.JPG",
       "imagePosition": "center",
@@ -158,8 +160,8 @@
       "blurb": "My first prop dabbling with AI video. An AI-animated image of Nosferatu paired with the voice of the Haunted Mansion's Ghost Host — pairing a face that was never heard (Nosferatu debuted in a 1929 silent film) with a voice of a character that was never seen. Triggered by a push button decorated to look and sound like a haunted doorbell.",
       "categories": [
         "Video",
-        "AI",
-        "Interactive"
+        "Interactive",
+        "AI"
       ],
       "videoUrl": "https://www.youtube.com/watch?v=VUCKlXbT8hA",
       "imageUrl": "",
