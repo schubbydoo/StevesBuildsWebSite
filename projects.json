@@ -59,7 +59,7 @@
         "AI",
         "Interactive"
       ],
-      "videoUrl": "https://youtu.be/AmgGZejrzss",
+      "videoUrl": "",
       "imageUrl": "/admin/uploads/PhoneWebsiteSized.JPG",
       "imagePosition": "center",
       "linkUrl": "",
@@ -150,7 +150,7 @@
         "Video"
       ],
       "videoUrl": "https://www.youtube.com/watch?v=ze-UO9cmed8",
-      "imageUrl": "",
+      "imageUrl": "/admin/uploads/HauntedLanternTitlePage.jpg",
       "imagePosition": "center",
       "linkUrl": "",
       "linkLabel": ""
@@ -177,7 +177,7 @@
         "Interactive"
       ],
       "videoUrl": "https://www.youtube.com/watch?v=s9rZtciYDH0",
-      "imageUrl": "",
+      "imageUrl": "/admin/uploads/EyesBehindMaskTitlePage.jpg",
       "imagePosition": "center",
       "linkUrl": "",
       "linkLabel": ""
