@@ -1,9 +1,11 @@
-# Steve's Builds — site + admin
+# Strange Machine Labs — site + admin
 
-Live site: **https://stevesbuildswebsite.shschubert.workers.dev**
-Admin (bookmark this): **https://stevesbuildswebsite.shschubert.workers.dev/admin/**
-Image framing tool (bookmark this too): **https://stevesbuildswebsite.shschubert.workers.dev/admin/image-tool.html**
+Live site: **https://strangemachinelabs.com**
+Admin (bookmark this): **https://strangemachinelabs.com/admin/**
+Image framing tool (bookmark this too): **https://strangemachinelabs.com/admin/image-tool.html**
 GitHub repo: **https://github.com/schubbydoo/StevesBuildsWebSite**
+
+The original `https://stevesbuildswebsite.shschubert.workers.dev` address still works too — `strangemachinelabs.com` is just a friendlier custom domain pointed at the same site.
 
 ## The two-minute version
 
@@ -67,6 +69,7 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 - **Video playback**: clicking any tile with a video opens it in an on-page overlay (no new tab). Esc, the × button, or clicking outside closes it.
 - **Category highlighting**: clicking a pill in the "Highlight" row scrolls to the first matching project, gives every matching tile a green glow, and dims everything else — nothing is hidden, just visually called out. Click the same pill again, or the "✕ clear" pill, to reset.
 - **External links** (no video): shown with a small external-link icon instead of a broken-looking blank thumbnail.
+- **QR code**: a scannable QR code sits next to your contact info at the top of the site, encoding `https://strangemachinelabs.com`, so visitors can share the site with a friend on the spot. It's hardcoded into `index.html` (not CMS-managed) since it never needs to change — ask me if you ever want it pointed at a different URL.
 
 ## How publishing actually works
 
@@ -84,4 +87,4 @@ Just copy the full address bar URL from YouTube, e.g. `https://www.youtube.com/w
 
 ## Custom domain
 
-Not set up yet. Whenever you want something other than the `.workers.dev` address, it's a one-time addition in the Cloudflare project's domain settings — ask me and I'll walk through it.
+Set up: `strangemachinelabs.com` is registered through Cloudflare Registrar and added as a Custom Domain on the `stevesbuildswebsite` Worker (Workers & Pages → stevesbuildswebsite → Domains). SSL is handled automatically by Cloudflare. The underlying Worker project name (`stevesbuildswebsite`) didn't change — only the domain pointing at it did.
