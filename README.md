@@ -25,9 +25,10 @@ No files to download, no git, no manual uploads.
 - `hero.json` — the pill tag, headline, and subtitle at the very top of the site.
 - `profile.json` — your name, photo, email, and social links (shown in the bar at the top of the site).
 - `projects.json` — the list of projects (title, description, categories, video, cover image, links). This is the bulk of the site's content.
-- `admin/index.html` + `admin/config.yml` — Sveltia CMS, a real content-management tool pointed at this GitHub repo. This is what renders the `/admin/` page.
+- `admin/index.html` + `admin/config.yml` — Sveltia CMS, a real content-management tool pointed at this GitHub repo. This is what renders the `/admin/` page. `admin/index.html` also registers the live business-card preview (with Print/Download buttons) that shows up in the Contact info editor.
+- `admin/business-card.css` — the shared business-card design (fonts, colors, sizing, Walgreens bleed spec). Used by both `admin/business-card.html` and the live preview in `admin/index.html`, so there's one source of truth for how the card looks.
 - `admin/image-tool.html` — a standalone helper for framing photos (project covers or your contact photo) before uploading them. Not part of the CMS itself, just a prep tool.
-- `admin/business-card.html` — a standalone page that renders your business card (pulled live from `profile.json`) and prints it at exact business-card size. Not part of the CMS itself, just a tool.
+- `admin/business-card.html` — a standalone page that renders your business card (pulled live from `profile.json`) with Print/Save-as-PDF and PNG/JPG download buttons. A backup to the live preview in `/admin/` — not part of the CMS itself, just a tool.
 - `admin/uploads/` — where photos you upload through the CMS actually live.
 - `images/` — static site assets not managed through the CMS: the homepage/business-card logo and a couple of unused legacy files.
 - `wrangler.jsonc` — tells Cloudflare this is a plain static site (no build step).
@@ -51,8 +52,9 @@ In `/admin/`, under **Contact info**: your name, photo, email, phone, and social
 - **Email**: not shown directly on the site anymore — it only appears inside the business card popup.
 - **Phone**: optional. Also only shows up on the business card.
 - **Social links**: six fixed platforms (Instagram, Facebook, YouTube, TikTok, X/Twitter, LinkedIn), each with a "Show icon" checkbox and a URL box. Check the box and add a URL to make that platform's icon appear on the business card; unchecking hides it again without losing the saved URL. Adding a brand-new platform beyond these six means asking me to add a field for it — this list isn't open-ended the way project categories are.
+- **Website (strangemachinelabs.com)**: not an editable field — it's hardcoded into the site and business card, like the QR code, since it's never expected to change. Ask me if that ever needs to point somewhere else.
 
-This same info also feeds your **business card** (see below) — update it once here and both the site and the card stay in sync.
+This same info also feeds your **business card** (see below) — update it once here and both the site and the card stay in sync. You'll also see a live preview of the business card right on this page as you type — see below.
 
 ### Homepage projects
 
@@ -80,12 +82,15 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 
 ### Business card
 
-Two ways to see it:
+Three ways to see and use it — all pull live from **Contact info**, so update your info once and everywhere reflects it:
 
 - **On the live site**: click your photo at the top of the site — it pops up a business card in the same on-page overlay style as the video player.
-- **In `/admin/`**: open `/admin/business-card.html` (bookmark it) for a print-ready version with a **Print business card** button. It follows Walgreens Photo's business-card spec: the printed page is 3.625" × 2.125" (the card's background fills this full "bleed" area so trimming never leaves a white edge), which trims down to the standard 3.5" × 2" card, with all text/logo/QR kept inside a 3.375" × 1.875" safe area. In the print dialog, either print directly to a compatible printer/cardstock, or choose "Save as PDF" to get a file ready to upload to Walgreens or send to another print shop.
+- **Right inside `/admin/`**: open the **Contact info** editor and look at the preview pane on the right — it shows your business card updating live as you type, with **Print / Save as PDF**, **Download PNG**, and **Download JPG** buttons right underneath. This is the easiest way to check the card and get a file before you commit to anything — no extra page to open.
+- **Standalone page**: `/admin/business-card.html` (bookmark it) has the same preview and the same three buttons, as a backup in case you ever want it outside the editor.
 
-Both versions pull live from **Contact info** — name, photo, email, phone, website, and whichever social icons are enabled. Update your info once in `/admin/` and both the on-site card and the print page reflect it (reload the print page to see the update there). Email, phone, and the website line are all clickable/tappable on the card. The card uses the full homepage logo image — if you ever swap the logo in **Homepage header** to something new, ask me and I'll update the card to match (it's a separate hardcoded reference, not automatically linked).
+All three give you the same Walgreens Photo-compliant design: a 3.625" × 2.125" bleed canvas (background fills the full page so trimming never leaves a white edge) that trims to the standard 3.5" × 2" card, with all text/logo/QR kept inside a 3.375" × 1.875" safe area. **Print / Save as PDF** opens your browser's print dialog. **Download PNG/JPG** instead saves a 300 DPI image straight to your computer — handy since Walgreens' own upload flow asks for an image file rather than a PDF. PNG keeps text and the QR code sharpest; JPG is a smaller file if there's an upload size limit.
+
+Email, phone, and the website line are all clickable/tappable on the card. The card uses the full homepage logo image — if you ever swap the logo in **Homepage header** to something new, ask me and I'll update the card to match (it's a separate hardcoded reference, not automatically linked).
 
 ## Site features, briefly
 

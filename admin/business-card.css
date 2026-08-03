@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Shared business-card design — used by admin/business-card.html (the
+   standalone print/export page) AND injected into the Sveltia CMS preview
+   pane (via CMS.registerPreviewStyle) so the "Contact info" editor can show
+   a live card preview with matching styling. Keep this file as the single
+   source of truth for card sizing so both places stay in sync. */
+
+:root{
+  --bg:#0b0d0f;
+  --panel:#14171a;
+  --line:#2a3136;
+  --text:#e8ebed;
+  --muted:#8b969c;
+  --accent:#39ff88;
+  --accent2:#ff6a3d;
+}
+*{box-sizing:border-box;}
+body{
+  font-family:'Space Grotesk',sans-serif;
+  color:var(--text);
+}
+
+/* --- business card (mirrors index.html's .biz-card design) --- */
+.biz-card{
+  width:560px;
+  max-width:100%;
+  aspect-ratio:1.75/1;
+  background:var(--panel);
+  border:2px solid var(--line);
+  border-radius:14px;
+  box-shadow:7px 7px 0 var(--accent2);
+  padding:26px 28px;
+  box-sizing:border-box;
+  display:flex;
+  gap:22px;
+  color:var(--text);
+}
+.biz-card-left{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:center;
+  width:55%;
+  flex-shrink:0;
+}
+.biz-card-id{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+.biz-card-photo{
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid var(--line);
+  background:var(--bg);
+}
+.biz-card-name{
+  font-size:16px;
+  font-weight:700;
+  margin-top:10px;
+  text-align:center;
+}
+.biz-card-logo{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.biz-card-right{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+.biz-card-contact{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.biz-card-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:var(--muted);
+  overflow:hidden;
+  text-decoration:none;
+}
+.biz-card-row:hover{color:var(--accent);}
+.biz-card-row span{
+  overflow-wrap:anywhere;
+}
+.biz-card-row svg{
+  width:14px;
+  height:14px;
+  flex-shrink:0;
+  color:var(--accent);
+}
+.biz-card-qr{
+  width:72px;
+  height:72px;
+  background:#fff;
+  border-radius:6px;
+  padding:5px;
+  box-sizing:border-box;
+  flex-shrink:0;
+  margin-top:auto;
+  align-self:flex-end;
+}
+.biz-card-qr svg{width:100%;height:100%;display:block;}
+@media screen and (max-width:480px){
+  .biz-card{
+    padding:16px 16px;
+    gap:12px;
+  }
+  .biz-card-left{width:44%;}
+  .biz-card-photo{width:56px;height:56px;}
+  .biz-card-name{font-size:13px;margin-top:6px;}
+  .biz-card-row{font-size:9.5px;gap:6px;}
+  .biz-card-row svg{width:12px;height:12px;}
+  .biz-card-contact{gap:5px;}
+  .biz-card-qr{width:56px;height:56px;}
+}
+/* --- end business card --- */
+
+/* Same bleed-safe sizing as @media print below, but as a plain class so
+   it can be applied to a hidden clone for the PNG/JPG export (html2canvas
+   doesn't evaluate @media print rules). */
+.biz-card.card-bleed{
+  width:3.625in;
+  height:2.125in;
+  aspect-ratio:auto;
+  margin:0;
+  border-radius:0;
+  box-shadow:none;
+  border:none;
+  padding:0.125in;
+}
+.card-bleed .biz-card-left{width:48%;}
+.card-bleed .biz-card-photo{width:50px;height:50px;}
+.card-bleed .biz-card-name{font-size:12px;margin-top:5px;}
+.card-bleed .biz-card-contact{gap:4px;}
+.card-bleed .biz-card-row{font-size:8.5px;gap:5px;}
+.card-bleed .biz-card-row svg{width:10px;height:10px;}
+.card-bleed .biz-card-qr{width:48px;height:48px;}
+
+@media print{
+  /* Walgreens Photo business-card spec: 3.5x2 trim, 3.625x2.125 bleed,
+     3.375x1.875 safe area — a uniform 0.125in margin between the bleed
+     edge (this page) and the safe area on every side. The card's solid
+     background fills the full bleed size so trimming never reveals
+     white edges; all text/logo/QR stays inset within the safe area. */
+  @page{ size:3.625in 2.125in; margin:0; }
+  body *{ visibility:hidden; }
+  .biz-card, .biz-card *{ visibility:visible; }
+  .biz-card{
+    position:fixed;
+    inset:0;
+    width:3.625in;
+    height:2.125in;
+    aspect-ratio:auto;
+    margin:0;
+    border-radius:0;
+    box-shadow:none;
+    border:none;
+    padding:0.125in;
+  }
+  .biz-card-left{width:48%;}
+  .biz-card-photo{width:50px;height:50px;}
+  .biz-card-name{font-size:12px;margin-top:5px;}
+  .biz-card-contact{gap:4px;}
+  .biz-card-row{font-size:8.5px;gap:5px;}
+  .biz-card-row svg{width:10px;height:10px;}
+  .biz-card-qr{width:48px;height:48px;}
+  /* In the CMS preview pane there's a second, hidden bleed-sized clone used
+     only for the PNG/JPG export — make sure it never doubles up in print. */
+  #cms-card-export{ display:none !important; }
+}
