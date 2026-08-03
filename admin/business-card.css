@@ -73,7 +73,9 @@ body{
   flex:1;
   display:flex;
   flex-direction:column;
+  justify-content:center;
   min-width:0;
+  position:relative;
 }
 .biz-card-contact{
   display:flex;
@@ -108,8 +110,9 @@ body{
   padding:3px;
   box-sizing:border-box;
   flex-shrink:0;
-  margin-top:auto;
-  align-self:flex-end;
+  position:absolute;
+  right:0;
+  bottom:0;
 }
 .biz-card-qr svg{width:100%;height:100%;display:block;}
 @media screen and (max-width:480px){

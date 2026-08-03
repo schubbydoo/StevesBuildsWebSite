@@ -525,7 +525,9 @@
     flex:1;
     display:flex;
     flex-direction:column;
+    justify-content:center;
     min-width:0;
+    position:relative;
   }
   .biz-card-contact{
     display:flex;
@@ -553,15 +555,16 @@
     color:var(--accent);
   }
   .biz-card-qr{
-    width:72px;
-    height:72px;
+    width:78px;
+    height:78px;
     background:#fff;
     border-radius:6px;
-    padding:5px;
+    padding:3px;
     box-sizing:border-box;
     flex-shrink:0;
-    margin-top:auto;
-    align-self:flex-end;
+    position:absolute;
+    right:0;
+    bottom:0;
   }
   .biz-card-qr svg{width:100%;height:100%;display:block;}
   @media screen and (max-width:480px){
@@ -575,7 +578,7 @@
     .biz-card-row{font-size:9.5px;gap:6px;}
     .biz-card-row svg{width:12px;height:12px;}
     .biz-card-contact{gap:5px;}
-    .biz-card-qr{width:56px;height:56px;}
+    .biz-card-qr{width:60px;height:60px;}
   }
 </style>
 </head>
