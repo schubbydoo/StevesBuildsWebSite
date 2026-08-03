@@ -16,9 +16,7 @@ collections:
         label: "Homepage header"
         file: "hero.json"
         fields:
-          - { label: "Small label", name: "tag", widget: "string", hint: "The short line above the headline, e.g. 'retired, wired, and inspired'." }
-          - { label: "Headline", name: "headline", widget: "string", hint: "The big bold headline. You can wrap a word in <span>...</span> to highlight it in green, and use <br> for a line break — e.g. I build things that <span>shouldn't work</span>.<br>They work anyway." }
-          - { label: "Subtitle", name: "subtitle", widget: "text", hint: "The line of muted text under the headline." }
+          - { label: "Logo", name: "logoUrl", widget: "image", hint: "The big logo graphic at the top of the site. Upload a PNG with a transparent background — it should have no visible box or rectangle around it, just the artwork sitting directly on the page." }
 
   - name: "profile"
     label: "Contact info"

@@ -35,11 +35,11 @@ No files to download, no git, no manual uploads.
 
 ### Homepage header
 
-In `/admin/`, under **Homepage header**: the small pill tag, the big headline, and the subtitle line right under it — this is the very top of the site (currently "Strange Machine Labs").
+In `/admin/`, under **Homepage header**: a single **Logo** image field — this is the big logo graphic at the very top of the site.
 
-- **Small label** — the small pill above the headline (currently "retired, wired, and inspired").
-- **Headline** — the big bold text. You can wrap a word in `<span>...</span>` to highlight it in green, and use `<br>` for a line break — e.g. `Strange <span>Machine</span> Labs`.
-- **Subtitle** — the muted line underneath. Plain text, no HTML needed.
+- Upload a **PNG with a transparent background**. It should be just the artwork (no rectangle, card, or colored box behind it) so it sits directly on the site's dark background with no visible seam.
+- It's centered automatically, and sized responsively — full-width on mobile, about half the content width on desktop.
+- The old text-based header (pill tag + headline + subtitle) was replaced by this logo. The underlying fields changed to match — if you ever want to go back to a text headline instead of a logo, ask me and I'll swap the field type and the site code back.
 
 ### Contact info
 

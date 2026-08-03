@@ -440,7 +440,7 @@
   </div>
 </div>
 <header>
-  <img class="hero-logo-img" src="images/logo-strange-machine.png" alt="Strange Machine Labs — because ordinary is boring">
+  <img class="hero-logo-img" id="hero-logo-img" src="images/logo-strange-machine.png" alt="Strange Machine Labs — because ordinary is boring">
 </header>
 <nav class="category-nav" id="category-nav"></nav>
 <main>
@@ -465,8 +465,12 @@
 </div>
 
 <script>
-  // Hero header is now the logo image (images/logo-strange-machine.png) rather than
-  // CMS-driven text, so hero.json is no longer fetched/rendered here.
+  fetch('hero.json')
+    .then(res => res.json())
+    .then(hero => {
+      if (hero.logoUrl) document.getElementById('hero-logo-img').src = hero.logoUrl;
+    })
+    .catch(() => {});
 
   fetch('profile.json')
     .then(res => res.json())
