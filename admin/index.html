@@ -4,12 +4,94 @@
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
     <title>Steve's Builds — Admin</title>
+    <link rel="stylesheet" href="business-card.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   </head>
   <body>
+    <!-- Hidden, off-screen business-card element used ONLY for printing and
+         PNG/JPG export. It lives here in the top-level admin page (not
+         inside the CMS preview iframe below) because that iframe is
+         sandboxed by Sveltia CMS and blocks canvas image capture / print —
+         doing the actual work up here, in the real page origin, avoids that
+         entirely. The preview iframe just asks this page to do the work via
+         postMessage. See the next script block for the listener. -->
+    <div id="card-export" class="biz-card card-bleed" style="position:fixed;left:-99999px;top:0;" aria-hidden="true"></div>
+
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+
     <script>
-      // Live business-card preview + print/download, right inside the
-      // 'Contact info' editor. Shares admin/business-card.css with the
+      // --- Top-level page: handles postMessage requests from the preview
+      // iframe's business-card component (print / download PNG / download
+      // JPG). Runs here, not inside the sandboxed iframe, so html2canvas,
+      // window.print(), and file downloads all work normally.
+      (function () {
+        var exportEl = document.getElementById('card-export');
+
+        function respond(source, type, extra) {
+          if (!source) return;
+          var msg = Object.assign({ type: type }, extra || {});
+          try { source.postMessage(msg, '*'); } catch (err) { console.error('[business-card] failed to postMessage response', err); }
+        }
+
+        window.addEventListener('message', function (event) {
+          var data = event.data;
+          if (!data || typeof data !== 'object' || typeof data.type !== 'string' || data.type.indexOf('sml-card-') !== 0) return;
+
+          exportEl.innerHTML = data.html || '';
+
+          if (data.type === 'sml-card-print') {
+            try {
+              window.print();
+              respond(event.source, 'sml-card-print-done');
+            } catch (err) {
+              console.error('[business-card] print failed', err);
+              respond(event.source, 'sml-card-print-error', { message: String(err && err.message ? err.message : err) });
+            }
+            return;
+          }
+
+          if (data.type === 'sml-card-download') {
+            var format = data.format === 'jpg' ? 'jpg' : 'png';
+            if (typeof html2canvas !== 'function') {
+              console.error('[business-card] html2canvas is not loaded');
+              respond(event.source, 'sml-card-download-error', { message: 'html2canvas failed to load — check your internet connection and try again.' });
+              return;
+            }
+            html2canvas(exportEl, { scale: 3.125, backgroundColor: '#14171a', useCORS: true }).then(function (canvas) {
+              var mime = format === 'png' ? 'image/png' : 'image/jpeg';
+              var quality = format === 'png' ? undefined : 0.95;
+              canvas.toBlob(function (blob) {
+                if (!blob) {
+                  console.error('[business-card] canvas.toBlob returned no blob');
+                  respond(event.source, 'sml-card-download-error', { message: 'Could not generate the image file.' });
+                  return;
+                }
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'strange-machine-labs-business-card.' + format;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                respond(event.source, 'sml-card-download-done', { format: format });
+              }, mime, quality);
+            }).catch(function (err) {
+              console.error('[business-card] html2canvas failed', err);
+              respond(event.source, 'sml-card-download-error', { message: String(err && err.message ? err.message : err) });
+            });
+          }
+        });
+      })();
+    </script>
+
+    <script>
+      // --- CMS preview pane: live business-card preview inside the
+      // 'Contact info' editor, with Print/Download buttons that hand off
+      // the actual work to the top-level page above via postMessage (see
+      // the previous <script> block) since this preview renders inside a
+      // sandboxed iframe that can't reliably do canvas capture or print
+      // itself. Shares admin/business-card.css (registered below) with the
       // standalone admin/business-card.html print page so both stay in sync.
       CMS.registerPreviewStyle('/admin/business-card.css');
 
@@ -57,7 +139,7 @@
         );
       }
 
-      function cardBtnStyle(primary){
+      function cardBtnStyle(primary, disabled){
         return {
           fontFamily: "'Space Grotesk',sans-serif",
           fontSize: '13px',
@@ -67,52 +149,50 @@
           background: '#14171a',
           color: primary ? '#39ff88' : '#e8ebed',
           padding: '9px 14px',
-          cursor: 'pointer'
+          cursor: disabled ? 'default' : 'pointer',
+          opacity: disabled ? 0.5 : 1
         };
       }
 
       var CardPreview = createClass({
+        getInitialState: function () {
+          return { busy: false, status: '' };
+        },
         componentDidMount: function () {
-          var doc = this.props.document;
-          if (doc && !doc.getElementById('h2c-script')) {
-            var s = doc.createElement('script');
-            s.id = 'h2c-script';
-            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-            (doc.head || doc.body).appendChild(s);
+          var self = this;
+          this._onMessage = function (event) {
+            var data = event.data;
+            if (!data || typeof data !== 'object' || typeof data.type !== 'string' || data.type.indexOf('sml-card-') !== 0) return;
+            if (data.type === 'sml-card-print-done') {
+              self.setState({ busy: false, status: '' });
+            } else if (data.type === 'sml-card-print-error') {
+              self.setState({ busy: false, status: 'Print failed: ' + (data.message || 'unknown error') });
+            } else if (data.type === 'sml-card-download-done') {
+              self.setState({ busy: false, status: (data.format || '').toUpperCase() + ' downloaded — check your downloads folder.' });
+            } else if (data.type === 'sml-card-download-error') {
+              self.setState({ busy: false, status: 'Could not generate the image: ' + (data.message || 'unknown error') });
+            }
+          };
+          this.props.window.addEventListener('message', this._onMessage);
+        },
+        componentWillUnmount: function () {
+          if (this._onMessage) this.props.window.removeEventListener('message', this._onMessage);
+        },
+        sendToParent: function (type, extra) {
+          if (this.state.busy) return;
+          this.setState({ busy: true, status: type === 'sml-card-print' ? 'Opening print dialog…' : 'Rendering…' });
+          var msg = Object.assign({ type: type, html: this._innerHtml }, extra || {});
+          try {
+            this.props.window.parent.postMessage(msg, '*');
+          } catch (err) {
+            this.setState({ busy: false, status: 'Could not reach the admin page: ' + (err && err.message ? err.message : err) });
           }
         },
         handlePrint: function () {
-          this.props.window.print();
+          this.sendToParent('sml-card-print');
         },
         handleDownload: function (format) {
-          var win = this.props.window;
-          var doc = this.props.document;
-          var el = doc.getElementById('cms-card-export');
-          var btn = doc.getElementById('cms-' + format + '-btn');
-          if (!win.html2canvas || !el) {
-            win.alert('Still loading — give it a second and try again.');
-            return;
-          }
-          var original = btn ? btn.textContent : '';
-          if (btn) { btn.disabled = true; btn.textContent = 'Rendering…'; }
-          win.html2canvas(el, { scale: 3.125, backgroundColor: '#14171a', useCORS: true }).then(function (canvas) {
-            var mime = format === 'png' ? 'image/png' : 'image/jpeg';
-            var quality = format === 'png' ? undefined : 0.95;
-            canvas.toBlob(function (blob) {
-              var url = win.URL.createObjectURL(blob);
-              var a = doc.createElement('a');
-              a.href = url;
-              a.download = 'strange-machine-labs-business-card.' + format;
-              doc.body.appendChild(a);
-              a.click();
-              doc.body.removeChild(a);
-              win.URL.revokeObjectURL(url);
-              if (btn) { btn.disabled = false; btn.textContent = original; }
-            }, mime, quality);
-          }).catch(function (err) {
-            win.alert('Could not generate the image: ' + (err && err.message ? err.message : err));
-            if (btn) { btn.disabled = false; btn.textContent = original; }
-          });
+          this.sendToParent('sml-card-download', { format: format });
         },
         render: function () {
           var entry = this.props.entry;
@@ -127,6 +207,7 @@
           var photoUrl = photoAsset ? photoAsset.url : '';
 
           var innerHtml = buildCardInnerHtml(name, photoUrl, email, phone, socials);
+          this._innerHtml = innerHtml;
 
           return h(
             'div',
@@ -135,21 +216,15 @@
             h(
               'div',
               { style: { display: 'flex', gap: '10px', marginTop: '18px', flexWrap: 'wrap' } },
-              h('button', { id: 'cms-print-btn', onClick: this.handlePrint.bind(this), style: cardBtnStyle(true) }, 'Print / Save as PDF'),
-              h('button', { id: 'cms-png-btn', onClick: this.handleDownload.bind(this, 'png'), style: cardBtnStyle(false) }, 'Download PNG'),
-              h('button', { id: 'cms-jpg-btn', onClick: this.handleDownload.bind(this, 'jpg'), style: cardBtnStyle(false) }, 'Download JPG')
+              h('button', { disabled: this.state.busy, onClick: this.handlePrint, style: cardBtnStyle(true, this.state.busy) }, 'Print / Save as PDF'),
+              h('button', { disabled: this.state.busy, onClick: this.handleDownload.bind(this, 'png'), style: cardBtnStyle(false, this.state.busy) }, 'Download PNG'),
+              h('button', { disabled: this.state.busy, onClick: this.handleDownload.bind(this, 'jpg'), style: cardBtnStyle(false, this.state.busy) }, 'Download JPG')
             ),
             h(
               'p',
-              { style: { fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', color: '#8b969c', lineHeight: '1.6', maxWidth: '560px', marginTop: '12px' } },
-              'Walgreens-ready 3.625" × 2.125" bleed design (trims to 3.5" × 2"). Print/Save as PDF, or download a 300 DPI PNG/JPG to upload directly — no need to leave this page.'
-            ),
-            h('div', {
-              id: 'cms-card-export',
-              className: 'biz-card card-bleed',
-              style: { position: 'absolute', left: '-99999px', top: '0px' },
-              dangerouslySetInnerHTML: { __html: innerHtml }
-            })
+              { style: { fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', color: this.state.status.indexOf('failed') > -1 || this.state.status.indexOf('Could not') > -1 ? '#ff6a3d' : '#8b969c', lineHeight: '1.6', maxWidth: '560px', marginTop: '12px' } },
+              this.state.status || 'Walgreens-ready 3.625" × 2.125" bleed design (trims to 3.5" × 2"). Print/Save as PDF, or download a 300 DPI PNG/JPG to upload directly — no need to leave this page.'
+            )
           );
         }
       });
