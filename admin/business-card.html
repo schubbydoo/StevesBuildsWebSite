@@ -109,7 +109,9 @@
     font-size:11px;
     color:var(--muted);
     overflow:hidden;
+    text-decoration:none;
   }
+  .biz-card-row:hover{color:var(--accent);}
   .biz-card-row span{
     overflow:hidden;
     text-overflow:ellipsis;
@@ -202,7 +204,7 @@
           <img class="biz-card-photo" id="card-photo" src="" alt="">
           <div class="biz-card-name" id="card-name"></div>
         </div>
-        <img class="biz-card-logo" src="../images/logo-wordmark.png" alt="Strange Machine Labs">
+        <img class="biz-card-logo" src="../images/logo-strange-machine.png" alt="Strange Machine Labs">
       </div>
       <div class="biz-card-right">
         <div class="biz-card-contact" id="card-contact"></div>
@@ -242,9 +244,9 @@
       document.getElementById('card-name').textContent = profile.name || '';
 
       const rows = [];
-      if (profile.email) rows.push(`<div class="biz-card-row">${mailIcon}<span>${profile.email}</span></div>`);
-      if (profile.phone) rows.push(`<div class="biz-card-row">${phoneIcon}<span>${profile.phone}</span></div>`);
-      rows.push(`<div class="biz-card-row">${globeIcon}<span>strangemachinelabs.com</span></div>`);
+      if (profile.email) rows.push(`<a class="biz-card-row" href="mailto:${profile.email}">${mailIcon}<span>${profile.email}</span></a>`);
+      if (profile.phone) rows.push(`<a class="biz-card-row" href="tel:${profile.phone.replace(/[^+\d]/g, '')}">${phoneIcon}<span>${profile.phone}</span></a>`);
+      rows.push(`<a class="biz-card-row" href="https://strangemachinelabs.com" target="_blank" rel="noopener">${globeIcon}<span>strangemachinelabs.com</span></a>`);
       document.getElementById('card-contact').innerHTML = rows.join('');
 
       const socials = profile.socials || {};
