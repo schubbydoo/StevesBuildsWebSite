@@ -2,6 +2,7 @@
   "name": "Steve Schubert",
   "photoUrl": "/admin/uploads/ContactWebsiteImage.jpg",
   "email": "shschubert@gmail.com",
+  "phone": "",
   "socials": {
     "instagram": {
       "enabled": false,

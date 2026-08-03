@@ -358,7 +358,10 @@
     border:2px solid var(--line);
     background:var(--panel);
     flex-shrink:0;
+    cursor:pointer;
+    transition:border-color .18s ease;
   }
+  .profile-photo:hover{border-color:var(--accent);}
   .profile-info{display:flex;flex-direction:column;gap:8px;}
   .profile-name{font-size:15px;font-weight:500;}
   .profile-socials{
@@ -429,6 +432,107 @@
     max-width:90px;
   }
   .qr-share:hover .qr-label{color:var(--accent);}
+  .card-modal-box{
+    max-width:600px;
+  }
+  .biz-card{
+    width:100%;
+    aspect-ratio:1.75/1;
+    background:var(--panel);
+    border:2px solid var(--line);
+    border-radius:14px;
+    box-shadow:7px 7px 0 var(--accent2);
+    padding:26px 28px;
+    box-sizing:border-box;
+    display:flex;
+    gap:22px;
+    color:var(--text);
+  }
+  .biz-card-left{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    width:38%;
+    flex-shrink:0;
+  }
+  .biz-card-photo{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--line);
+    background:var(--bg);
+  }
+  .biz-card-name{
+    font-size:16px;
+    font-weight:700;
+    margin-top:10px;
+  }
+  .biz-card-logo{
+    width:100%;
+    max-width:190px;
+    height:auto;
+    display:block;
+  }
+  .biz-card-right{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-width:0;
+  }
+  .biz-card-contact{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .biz-card-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--muted);
+    overflow:hidden;
+  }
+  .biz-card-row span{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .biz-card-row svg{
+    width:14px;
+    height:14px;
+    flex-shrink:0;
+    color:var(--accent);
+  }
+  .biz-card-bottom-row{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .biz-card-socials{
+    display:flex;
+    gap:9px;
+    align-items:center;
+  }
+  .biz-card-socials a{
+    color:var(--muted);
+    display:flex;
+  }
+  .biz-card-socials a:hover{color:var(--accent);}
+  .biz-card-socials svg{width:15px;height:15px;}
+  .biz-card-qr{
+    width:72px;
+    height:72px;
+    background:#fff;
+    border-radius:6px;
+    padding:5px;
+    box-sizing:border-box;
+    flex-shrink:0;
+  }
+  .biz-card-qr svg{width:100%;height:100%;display:block;}
 </style>
 </head>
 <body>
@@ -464,6 +568,28 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="card-modal-backdrop">
+  <div class="modal-box card-modal-box">
+    <button class="modal-close" id="card-modal-close" aria-label="Close">&times;</button>
+    <div class="biz-card">
+      <div class="biz-card-left">
+        <div>
+          <img class="biz-card-photo" id="card-photo" src="" alt="">
+          <div class="biz-card-name" id="card-name"></div>
+        </div>
+        <img class="biz-card-logo" src="images/logo-wordmark.png" alt="Strange Machine Labs">
+      </div>
+      <div class="biz-card-right">
+        <div class="biz-card-contact" id="card-contact"></div>
+        <div class="biz-card-bottom-row">
+          <div class="biz-card-socials" id="card-socials"></div>
+          <div class="biz-card-qr" id="card-qr"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   fetch('hero.json')
     .then(res => res.json())
@@ -478,6 +604,8 @@
     .catch(() => {});
 
   const mailIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>`;
+  const phoneIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
+  const globeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg>`;
 
   const SOCIAL_META = {
     instagram: {
@@ -538,6 +666,35 @@
         <div class="profile-socials">${contactHtml}</div>
       </div>
     `;
+
+    const photoEl = bar.querySelector('.profile-photo');
+    if (photoEl) photoEl.addEventListener('click', openCardModal);
+
+    renderCard(profile);
+  }
+
+  function renderCard(profile){
+    const cardPhoto = document.getElementById('card-photo');
+    cardPhoto.src = profile.photoUrl || '';
+    cardPhoto.alt = profile.name || '';
+    document.getElementById('card-name').textContent = profile.name || '';
+
+    const rows = [];
+    if (profile.email) rows.push(`<div class="biz-card-row">${mailIcon}<span>${profile.email}</span></div>`);
+    if (profile.phone) rows.push(`<div class="biz-card-row">${phoneIcon}<span>${profile.phone}</span></div>`);
+    rows.push(`<div class="biz-card-row">${globeIcon}<span>strangemachinelabs.com</span></div>`);
+    document.getElementById('card-contact').innerHTML = rows.join('');
+
+    const socials = profile.socials || {};
+    const socialLinks = Object.keys(SOCIAL_META)
+      .filter(key => socials[key] && socials[key].enabled && socials[key].url)
+      .map(key => `<a href="${socials[key].url}" target="_blank" rel="noopener" title="${SOCIAL_META[key].label}">${SOCIAL_META[key].icon}</a>`)
+      .join('');
+    document.getElementById('card-socials').innerHTML = socialLinks;
+
+    const topQr = document.querySelector('.qr-code svg');
+    const cardQr = document.getElementById('card-qr');
+    if (topQr && cardQr && !cardQr.innerHTML) cardQr.innerHTML = topQr.outerHTML;
   }
 
   fetch('projects.json')
@@ -579,6 +736,22 @@
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeVideoModal();
+  });
+
+  const cardModalBackdrop = document.getElementById('card-modal-backdrop');
+  const cardModalClose = document.getElementById('card-modal-close');
+  function openCardModal(){
+    cardModalBackdrop.classList.add('open');
+  }
+  function closeCardModal(){
+    cardModalBackdrop.classList.remove('open');
+  }
+  cardModalClose.addEventListener('click', closeCardModal);
+  cardModalBackdrop.addEventListener('click', e => {
+    if (e.target === cardModalBackdrop) closeCardModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeCardModal();
   });
 
   const linkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4L10 14"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg>`;

@@ -3,6 +3,7 @@
 Live site: **https://strangemachinelabs.com**
 Admin (bookmark this): **https://strangemachinelabs.com/admin/**
 Image framing tool (bookmark this too): **https://strangemachinelabs.com/admin/image-tool.html**
+Business card / print (bookmark this too): **https://strangemachinelabs.com/admin/business-card.html**
 GitHub repo: **https://github.com/schubbydoo/StevesBuildsWebSite**
 
 The original `https://stevesbuildswebsite.shschubert.workers.dev` address still works too — `strangemachinelabs.com` is just a friendlier custom domain pointed at the same site.
@@ -26,8 +27,9 @@ No files to download, no git, no manual uploads.
 - `projects.json` — the list of projects (title, description, categories, video, cover image, links). This is the bulk of the site's content.
 - `admin/index.html` + `admin/config.yml` — Sveltia CMS, a real content-management tool pointed at this GitHub repo. This is what renders the `/admin/` page.
 - `admin/image-tool.html` — a standalone helper for framing photos (project covers or your contact photo) before uploading them. Not part of the CMS itself, just a prep tool.
+- `admin/business-card.html` — a standalone page that renders your business card (pulled live from `profile.json`) and prints it at exact business-card size. Not part of the CMS itself, just a tool.
 - `admin/uploads/` — where photos you upload through the CMS actually live.
-- `images/` — a couple of static site assets that aren't managed through the CMS.
+- `images/` — static site assets not managed through the CMS: the homepage logo, a compact wordmark version used on the business card, and your contact photo.
 - `wrangler.jsonc` — tells Cloudflare this is a plain static site (no build step).
 - `.assetsignore` — keeps `.git` and build artifacts out of the publicly deployed files.
 
@@ -47,7 +49,10 @@ In `/admin/`, under **Contact info**: your name, photo, email, and social links.
 
 - **Photo**: upload directly, or use the image framing tool first (see below) to size and position it exactly how you want before uploading.
 - **Email**: shown as a mail icon with the address written underneath it, right next to your name.
+- **Phone**: optional. Only shows up on the business card (see below) — nowhere else on the site.
 - **Social links**: six fixed platforms (Instagram, Facebook, YouTube, TikTok, X/Twitter, LinkedIn), each with a "Show icon" checkbox and a URL box. Check the box and add a URL to make that platform's icon appear; unchecking hides it again without losing the saved URL. If nothing is checked, the site shows three faint dashed placeholder circles reserving the space instead. Adding a brand-new platform beyond these six means asking me to add a field for it — this list isn't open-ended the way project categories are.
+
+This same info also feeds your **business card** (see below) — update it once here and both the site and the card stay in sync.
 
 ### Homepage projects
 
@@ -73,6 +78,15 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 5. Click **Download finished image** — it's already composed pixel-for-pixel.
 6. Upload that downloaded file through the matching Cover image / Photo button in `/admin/`.
 
+### Business card
+
+Two ways to see it:
+
+- **On the live site**: click your photo at the top of the site — it pops up a business card in the same on-page overlay style as the video player.
+- **In `/admin/`**: open `/admin/business-card.html` (bookmark it) for a print-ready version with a **Print business card** button. It's sized to print at exactly 3.5" × 2" (standard US business card). In the print dialog, either print directly to a compatible printer/cardstock, or choose "Save as PDF" to get a file you can send to a print shop.
+
+Both versions pull live from **Contact info** — name, photo, email, phone, website, and whichever social icons are enabled. Update your info once in `/admin/` and both the on-site card and the print page reflect it (reload the print page to see the update there). The logo shown on the card is a compact wordmark-only version (`images/logo-wordmark.png`) — if you ever swap the main homepage logo, ask me and I'll regenerate a matching compact version for the card.
+
 ## Site features, briefly
 
 - **Video playback**: clicking any tile with a video opens it in an on-page overlay (no new tab). Esc, the × button, or clicking outside closes it.
@@ -80,6 +94,7 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 - **External links** (no video): shown with a small external-link icon instead of a broken-looking blank thumbnail.
 - **Coming Soon**: a project with neither a video nor a link opens a "Coming Soon" overlay when clicked, instead of doing nothing or jumping the page around.
 - **QR code**: a scannable QR code sits next to your contact info at the top of the site, encoding `https://strangemachinelabs.com`, so visitors can share the site with a friend on the spot. It's hardcoded into `index.html` (not CMS-managed) since it never needs to change — ask me if you ever want it pointed at a different URL.
+- **Business card popup**: click your photo at the top of the site to see your business card in an on-page overlay. See "Business card" above for the print version.
 
 ## How publishing actually works
 

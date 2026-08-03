@@ -28,6 +28,7 @@ collections:
           - { label: "Name", name: "name", widget: "string" }
           - { label: "Photo", name: "photoUrl", widget: "image", required: false, hint: "Shown at the top of the site." }
           - { label: "Email", name: "email", widget: "string", required: false }
+          - { label: "Phone", name: "phone", widget: "string", required: false, hint: "Optional. Shown on your business card (and there, only if filled in)." }
           - label: "Social links"
             name: "socials"
             widget: "object"
