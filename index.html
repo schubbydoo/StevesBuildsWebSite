@@ -65,8 +65,15 @@
   }
   .hero-logo-img{
     display:block;
-    width:clamp(280px, 55vw, 640px);
+    width:100%;
     height:auto;
+    margin:0 auto;
+  }
+  @media (min-width:700px){
+    .hero-logo-img{
+      width:50%;
+      min-width:480px;
+    }
   }
   main{
     max-width:var(--content-max);
