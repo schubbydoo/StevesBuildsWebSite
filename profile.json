@@ -2,31 +2,31 @@
   "name": "Steve Schubert",
   "photoUrl": "/admin/uploads/ContactWebsiteImage.jpg",
   "email": "shschubert@gmail.com",
-  "phone": "",
+  "phone": "(555) 123-4567",
   "socials": {
     "instagram": {
-      "enabled": false,
-      "url": ""
+      "enabled": true,
+      "url": "https://instagram.com/strangemachinelabs"
     },
     "facebook": {
       "enabled": true,
-      "url": ""
+      "url": "https://facebook.com/strangemachinelabs"
     },
     "youtube": {
-      "enabled": false,
-      "url": ""
+      "enabled": true,
+      "url": "https://youtube.com/@strangemachinelabs"
     },
     "tiktok": {
-      "enabled": false,
-      "url": ""
+      "enabled": true,
+      "url": "https://tiktok.com/@strangemachinelabs"
     },
     "twitter": {
-      "enabled": false,
-      "url": ""
+      "enabled": true,
+      "url": "https://x.com/strangemachinelabs"
     },
     "linkedin": {
-      "enabled": false,
-      "url": ""
+      "enabled": true,
+      "url": "https://linkedin.com/in/steveschubert"
     }
   }
 }
