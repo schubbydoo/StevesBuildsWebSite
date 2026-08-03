@@ -43,7 +43,7 @@
     },
     {
       "title": "Memory Spark Station",
-      "blurb": "I built this machine to conjure up old and hopefully fond memories.  Positioned as an audio trivia game, like an old-school \"Name That Tune,\" this machine can be loaded with popular audio clips (e.g., music, Historical speeches, Iconic movie one-liners and villains, kids' shows, famous duos, etc.). Users choose the track (e.g., 70s-80s music) and guess at the artist and title. In the process, fond memories pop into the minds of past concerts, crazy times with friends or family, etc. I upgraded the track selection from a knob to a touch screen mimicking a companion mobile app I built for taking the game on the go. The new touch screen also features a \"Hint\" and a \"Reveal\" button to round out the experience.",
+      "blurb": "I built this machine to conjure up old and hopefully fond memories.  Positioned as an audio trivia game, like an old-school \"Name That Tune,\" this machine can be loaded with popular audio clips (e.g., music, Historical speeches, Iconic movie one-liners and villains, kids' shows, famous duos, etc.). Users choose the track (e.g., 70s-80s music) and guess at the artist and title. In the process, fond memories pop into the players' minds of past concerts, crazy times with friends or family, etc. I upgraded the track selection from a knob to a touch screen mimicking a companion mobile app I built for taking the game on the go. Similar to the mobile app, the new touch screen also features a \"Hint\" and a \"Reveal\" button to round out the experience.",
       "categories": [
         "Audio",
         "Interactive"
