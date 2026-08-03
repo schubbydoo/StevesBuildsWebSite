@@ -90,7 +90,7 @@ Three ways to see and use it — all pull live from **Contact info**, so update 
 
 All three give you the same Walgreens Photo-compliant design: a 3.625" × 2.125" bleed canvas (background fills the full page so trimming never leaves a white edge) that trims to the standard 3.5" × 2" card, with all text/logo/QR kept inside a 3.375" × 1.875" safe area. **Print / Save as PDF** opens your browser's print dialog. **Download PNG/JPG** instead saves a 600 DPI image straight to your computer — handy since Walgreens' own upload flow asks for an image file rather than a PDF. PNG keeps text and the QR code sharpest; JPG is a smaller file if there's an upload size limit.
 
-Email, phone, and the website line are all clickable/tappable on the card. The card uses the full homepage logo image — if you ever swap the logo in **Homepage header** to something new, ask me and I'll update the card to match (it's a separate hardcoded reference, not automatically linked).
+Email, phone, and the website line are all clickable/tappable on the card. Social links intentionally aren't shown on the card itself -- visitors can find those on the website. The card uses its own cropped copy of the logo (with the small tagline line removed, since it's illegible at business-card size) -- if you ever swap the logo in **Homepage header**, ask me and I'll update the card's cropped version to match (it's a separate file, not automatically linked).
 
 ## Site features, briefly
 
