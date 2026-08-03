@@ -138,11 +138,11 @@ body{
   border-radius:0;
   box-shadow:none;
   border:none;
-  padding:0.15in;
-  gap:0.035in;
+  padding:0.14in;
+  gap:0.02in;
   background:var(--bg);
 }
-.card-bleed .biz-card-left{width:57%;}
+.card-bleed .biz-card-left{width:55%;}
 .card-bleed .biz-card-photo{width:52px;height:52px;}
 .card-bleed .biz-card-name{font-size:13px;margin-top:5px;}
 .card-bleed .biz-card-contact{gap:4px;}
@@ -153,12 +153,13 @@ body{
 @media print{
   /* Walgreens Photo business-card spec: 3.5x2 trim, 3.625x2.125 bleed,
      3.375x1.875 safe area — the safe area sits a minimum of 0.125in
-     inside the bleed edge on every side. We use 0.15in here (a small
-     buffer beyond the minimum) so the logo, QR code, and contact rows
-     don't visually crowd the trim line, while leaving enough room for
-     a larger, more legible logo and contact text. The card's solid
-     background still fills the full bleed size so trimming never
-     reveals white edges. */
+     inside the bleed edge on every side. We use 0.14in here (a small
+     buffer beyond the minimum) so the QR code and contact rows don't
+     visually crowd the trim line, while keeping the logo column and
+     column gap narrow enough that the longest contact line (the
+     website URL) stays on one line at the larger, more legible text
+     size. The card's solid background still fills the full bleed size
+     so trimming never reveals white edges. */
   @page{ size:3.625in 2.125in; margin:0; }
   body *{ visibility:hidden; }
   .biz-card, .biz-card *{ visibility:visible; }
@@ -172,11 +173,11 @@ body{
     border-radius:0;
     box-shadow:none;
     border:none;
-    padding:0.15in;
-    gap:0.035in;
+    padding:0.14in;
+    gap:0.02in;
     background:var(--bg);
   }
-  .biz-card-left{width:57%;}
+  .biz-card-left{width:55%;}
   .biz-card-photo{width:52px;height:52px;}
   .biz-card-name{font-size:13px;margin-top:5px;}
   .biz-card-contact{gap:4px;}
