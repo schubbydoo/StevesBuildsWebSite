@@ -310,6 +310,35 @@
     display:none;
   }
   .clear-pill:hover{border-color:var(--accent2);color:var(--accent2);}
+  .section-divider{
+    max-width:var(--content-max);
+    margin:0 auto;
+    padding:34px var(--content-pad) 26px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+  }
+  .section-divider-line{
+    flex:1;
+    height:1px;
+    background:#7c8a3c;
+  }
+  .section-divider-label{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--text);
+    white-space:nowrap;
+  }
+  .section-divider-label svg{
+    width:17px;
+    height:17px;
+    flex-shrink:0;
+  }
   .card{ transition:transform .18s ease, box-shadow .25s ease, border-color .25s ease, opacity .25s ease; }
   .card.tag-match{
     border-color:var(--accent) !important;
@@ -463,7 +492,7 @@
     flex-direction:column;
     justify-content:space-between;
     align-items:center;
-    width:50%;
+    width:55%;
     flex-shrink:0;
   }
   .biz-card-id{
@@ -495,13 +524,12 @@
     flex:1;
     display:flex;
     flex-direction:column;
-    justify-content:space-between;
     min-width:0;
   }
   .biz-card-contact{
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:7px;
   }
   .biz-card-row{
     display:flex;
@@ -523,23 +551,6 @@
     flex-shrink:0;
     color:var(--accent);
   }
-  .biz-card-bottom-row{
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    gap:12px;
-  }
-  .biz-card-socials{
-    display:flex;
-    gap:9px;
-    align-items:center;
-  }
-  .biz-card-socials a{
-    color:var(--muted);
-    display:flex;
-  }
-  .biz-card-socials a:hover{color:var(--accent);}
-  .biz-card-socials svg{width:15px;height:15px;}
   .biz-card-qr{
     width:72px;
     height:72px;
@@ -548,6 +559,8 @@
     padding:5px;
     box-sizing:border-box;
     flex-shrink:0;
+    margin-top:auto;
+    align-self:flex-end;
   }
   .biz-card-qr svg{width:100%;height:100%;display:block;}
   @media screen and (max-width:480px){
@@ -555,13 +568,13 @@
       padding:16px 16px;
       gap:12px;
     }
+    .biz-card-left{width:44%;}
     .biz-card-photo{width:56px;height:56px;}
     .biz-card-name{font-size:13px;margin-top:6px;}
     .biz-card-row{font-size:9.5px;gap:6px;}
     .biz-card-row svg{width:12px;height:12px;}
     .biz-card-contact{gap:5px;}
     .biz-card-qr{width:56px;height:56px;}
-    .biz-card-socials svg{width:12px;height:12px;}
   }
 </style>
 </head>
@@ -575,6 +588,11 @@
   </div>
 </div>
 <nav class="category-nav" id="category-nav"></nav>
+<div class="section-divider">
+  <span class="section-divider-line"></span>
+  <span class="section-divider-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Featured Projects</span>
+  <span class="section-divider-line"></span>
+</div>
 <main>
   <div class="grid" id="project-grid">
     <p class="empty">Loading projects…</p>
@@ -609,10 +627,7 @@
       </div>
       <div class="biz-card-right">
         <div class="biz-card-contact" id="card-contact"></div>
-        <div class="biz-card-bottom-row">
-          <div class="biz-card-socials" id="card-socials"></div>
-          <div class="biz-card-qr" id="card-qr"></div>
-        </div>
+        <div class="biz-card-qr" id="card-qr"></div>
       </div>
     </div>
   </div>
@@ -689,14 +704,15 @@
     if (profile.email) rows.push(`<a class="biz-card-row" href="mailto:${profile.email}">${mailIcon}<span>${profile.email}</span></a>`);
     if (profile.phone) rows.push(`<a class="biz-card-row" href="tel:${profile.phone.replace(/[^+\d]/g, '')}">${phoneIcon}<span>${profile.phone}</span></a>`);
     rows.push(`<a class="biz-card-row" href="https://strangemachinelabs.com" target="_blank" rel="noopener">${globeIcon}<span>strangemachinelabs.com</span></a>`);
-    document.getElementById('card-contact').innerHTML = rows.join('');
 
     const socials = profile.socials || {};
-    const socialLinks = Object.keys(SOCIAL_META)
+    Object.keys(SOCIAL_META)
       .filter(key => socials[key] && socials[key].enabled && socials[key].url)
-      .map(key => `<a href="${socials[key].url}" target="_blank" rel="noopener" title="${SOCIAL_META[key].label}">${SOCIAL_META[key].icon}</a>`)
-      .join('');
-    document.getElementById('card-socials').innerHTML = socialLinks;
+      .forEach(key => {
+        rows.push(`<a class="biz-card-row" href="${socials[key].url}" target="_blank" rel="noopener">${SOCIAL_META[key].icon}<span>${SOCIAL_META[key].label}</span></a>`);
+      });
+
+    document.getElementById('card-contact').innerHTML = rows.join('');
 
     const topQr = document.querySelector('.qr-code svg');
     const cardQr = document.getElementById('card-qr');
