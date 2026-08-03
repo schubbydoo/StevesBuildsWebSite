@@ -57,7 +57,7 @@
               respond(event.source, 'sml-card-download-error', { message: 'html2canvas failed to load — check your internet connection and try again.' });
               return;
             }
-            html2canvas(exportEl, { scale: 3.125, backgroundColor: '#14171a', useCORS: true }).then(function (canvas) {
+            html2canvas(exportEl, { scale: 6.25, backgroundColor: '#14171a', useCORS: true }).then(function (canvas) {
               var mime = format === 'png' ? 'image/png' : 'image/jpeg';
               var quality = format === 'png' ? undefined : 0.95;
               canvas.toBlob(function (blob) {
@@ -223,7 +223,7 @@
             h(
               'p',
               { style: { fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', color: this.state.status.indexOf('failed') > -1 || this.state.status.indexOf('Could not') > -1 ? '#ff6a3d' : '#8b969c', lineHeight: '1.6', maxWidth: '560px', marginTop: '12px' } },
-              this.state.status || 'Walgreens-ready 3.625" × 2.125" bleed design (trims to 3.5" × 2"). Print/Save as PDF, or download a 300 DPI PNG/JPG to upload directly — no need to leave this page.'
+              this.state.status || 'Walgreens-ready 3.625" × 2.125" bleed design (trims to 3.5" × 2"). Print/Save as PDF, or download a 600 DPI PNG/JPG to upload directly — no need to leave this page.'
             )
           );
         }

@@ -93,7 +93,7 @@
     <button id="png-btn">Download PNG</button>
     <button id="jpg-btn">Download JPG</button>
   </div>
-  <p class="toolbar-note">All three give you the same Walgreens-ready design — a 3.625&Prime; &times; 2.125&Prime; bleed canvas that trims to the standard 3.5&Prime; &times; 2&Prime; card. <strong>Print / Save as PDF</strong> opens your browser's print dialog: pick a printer, or choose "Save as PDF" to get a file. <strong>Download PNG</strong> or <strong>Download JPG</strong> instead saves a high-resolution (300 DPI) image straight to your computer, ready to upload wherever Walgreens Photo asks for an image file — PNG keeps the text and QR code sharpest; JPG is a smaller file if there's an upload size limit.</p>
+  <p class="toolbar-note">All three give you the same Walgreens-ready design — a 3.625&Prime; &times; 2.125&Prime; bleed canvas that trims to the standard 3.5&Prime; &times; 2&Prime; card. <strong>Print / Save as PDF</strong> opens your browser's print dialog: pick a printer, or choose "Save as PDF" to get a file. <strong>Download PNG</strong> or <strong>Download JPG</strong> instead saves a high-resolution (600 DPI) image straight to your computer, ready to upload wherever Walgreens Photo asks for an image file — PNG keeps the text and QR code sharpest; JPG is a smaller file if there's an upload size limit.</p>
 </div>
 
 <div id="biz-card-export-wrap" style="position:absolute;left:-99999px;top:0;" aria-hidden="true">
@@ -160,7 +160,7 @@
     const originalText = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Rendering…';
-    html2canvas(el, { scale: 3.125, backgroundColor: '#14171a', useCORS: true }).then(canvas => {
+    html2canvas(el, { scale: 6.25, backgroundColor: '#14171a', useCORS: true }).then(canvas => {
       const mime = format === 'png' ? 'image/png' : 'image/jpeg';
       const quality = format === 'png' ? undefined : 0.95;
       canvas.toBlob(blob => {
