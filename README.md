@@ -29,7 +29,7 @@ No files to download, no git, no manual uploads.
 - `admin/image-tool.html` — a standalone helper for framing photos (project covers or your contact photo) before uploading them. Not part of the CMS itself, just a prep tool.
 - `admin/business-card.html` — a standalone page that renders your business card (pulled live from `profile.json`) and prints it at exact business-card size. Not part of the CMS itself, just a tool.
 - `admin/uploads/` — where photos you upload through the CMS actually live.
-- `images/` — static site assets not managed through the CMS: the homepage logo, a compact wordmark version used on the business card, and your contact photo.
+- `images/` — static site assets not managed through the CMS: the homepage/business-card logo and a couple of unused legacy files.
 - `wrangler.jsonc` — tells Cloudflare this is a plain static site (no build step).
 - `.assetsignore` — keeps `.git` and build artifacts out of the publicly deployed files.
 
@@ -45,12 +45,12 @@ In `/admin/`, under **Homepage header**: a single **Logo** image field — this 
 
 ### Contact info
 
-In `/admin/`, under **Contact info**: your name, photo, email, and social links.
+In `/admin/`, under **Contact info**: your name, photo, email, phone, and social links.
 
-- **Photo**: upload directly, or use the image framing tool first (see below) to size and position it exactly how you want before uploading.
-- **Email**: shown as a mail icon with the address written underneath it, right next to your name.
-- **Phone**: optional. Only shows up on the business card (see below) — nowhere else on the site.
-- **Social links**: six fixed platforms (Instagram, Facebook, YouTube, TikTok, X/Twitter, LinkedIn), each with a "Show icon" checkbox and a URL box. Check the box and add a URL to make that platform's icon appear; unchecking hides it again without losing the saved URL. If nothing is checked, the site shows three faint dashed placeholder circles reserving the space instead. Adding a brand-new platform beyond these six means asking me to add a field for it — this list isn't open-ended the way project categories are.
+- **Photo**: upload directly, or use the image framing tool first (see below) to size and position it exactly how you want before uploading. Shown at the top of the site alongside your name — click it (or the "Click to contact" line under it) to pop up your business card.
+- **Email**: not shown directly on the site anymore — it only appears inside the business card popup.
+- **Phone**: optional. Also only shows up on the business card.
+- **Social links**: six fixed platforms (Instagram, Facebook, YouTube, TikTok, X/Twitter, LinkedIn), each with a "Show icon" checkbox and a URL box. Check the box and add a URL to make that platform's icon appear on the business card; unchecking hides it again without losing the saved URL. Adding a brand-new platform beyond these six means asking me to add a field for it — this list isn't open-ended the way project categories are.
 
 This same info also feeds your **business card** (see below) — update it once here and both the site and the card stay in sync.
 
@@ -85,7 +85,7 @@ Two ways to see it:
 - **On the live site**: click your photo at the top of the site — it pops up a business card in the same on-page overlay style as the video player.
 - **In `/admin/`**: open `/admin/business-card.html` (bookmark it) for a print-ready version with a **Print business card** button. It's sized to print at exactly 3.5" × 2" (standard US business card). In the print dialog, either print directly to a compatible printer/cardstock, or choose "Save as PDF" to get a file you can send to a print shop.
 
-Both versions pull live from **Contact info** — name, photo, email, phone, website, and whichever social icons are enabled. Update your info once in `/admin/` and both the on-site card and the print page reflect it (reload the print page to see the update there). The logo shown on the card is a compact wordmark-only version (`images/logo-wordmark.png`) — if you ever swap the main homepage logo, ask me and I'll regenerate a matching compact version for the card.
+Both versions pull live from **Contact info** — name, photo, email, phone, website, and whichever social icons are enabled. Update your info once in `/admin/` and both the on-site card and the print page reflect it (reload the print page to see the update there). Email, phone, and the website line are all clickable/tappable on the card. The card uses the full homepage logo image — if you ever swap the logo in **Homepage header** to something new, ask me and I'll update the card to match (it's a separate hardcoded reference, not automatically linked).
 
 ## Site features, briefly
 
@@ -93,8 +93,9 @@ Both versions pull live from **Contact info** — name, photo, email, phone, web
 - **Category highlighting**: clicking a pill in the "Highlight" row scrolls to the first matching project, gives every matching tile a green glow, and dims everything else — nothing is hidden, just visually called out. Click the same pill again, or the "✕ clear" pill, to reset.
 - **External links** (no video): shown with a small external-link icon instead of a broken-looking blank thumbnail.
 - **Coming Soon**: a project with neither a video nor a link opens a "Coming Soon" overlay when clicked, instead of doing nothing or jumping the page around.
-- **QR code**: a scannable QR code sits next to your contact info at the top of the site, encoding `https://strangemachinelabs.com`, so visitors can share the site with a friend on the spot. It's hardcoded into `index.html` (not CMS-managed) since it never needs to change — ask me if you ever want it pointed at a different URL.
-- **Business card popup**: click your photo at the top of the site to see your business card in an on-page overlay. See "Business card" above for the print version.
+- **Top bar layout**: your photo/name (left), the logo (center), and a QR code (right) sit in one row at the top of the site, vertically centered together. On mobile they stack instead, since there's not enough width to sit side by side.
+- **QR code**: encodes `https://strangemachinelabs.com`, so visitors can share the site with a friend on the spot. It's hardcoded into `index.html` (not CMS-managed) since it never needs to change — ask me if you ever want it pointed at a different URL.
+- **Business card popup**: click your photo (or the "Click to contact" line under it) to see your business card in an on-page overlay. See "Business card" above for the print version.
 
 ## How publishing actually works
 
