@@ -15,7 +15,9 @@
          doing the actual work up here, in the real page origin, avoids that
          entirely. The preview iframe just asks this page to do the work via
          postMessage. See the next script block for the listener. -->
-    <div id="card-export" class="biz-card card-bleed" style="position:fixed;left:-99999px;top:0;" aria-hidden="true"></div>
+    <div id="card-export-wrap" style="position:fixed;left:-99999px;top:0;" aria-hidden="true">
+      <div id="card-export" class="biz-card card-bleed"></div>
+    </div>
 
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 
