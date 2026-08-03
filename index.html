@@ -63,6 +63,11 @@
     max-width:650px;
     line-height:1.6;
   }
+  .hero-logo-img{
+    display:block;
+    width:clamp(280px, 55vw, 640px);
+    height:auto;
+  }
   main{
     max-width:var(--content-max);
     margin:0 auto;
@@ -428,9 +433,7 @@
   </div>
 </div>
 <header>
-  <span class="tag" id="hero-tag">retired, wired, and inspired</span>
-  <h1 id="hero-headline">Strange <span>Machine</span> Labs</h1>
-  <p class="sub" id="hero-subtitle">Bringing a little magic through technology — some assembly required.</p>
+  <img class="hero-logo-img" src="images/logo-strange-machine.png" alt="Strange Machine Labs — because ordinary is boring">
 </header>
 <nav class="category-nav" id="category-nav"></nav>
 <main>
@@ -455,14 +458,8 @@
 </div>
 
 <script>
-  fetch('hero.json')
-    .then(res => res.json())
-    .then(hero => {
-      if (hero.tag) document.getElementById('hero-tag').innerHTML = hero.tag;
-      if (hero.headline) document.getElementById('hero-headline').innerHTML = hero.headline;
-      if (hero.subtitle) document.getElementById('hero-subtitle').innerHTML = hero.subtitle;
-    })
-    .catch(() => {});
+  // Hero header is now the logo image (images/logo-strange-machine.png) rather than
+  // CMS-driven text, so hero.json is no longer fetched/rendered here.
 
   fetch('profile.json')
     .then(res => res.json())
