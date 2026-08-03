@@ -160,7 +160,7 @@
     const originalText = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Rendering…';
-    html2canvas(el, { scale: 6.25, backgroundColor: '#14171a', useCORS: true }).then(canvas => {
+    html2canvas(el, { scale: 6.25, backgroundColor: '#0b0d0f', useCORS: true }).then(canvas => {
       const mime = format === 'png' ? 'image/png' : 'image/jpeg';
       const quality = format === 'png' ? undefined : 0.95;
       canvas.toBlob(blob => {

@@ -57,7 +57,7 @@
               respond(event.source, 'sml-card-download-error', { message: 'html2canvas failed to load — check your internet connection and try again.' });
               return;
             }
-            html2canvas(exportEl, { scale: 6.25, backgroundColor: '#14171a', useCORS: true }).then(function (canvas) {
+            html2canvas(exportEl, { scale: 6.25, backgroundColor: '#0b0d0f', useCORS: true }).then(function (canvas) {
               var mime = format === 'png' ? 'image/png' : 'image/jpeg';
               var quality = format === 'png' ? undefined : 0.95;
               canvas.toBlob(function (blob) {
