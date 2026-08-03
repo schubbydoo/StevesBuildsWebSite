@@ -176,20 +176,25 @@
   }
 
   @media print{
-    @page{ size:3.5in 2in; margin:0; }
+    /* Walgreens Photo business-card spec: 3.5x2 trim, 3.625x2.125 bleed,
+       3.375x1.875 safe area — a uniform 0.125in margin between the bleed
+       edge (this page) and the safe area on every side. The card's solid
+       background fills the full bleed size so trimming never reveals
+       white edges; all text/logo/QR stays inset within the safe area. */
+    @page{ size:3.625in 2.125in; margin:0; }
     body *{ visibility:hidden; }
     .biz-card, .biz-card *{ visibility:visible; }
     .biz-card{
       position:fixed;
       inset:0;
-      width:3.5in;
-      height:2in;
+      width:3.625in;
+      height:2.125in;
       aspect-ratio:auto;
       margin:0;
       border-radius:0;
       box-shadow:none;
       border:none;
-      padding:0.22in 0.24in;
+      padding:0.125in;
     }
     .biz-card-left{width:48%;}
     .biz-card-photo{width:50px;height:50px;}
@@ -205,7 +210,7 @@
 <div class="wrap">
   <span class="tag">business card</span>
   <h1>Print your business card</h1>
-  <p class="note">This pulls your name, photo, email, phone, and social links straight from <strong>Contact info</strong> in <code>/admin/</code> — update it there and reload this page to see the change here too. When you're ready, hit Print: it's set up to print at exactly 3.5" &times; 2", the standard US business card size. Most browsers let you print directly to a compatible printer, or choose "Save as PDF" to send the file to a print shop instead.</p>
+  <p class="note">This pulls your name, photo, email, phone, and social links straight from <strong>Contact info</strong> in <code>/admin/</code> — update it there and reload this page to see the change here too. When you're ready, hit Print: it's set up to Walgreens Photo's business-card spec — a 3.625" &times; 2.125" page (with 1/16" bleed on every side) that trims down to the standard 3.5" &times; 2" card, with all text and the QR code kept safely inside the 3.375" &times; 1.875" safe area. Most browsers let you print directly to a compatible printer, or choose "Save as PDF" to get a file ready to upload to Walgreens (or any other print shop).</p>
 
   <div class="stage">
     <div class="biz-card" id="biz-card">
@@ -225,7 +230,7 @@
 
   <div class="toolbar">
     <button class="btn-primary" id="print-btn">Print business card</button>
-    <span class="toolbar-note">Prints at exactly 3.5&Prime; &times; 2&Prime; — choose "Save as PDF" in the print dialog to get a file for a print shop.</span>
+    <span class="toolbar-note">Prints to Walgreens' 3.625&Prime; &times; 2.125&Prime; bleed spec (trims to 3.5&Prime; &times; 2&Prime;) — choose "Save as PDF" in the print dialog to get a file ready to upload.</span>
   </div>
 </div>
 

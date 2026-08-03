@@ -83,7 +83,7 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 Two ways to see it:
 
 - **On the live site**: click your photo at the top of the site — it pops up a business card in the same on-page overlay style as the video player.
-- **In `/admin/`**: open `/admin/business-card.html` (bookmark it) for a print-ready version with a **Print business card** button. It's sized to print at exactly 3.5" × 2" (standard US business card). In the print dialog, either print directly to a compatible printer/cardstock, or choose "Save as PDF" to get a file you can send to a print shop.
+- **In `/admin/`**: open `/admin/business-card.html` (bookmark it) for a print-ready version with a **Print business card** button. It follows Walgreens Photo's business-card spec: the printed page is 3.625" × 2.125" (the card's background fills this full "bleed" area so trimming never leaves a white edge), which trims down to the standard 3.5" × 2" card, with all text/logo/QR kept inside a 3.375" × 1.875" safe area. In the print dialog, either print directly to a compatible printer/cardstock, or choose "Save as PDF" to get a file ready to upload to Walgreens or send to another print shop.
 
 Both versions pull live from **Contact info** — name, photo, email, phone, website, and whichever social icons are enabled. Update your info once in `/admin/` and both the on-site card and the print page reflect it (reload the print page to see the update there). Email, phone, and the website line are all clickable/tappable on the card. The card uses the full homepage logo image — if you ever swap the logo in **Homepage header** to something new, ask me and I'll update the card to match (it's a separate hardcoded reference, not automatically linked).
 
