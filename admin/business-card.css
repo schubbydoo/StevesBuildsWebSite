@@ -101,11 +101,11 @@ body{
   color:var(--accent);
 }
 .biz-card-qr{
-  width:72px;
-  height:72px;
+  width:78px;
+  height:78px;
   background:#fff;
   border-radius:6px;
-  padding:5px;
+  padding:3px;
   box-sizing:border-box;
   flex-shrink:0;
   margin-top:auto;
@@ -123,7 +123,7 @@ body{
   .biz-card-row{font-size:9.5px;gap:6px;}
   .biz-card-row svg{width:12px;height:12px;}
   .biz-card-contact{gap:5px;}
-  .biz-card-qr{width:56px;height:56px;}
+  .biz-card-qr{width:60px;height:60px;}
 }
 /* --- end business card --- */
 
@@ -148,7 +148,7 @@ body{
 .card-bleed .biz-card-contact{gap:4px;}
 .card-bleed .biz-card-row{font-size:8.5px;gap:5px;}
 .card-bleed .biz-card-row svg{width:10px;height:10px;}
-.card-bleed .biz-card-qr{width:48px;height:48px;margin-right:0.08in;margin-bottom:0.08in;}
+.card-bleed .biz-card-qr{width:52px;height:52px;margin-right:0.08in;margin-bottom:0.08in;}
 
 @media print{
   /* Walgreens Photo business-card spec: 3.5x2 trim, 3.625x2.125 bleed,
@@ -181,7 +181,7 @@ body{
   .biz-card-contact{gap:4px;}
   .biz-card-row{font-size:8.5px;gap:5px;}
   .biz-card-row svg{width:10px;height:10px;}
-  .biz-card-qr{width:48px;height:48px;margin-right:0.08in;margin-bottom:0.08in;}
+  .biz-card-qr{width:52px;height:52px;margin-right:0.08in;margin-bottom:0.08in;}
   /* In the CMS preview pane there's a second, hidden bleed-sized clone used
      only for the PNG/JPG export — make sure it never doubles up in print. */
   #cms-card-export{ display:none !important; }
