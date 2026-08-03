@@ -23,7 +23,7 @@ body{
 
 /* --- business card (mirrors index.html's .biz-card design) --- */
 .biz-card{
-  width:560px;
+  width:620px;
   max-width:100%;
   aspect-ratio:1.75/1;
   background:var(--panel);
@@ -41,7 +41,7 @@ body{
   flex-direction:column;
   justify-content:space-between;
   align-items:center;
-  width:55%;
+  width:58%;
   flex-shrink:0;
 }
 .biz-card-id{
@@ -51,15 +51,15 @@ body{
   text-align:center;
 }
 .biz-card-photo{
-  width:76px;
-  height:76px;
+  width:80px;
+  height:80px;
   border-radius:50%;
   object-fit:cover;
   border:2px solid var(--line);
   background:var(--bg);
 }
 .biz-card-name{
-  font-size:16px;
+  font-size:18px;
   font-weight:700;
   margin-top:10px;
   text-align:center;
@@ -78,14 +78,14 @@ body{
 .biz-card-contact{
   display:flex;
   flex-direction:column;
-  gap:7px;
+  gap:8px;
 }
 .biz-card-row{
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:9px;
   font-family:'JetBrains Mono',monospace;
-  font-size:11px;
+  font-size:13px;
   color:var(--muted);
   overflow:hidden;
   text-decoration:none;
@@ -95,8 +95,8 @@ body{
   overflow-wrap:anywhere;
 }
 .biz-card-row svg{
-  width:14px;
-  height:14px;
+  width:16px;
+  height:16px;
   flex-shrink:0;
   color:var(--accent);
 }
@@ -138,25 +138,26 @@ body{
   border-radius:0;
   box-shadow:none;
   border:none;
-  padding:0.1875in;
-  gap:0.05in;
+  padding:0.15in;
+  gap:0.035in;
   background:var(--bg);
 }
-.card-bleed .biz-card-left{width:55%;}
-.card-bleed .biz-card-photo{width:50px;height:50px;}
-.card-bleed .biz-card-name{font-size:12px;margin-top:5px;}
+.card-bleed .biz-card-left{width:57%;}
+.card-bleed .biz-card-photo{width:52px;height:52px;}
+.card-bleed .biz-card-name{font-size:13px;margin-top:5px;}
 .card-bleed .biz-card-contact{gap:4px;}
-.card-bleed .biz-card-row{font-size:8.5px;gap:5px;}
-.card-bleed .biz-card-row svg{width:10px;height:10px;}
+.card-bleed .biz-card-row{font-size:9.5px;gap:5px;}
+.card-bleed .biz-card-row svg{width:11px;height:11px;}
 .card-bleed .biz-card-qr{width:52px;height:52px;margin-right:0.08in;margin-bottom:0.08in;}
 
 @media print{
   /* Walgreens Photo business-card spec: 3.5x2 trim, 3.625x2.125 bleed,
      3.375x1.875 safe area — the safe area sits a minimum of 0.125in
-     inside the bleed edge on every side. We use 0.1875in here (an extra
-     1/16in of breathing room beyond the minimum) so the logo, QR code,
-     and contact rows don't visually crowd the trim line. The card's
-     solid background still fills the full bleed size so trimming never
+     inside the bleed edge on every side. We use 0.15in here (a small
+     buffer beyond the minimum) so the logo, QR code, and contact rows
+     don't visually crowd the trim line, while leaving enough room for
+     a larger, more legible logo and contact text. The card's solid
+     background still fills the full bleed size so trimming never
      reveals white edges. */
   @page{ size:3.625in 2.125in; margin:0; }
   body *{ visibility:hidden; }
@@ -171,16 +172,16 @@ body{
     border-radius:0;
     box-shadow:none;
     border:none;
-    padding:0.1875in;
-    gap:0.05in;
+    padding:0.15in;
+    gap:0.035in;
     background:var(--bg);
   }
-  .biz-card-left{width:55%;}
-  .biz-card-photo{width:50px;height:50px;}
-  .biz-card-name{font-size:12px;margin-top:5px;}
+  .biz-card-left{width:57%;}
+  .biz-card-photo{width:52px;height:52px;}
+  .biz-card-name{font-size:13px;margin-top:5px;}
   .biz-card-contact{gap:4px;}
-  .biz-card-row{font-size:8.5px;gap:5px;}
-  .biz-card-row svg{width:10px;height:10px;}
+  .biz-card-row{font-size:9.5px;gap:5px;}
+  .biz-card-row svg{width:11px;height:11px;}
   .biz-card-qr{width:52px;height:52px;margin-right:0.08in;margin-bottom:0.08in;}
   /* In the CMS preview pane there's a second, hidden bleed-sized clone used
      only for the PNG/JPG export — make sure it never doubles up in print. */
