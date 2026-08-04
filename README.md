@@ -29,6 +29,8 @@ No files to download, no git, no manual uploads.
 - `admin/business-card.css` — the shared business-card design (fonts, colors, sizing, Walgreens bleed spec). Used by both `admin/business-card.html` and the live preview in `admin/index.html`, so there's one source of truth for how the card looks.
 - `admin/image-tool.html` — a standalone helper for framing photos (project covers or your contact photo) before uploading them. Not part of the CMS itself, just a prep tool.
 - `admin/business-card.html` — a standalone page that renders your business card (pulled live from `profile.json`) with Print/Save-as-PDF and PNG/JPG download buttons. A backup to the live preview in `/admin/` — not part of the CMS itself, just a tool.
+- `admin/card-layout.html` — a drag tool for nudging the business card's caricature, name, logo, QR code, and contact text into position by eye, instead of describing tweaks to have them coded up.
+- `card-layout.json` — the {dx, dy} position nudges saved by the drag tool above. Read by the site, the CMS preview, and the print/export page so a saved nudge shows up everywhere at once.
 - `admin/uploads/` — where photos you upload through the CMS actually live.
 - `images/` — static site assets not managed through the CMS: the homepage/business-card logo and a couple of unused legacy files.
 - `wrangler.jsonc` — tells Cloudflare this is a plain static site (no build step).
@@ -68,6 +70,17 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 - **External link URL / label** — for anything that isn't a video (the book's Amazon link, a link to the original project you built on, etc.).
 
 **Reordering**: each project row has up/down arrows near its header to move it one spot at a time. For a big jump, ask me directly and I can reorder the underlying file in one shot rather than many clicks.
+
+### Business card layout
+
+`/admin/card-layout.html` (also linked as "Adjust Layout" from the business-card preview in `/admin/`) shows the actual card and lets you drag the caricature, name, logo, QR code, or contact text directly instead of asking for pixel-level tweaks.
+
+1. Drag any piece to nudge it. Arrow keys nudge whatever you last touched (hold Shift for a bigger step).
+2. **Reset** next to a row clears just that piece; **Reset All** clears everything.
+3. Click **Save Layout**. The first time, it'll ask for a GitHub token — use the same one you use to sign in to `/admin/` (or generate a fresh one the same way, see below).
+4. The site rebuilds automatically, same as any other Publish — live within about a minute.
+
+This only moves things; it doesn't resize them. If something needs to be bigger or smaller, or the card needs a bigger change, just ask.
 
 ### Image framing tool
 

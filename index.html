@@ -504,6 +504,7 @@
     line-height:1.2;
     flex-shrink:0;
     margin-left:2.097cqw;
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
   }
   .biz-card-photo{
     width:17.742cqw;
@@ -513,12 +514,14 @@
     border:2px solid var(--line);
     background:var(--bg);
     flex-shrink:0;
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
   }
   .biz-card-contact{
     display:flex;
     flex-direction:column;
     gap:1.129cqw;
     margin-left:auto;
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
   }
   .biz-card-row{
     display:flex;
@@ -550,6 +553,7 @@
     height:30.968cqw;
     width:auto;
     display:block;
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
   }
   .biz-card-qr{
     width:17.097cqw;
@@ -561,6 +565,7 @@
     flex-shrink:0;
     margin-top:9.355cqw;
     margin-left:auto;
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
   }
   .biz-card-qr svg{width:100%;height:100%;display:block;}
   @media screen and (max-width:480px){
@@ -626,7 +631,7 @@
         <div class="biz-card-contact" id="card-contact"></div>
       </div>
       <div class="biz-card-bottom">
-        <img class="biz-card-logo" src="images/logo-strange-machine-card.png" alt="Strange Machine Labs">
+        <img class="biz-card-logo" id="card-logo" src="images/logo-strange-machine-card.png" alt="Strange Machine Labs">
         <div class="biz-card-qr" id="card-qr"></div>
       </div>
     </div>
@@ -645,6 +650,30 @@
     .then(res => res.json())
     .then(renderProfile)
     .catch(() => {});
+
+  // Small {dx,dy} position nudges per element (% of card width), set via
+  // the drag tool at admin/card-layout.html. Applied as CSS custom
+  // properties the card's transform:translate() rules read -- see
+  // admin/business-card.css. Missing file / fetch failure just means no
+  // nudges (every element defaults to its normal position).
+  fetch('card-layout.json')
+    .then(res => res.ok ? res.json() : {})
+    .then(applyCardLayout)
+    .catch(() => {});
+
+  function applyCardLayout(layout){
+    layout = layout || {};
+    var ids = { photo: 'card-photo', name: 'card-name', logo: 'card-logo', qr: 'card-qr', contact: 'card-contact' };
+    Object.keys(ids).forEach(function (key) {
+      var el = document.getElementById(ids[key]);
+      if (!el) return;
+      var o = layout[key];
+      var dx = (o && typeof o.dx === 'number') ? o.dx : 0;
+      var dy = (o && typeof o.dy === 'number') ? o.dy : 0;
+      el.style.setProperty('--dx', dx);
+      el.style.setProperty('--dy', dy);
+    });
+  }
 
   const mailIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>`;
   const phoneIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;

@@ -69,6 +69,7 @@ body{
   line-height:1.2;
   flex-shrink:0;
   margin-left:2.097cqw;
+  transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
 }
 .biz-card-photo{
   width:17.742cqw;
@@ -78,12 +79,14 @@ body{
   border:2px solid var(--line);
   background:var(--bg);
   flex-shrink:0;
+  transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
 }
 .biz-card-contact{
   display:flex;
   flex-direction:column;
   gap:1.129cqw;
   margin-left:auto;
+  transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
 }
 .biz-card-row{
   display:flex;
@@ -115,6 +118,7 @@ body{
   height:30.968cqw;
   width:auto;
   display:block;
+  transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
 }
 .biz-card-qr{
   width:17.097cqw;
@@ -126,6 +130,7 @@ body{
   flex-shrink:0;
   margin-top:9.355cqw;
   margin-left:auto;
+  transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
 }
 .biz-card-qr svg{width:100%;height:100%;display:block;}
 @media screen and (max-width:480px){
@@ -161,14 +166,14 @@ body{
   background:var(--bg);
 }
 .card-bleed .biz-card-top{gap:0.09in;}
-.card-bleed .biz-card-photo{width:60px;height:60px;}
-.card-bleed .biz-card-name{font-size:15px;line-height:1.2;margin-left:0.075in;}
-.card-bleed .biz-card-contact{gap:5px;}
+.card-bleed .biz-card-photo{width:60px;height:60px;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
+.card-bleed .biz-card-name{font-size:15px;line-height:1.2;margin-left:0.075in;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
+.card-bleed .biz-card-contact{gap:5px;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
 .card-bleed .biz-card-row{font-size:10px;gap:5px;}
 .card-bleed .biz-card-row svg{width:12px;height:12px;}
 .card-bleed .biz-card-bottom{gap:0.1in;}
-.card-bleed .biz-card-logo{height:1.15in;}
-.card-bleed .biz-card-qr{width:0.62in;height:0.62in;border-radius:4px;padding:4px;margin-top:0.325in;margin-left:auto;}
+.card-bleed .biz-card-logo{height:1.15in;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
+.card-bleed .biz-card-qr{width:0.62in;height:0.62in;border-radius:4px;padding:4px;margin-top:0.325in;margin-left:auto;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
 
 @media print{
   /* Walgreens Photo business-card spec: 3.5x2 trim, 3.625x2.125 bleed,
@@ -199,13 +204,13 @@ body{
     background:var(--bg);
   }
   .biz-card-top{gap:0.09in;}
-  .biz-card-photo{width:60px;height:60px;}
-  .biz-card-name{font-size:15px;line-height:1.2;margin-left:0.075in;}
-  .biz-card-contact{gap:5px;}
+  .biz-card-photo{width:60px;height:60px;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
+  .biz-card-name{font-size:15px;line-height:1.2;margin-left:0.075in;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
+  .biz-card-contact{gap:5px;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
   .biz-card-row{font-size:10px;gap:5px;}
   .biz-card-row svg{width:12px;height:12px;}
   .biz-card-bottom{gap:0.1in;}
-  .biz-card-logo{height:1.15in;}
-  .biz-card-qr{width:0.62in;height:0.62in;border-radius:4px;padding:4px;margin-top:0.325in;margin-left:auto;}
+  .biz-card-logo{height:1.15in;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
+  .biz-card-qr{width:0.62in;height:0.62in;border-radius:4px;padding:4px;margin-top:0.325in;margin-left:auto;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in));}
   #biz-card-export{ display:none !important; }
 }

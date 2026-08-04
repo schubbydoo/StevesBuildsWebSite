@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strange Machine Labs — Business Card Layout</title>
+<link rel="stylesheet" href="business-card.css">
+<style>
+  /* Card design (fonts, :root vars, .biz-card, etc.) lives in
+     business-card.css -- shared with the CMS preview, the print page,
+     and the site itself. Only this page's own chrome/drag UI is here. */
+  body{
+    background:var(--bg);
+    margin:0;
+    padding:50px 6vw 100px;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+  .tag{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    display:inline-block;
+    border:2px solid var(--accent);
+    padding:3px 10px;
+    border-radius:6px;
+    margin-bottom:18px;
+  }
+  h1{font-size:28px;font-weight:700;margin:0 0 10px;}
+  .note{color:var(--muted);font-size:14px;line-height:1.6;max-width:600px;margin-bottom:30px;}
+
+  .stage{
+    background:var(--panel);
+    border:2px solid var(--line);
+    border-radius:12px;
+    padding:36px;
+    display:flex;
+    justify-content:center;
+    margin-bottom:24px;
+  }
+
+  /* Drag affordances -- applied to the 5 positionable elements. Each one
+     is directly draggable (Pointer Events, works for mouse and touch);
+     dragging updates --dx/--dy custom properties that business-card.css's
+     transform:translate(calc(var(--dx,0)*1cqw), ...) rules already read,
+     so the live preview here uses the exact same CSS as the real card. */
+  .draggable{
+    cursor:grab;
+    outline:1px dashed transparent;
+    outline-offset:3px;
+    transition:outline-color .12s;
+    -webkit-user-drag:none;
+    touch-action:none;
+  }
+  .draggable:hover{outline-color:var(--accent);}
+  .draggable:focus{outline-color:var(--accent);outline-style:solid;}
+  .draggable.dragging{cursor:grabbing;outline-color:var(--accent2);outline-style:solid;}
+
+  .panel{
+    background:var(--panel);
+    border:2px solid var(--line);
+    border-radius:12px;
+    padding:20px 24px;
+  }
+  .panel h2{font-size:15px;margin:0 0 14px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:1px;}
+  .offset-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    padding:8px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .offset-row:last-of-type{border-bottom:none;}
+  .offset-row .label{color:var(--text);}
+  .offset-row .vals{color:var(--muted);}
+  .offset-row button{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12px;
+    border-radius:6px;
+    border:2px solid var(--line);
+    background:transparent;
+    color:var(--muted);
+    padding:4px 10px;
+    cursor:pointer;
+  }
+  .offset-row button:hover{color:var(--text);border-color:var(--muted);}
+
+  .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:20px;}
+  button{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    border-radius:8px;
+    border:2px solid var(--line);
+    background:var(--panel);
+    color:var(--text);
+    padding:10px 16px;
+    cursor:pointer;
+  }
+  button:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--line);}
+  .btn-primary{border-color:var(--accent);color:var(--accent);}
+  .btn-primary:hover{box-shadow:4px 4px 0 var(--accent);}
+  .btn-primary:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none;}
+  #token-row{display:none;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+  #token-row input{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    background:var(--bg);
+    border:2px solid var(--line);
+    border-radius:8px;
+    color:var(--text);
+    padding:9px 12px;
+    min-width:280px;
+  }
+  #status{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.6;
+    max-width:600px;
+    margin:14px 0 0;
+  }
+  #status.error{color:var(--accent2);}
+  #status.ok{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">business card</span>
+  <h1>Business card layout</h1>
+  <p class="note">Drag the caricature, name, logo, QR code, or contact text to nudge its position. Arrow keys nudge the last-touched piece by a small amount (hold Shift for bigger steps). Everything here mirrors the real card exactly, so what you see is what prints and what shows on the site. Hit <strong>Save Layout</strong> when you're happy with it -- the site updates automatically within about a minute, same as publishing from <a href="/admin/" style="color:var(--accent)">Contact info</a>.</p>
+
+  <div class="stage">
+    <div class="biz-card" id="biz-card">
+      <div class="biz-card-top">
+        <div class="biz-card-name draggable" id="el-name" tabindex="0" data-key="name"></div>
+        <img class="biz-card-photo draggable" id="el-photo" tabindex="0" data-key="photo" draggable="false" src="" alt="">
+        <div class="biz-card-contact draggable" id="el-contact" tabindex="0" data-key="contact"></div>
+      </div>
+      <div class="biz-card-bottom">
+        <img class="biz-card-logo draggable" id="el-logo" tabindex="0" data-key="logo" draggable="false" src="../images/logo-strange-machine-card.png" alt="Strange Machine Labs">
+        <div class="biz-card-qr draggable" id="el-qr" tabindex="0" data-key="qr"><svg viewBox="0 0 33 33" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><rect width="33" height="33" fill="#fff"/><g fill="#0b0d0f"><rect x="2" y="2" width="1" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="5" y="2" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="8" y="2" width="1" height="1"/><rect x="11" y="2" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="15" y="2" width="1" height="1"/><rect x="16" y="2" width="1" height="1"/><rect x="17" y="2" width="1" height="1"/><rect x="20" y="2" width="1" height="1"/><rect x="24" y="2" width="1" height="1"/><rect x="25" y="2" width="1" height="1"/><rect x="26" y="2" width="1" height="1"/><rect x="27" y="2" width="1" height="1"/><rect x="28" y="2" width="1" height="1"/><rect x="29" y="2" width="1" height="1"/><rect x="30" y="2" width="1" height="1"/><rect x="2" y="3" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="17" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="30" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="5" y="4" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="10" y="4" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/><rect x="14" y="4" width="1" height="1"/><rect x="16" y="4" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="1" height="1"/><rect x="22" y="4" width="1" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="26" y="4" width="1" height="1"/><rect x="27" y="4" width="1" height="1"/><rect x="28" y="4" width="1" height="1"/><rect x="30" y="4" width="1" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="11" y="5" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/><rect x="13" y="5" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="16" y="5" width="1" height="1"/><rect x="17" y="5" width="1" height="1"/><rect x="19" y="5" width="1" height="1"/><rect x="22" y="5" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="26" y="5" width="1" height="1"/><rect x="27" y="5" width="1" height="1"/><rect x="28" y="5" width="1" height="1"/><rect x="30" y="5" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/><rect x="5" y="6" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="17" y="6" width="1" height="1"/><rect x="20" y="6" width="1" height="1"/><rect x="21" y="6" width="1" height="1"/><rect x="22" y="6" width="1" height="1"/><rect x="24" y="6" width="1" height="1"/><rect x="26" y="6" width="1" height="1"/><rect x="27" y="6" width="1" height="1"/><rect x="28" y="6" width="1" height="1"/><rect x="30" y="6" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="8" y="7" width="1" height="1"/><rect x="11" y="7" width="1" height="1"/><rect x="12" y="7" width="1" height="1"/><rect x="15" y="7" width="1" height="1"/><rect x="16" y="7" width="1" height="1"/><rect x="18" y="7" width="1" height="1"/><rect x="20" y="7" width="1" height="1"/><rect x="24" y="7" width="1" height="1"/><rect x="30" y="7" width="1" height="1"/><rect x="2" y="8" width="1" height="1"/><rect x="3" y="8" width="1" height="1"/><rect x="4" y="8" width="1" height="1"/><rect x="5" y="8" width="1" height="1"/><rect x="6" y="8" width="1" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="12" y="8" width="1" height="1"/><rect x="14" y="8" width="1" height="1"/><rect x="16" y="8" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="20" y="8" width="1" height="1"/><rect x="22" y="8" width="1" height="1"/><rect x="24" y="8" width="1" height="1"/><rect x="25" y="8" width="1" height="1"/><rect x="26" y="8" width="1" height="1"/><rect x="27" y="8" width="1" height="1"/><rect x="28" y="8" width="1" height="1"/><rect x="29" y="8" width="1" height="1"/><rect x="30" y="8" width="1" height="1"/><rect x="10" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="12" y="9" width="1" height="1"/><rect x="15" y="9" width="1" height="1"/><rect x="21" y="9" width="1" height="1"/><rect x="22" y="9" width="1" height="1"/><rect x="2" y="10" width="1" height="1"/><rect x="8" y="10" width="1" height="1"/><rect x="10" y="10" width="1" height="1"/><rect x="12" y="10" width="1" height="1"/><rect x="14" y="10" width="1" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="17" y="10" width="1" height="1"/><rect x="19" y="10" width="1" height="1"/><rect x="21" y="10" width="1" height="1"/><rect x="23" y="10" width="1" height="1"/><rect x="24" y="10" width="1" height="1"/><rect x="27" y="10" width="1" height="1"/><rect x="28" y="10" width="1" height="1"/><rect x="29" y="10" width="1" height="1"/><rect x="2" y="11" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/><rect x="4" y="11" width="1" height="1"/><rect x="6" y="11" width="1" height="1"/><rect x="9" y="11" width="1" height="1"/><rect x="10" y="11" width="1" height="1"/><rect x="11" y="11" width="1" height="1"/><rect x="13" y="11" width="1" height="1"/><rect x="16" y="11" width="1" height="1"/><rect x="20" y="11" width="1" height="1"/><rect x="21" y="11" width="1" height="1"/><rect x="25" y="11" width="1" height="1"/><rect x="26" y="11" width="1" height="1"/><rect x="28" y="11" width="1" height="1"/><rect x="29" y="11" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="4" y="12" width="1" height="1"/><rect x="5" y="12" width="1" height="1"/><rect x="7" y="12" width="1" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="10" y="12" width="1" height="1"/><rect x="12" y="12" width="1" height="1"/><rect x="13" y="12" width="1" height="1"/><rect x="14" y="12" width="1" height="1"/><rect x="19" y="12" width="1" height="1"/><rect x="20" y="12" width="1" height="1"/><rect x="22" y="12" width="1" height="1"/><rect x="24" y="12" width="1" height="1"/><rect x="25" y="12" width="1" height="1"/><rect x="26" y="12" width="1" height="1"/><rect x="4" y="13" width="1" height="1"/><rect x="5" y="13" width="1" height="1"/><rect x="6" y="13" width="1" height="1"/><rect x="7" y="13" width="1" height="1"/><rect x="9" y="13" width="1" height="1"/><rect x="10" y="13" width="1" height="1"/><rect x="11" y="13" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="17" y="13" width="1" height="1"/><rect x="18" y="13" width="1" height="1"/><rect x="20" y="13" width="1" height="1"/><rect x="24" y="13" width="1" height="1"/><rect x="26" y="13" width="1" height="1"/><rect x="27" y="13" width="1" height="1"/><rect x="3" y="14" width="1" height="1"/><rect x="6" y="14" width="1" height="1"/><rect x="8" y="14" width="1" height="1"/><rect x="9" y="14" width="1" height="1"/><rect x="12" y="14" width="1" height="1"/><rect x="14" y="14" width="1" height="1"/><rect x="15" y="14" width="1" height="1"/><rect x="16" y="14" width="1" height="1"/><rect x="22" y="14" width="1" height="1"/><rect x="24" y="14" width="1" height="1"/><rect x="25" y="14" width="1" height="1"/><rect x="30" y="14" width="1" height="1"/><rect x="2" y="15" width="1" height="1"/><rect x="4" y="15" width="1" height="1"/><rect x="5" y="15" width="1" height="1"/><rect x="9" y="15" width="1" height="1"/><rect x="13" y="15" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="15" y="15" width="1" height="1"/><rect x="16" y="15" width="1" height="1"/><rect x="21" y="15" width="1" height="1"/><rect x="22" y="15" width="1" height="1"/><rect x="24" y="15" width="1" height="1"/><rect x="25" y="15" width="1" height="1"/><rect x="26" y="15" width="1" height="1"/><rect x="29" y="15" width="1" height="1"/><rect x="30" y="15" width="1" height="1"/><rect x="3" y="16" width="1" height="1"/><rect x="4" y="16" width="1" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="8" y="16" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/><rect x="14" y="16" width="1" height="1"/><rect x="15" y="16" width="1" height="1"/><rect x="16" y="16" width="1" height="1"/><rect x="17" y="16" width="1" height="1"/><rect x="18" y="16" width="1" height="1"/><rect x="19" y="16" width="1" height="1"/><rect x="20" y="16" width="1" height="1"/><rect x="27" y="16" width="1" height="1"/><rect x="28" y="16" width="1" height="1"/><rect x="2" y="17" width="1" height="1"/><rect x="3" y="17" width="1" height="1"/><rect x="4" y="17" width="1" height="1"/><rect x="5" y="17" width="1" height="1"/><rect x="7" y="17" width="1" height="1"/><rect x="10" y="17" width="1" height="1"/><rect x="11" y="17" width="1" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="13" y="17" width="1" height="1"/><rect x="15" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="18" y="17" width="1" height="1"/><rect x="22" y="17" width="1" height="1"/><rect x="23" y="17" width="1" height="1"/><rect x="26" y="17" width="1" height="1"/><rect x="28" y="17" width="1" height="1"/><rect x="30" y="17" width="1" height="1"/><rect x="2" y="18" width="1" height="1"/><rect x="5" y="18" width="1" height="1"/><rect x="7" y="18" width="1" height="1"/><rect x="8" y="18" width="1" height="1"/><rect x="10" y="18" width="1" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="12" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="17" y="18" width="1" height="1"/><rect x="19" y="18" width="1" height="1"/><rect x="20" y="18" width="1" height="1"/><rect x="21" y="18" width="1" height="1"/><rect x="25" y="18" width="1" height="1"/><rect x="27" y="18" width="1" height="1"/><rect x="28" y="18" width="1" height="1"/><rect x="2" y="19" width="1" height="1"/><rect x="5" y="19" width="1" height="1"/><rect x="6" y="19" width="1" height="1"/><rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="18" y="19" width="1" height="1"/><rect x="19" y="19" width="1" height="1"/><rect x="20" y="19" width="1" height="1"/><rect x="21" y="19" width="1" height="1"/><rect x="22" y="19" width="1" height="1"/><rect x="24" y="19" width="1" height="1"/><rect x="25" y="19" width="1" height="1"/><rect x="26" y="19" width="1" height="1"/><rect x="28" y="19" width="1" height="1"/><rect x="29" y="19" width="1" height="1"/><rect x="30" y="19" width="1" height="1"/><rect x="2" y="20" width="1" height="1"/><rect x="3" y="20" width="1" height="1"/><rect x="6" y="20" width="1" height="1"/><rect x="7" y="20" width="1" height="1"/><rect x="8" y="20" width="1" height="1"/><rect x="9" y="20" width="1" height="1"/><rect x="10" y="20" width="1" height="1"/><rect x="12" y="20" width="1" height="1"/><rect x="15" y="20" width="1" height="1"/><rect x="16" y="20" width="1" height="1"/><rect x="18" y="20" width="1" height="1"/><rect x="21" y="20" width="1" height="1"/><rect x="24" y="20" width="1" height="1"/><rect x="25" y="20" width="1" height="1"/><rect x="26" y="20" width="1" height="1"/><rect x="27" y="20" width="1" height="1"/><rect x="30" y="20" width="1" height="1"/><rect x="2" y="21" width="1" height="1"/><rect x="4" y="21" width="1" height="1"/><rect x="12" y="21" width="1" height="1"/><rect x="14" y="21" width="1" height="1"/><rect x="16" y="21" width="1" height="1"/><rect x="17" y="21" width="1" height="1"/><rect x="18" y="21" width="1" height="1"/><rect x="20" y="21" width="1" height="1"/><rect x="21" y="21" width="1" height="1"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="21" width="1" height="1"/><rect x="26" y="21" width="1" height="1"/><rect x="2" y="22" width="1" height="1"/><rect x="4" y="22" width="1" height="1"/><rect x="5" y="22" width="1" height="1"/><rect x="6" y="22" width="1" height="1"/><rect x="8" y="22" width="1" height="1"/><rect x="9" y="22" width="1" height="1"/><rect x="10" y="22" width="1" height="1"/><rect x="11" y="22" width="1" height="1"/><rect x="12" y="22" width="1" height="1"/><rect x="13" y="22" width="1" height="1"/><rect x="19" y="22" width="1" height="1"/><rect x="22" y="22" width="1" height="1"/><rect x="23" y="22" width="1" height="1"/><rect x="24" y="22" width="1" height="1"/><rect x="25" y="22" width="1" height="1"/><rect x="26" y="22" width="1" height="1"/><rect x="28" y="22" width="1" height="1"/><rect x="29" y="22" width="1" height="1"/><rect x="30" y="22" width="1" height="1"/><rect x="10" y="23" width="1" height="1"/><rect x="11" y="23" width="1" height="1"/><rect x="15" y="23" width="1" height="1"/><rect x="18" y="23" width="1" height="1"/><rect x="20" y="23" width="1" height="1"/><rect x="22" y="23" width="1" height="1"/><rect x="26" y="23" width="1" height="1"/><rect x="27" y="23" width="1" height="1"/><rect x="2" y="24" width="1" height="1"/><rect x="3" y="24" width="1" height="1"/><rect x="4" y="24" width="1" height="1"/><rect x="5" y="24" width="1" height="1"/><rect x="6" y="24" width="1" height="1"/><rect x="7" y="24" width="1" height="1"/><rect x="8" y="24" width="1" height="1"/><rect x="11" y="24" width="1" height="1"/><rect x="12" y="24" width="1" height="1"/><rect x="13" y="24" width="1" height="1"/><rect x="14" y="24" width="1" height="1"/><rect x="15" y="24" width="1" height="1"/><rect x="16" y="24" width="1" height="1"/><rect x="17" y="24" width="1" height="1"/><rect x="18" y="24" width="1" height="1"/><rect x="19" y="24" width="1" height="1"/><rect x="20" y="24" width="1" height="1"/><rect x="21" y="24" width="1" height="1"/><rect x="22" y="24" width="1" height="1"/><rect x="24" y="24" width="1" height="1"/><rect x="26" y="24" width="1" height="1"/><rect x="27" y="24" width="1" height="1"/><rect x="28" y="24" width="1" height="1"/><rect x="2" y="25" width="1" height="1"/><rect x="8" y="25" width="1" height="1"/><rect x="11" y="25" width="1" height="1"/><rect x="14" y="25" width="1" height="1"/><rect x="15" y="25" width="1" height="1"/><rect x="17" y="25" width="1" height="1"/><rect x="18" y="25" width="1" height="1"/><rect x="21" y="25" width="1" height="1"/><rect x="22" y="25" width="1" height="1"/><rect x="26" y="25" width="1" height="1"/><rect x="29" y="25" width="1" height="1"/><rect x="30" y="25" width="1" height="1"/><rect x="2" y="26" width="1" height="1"/><rect x="4" y="26" width="1" height="1"/><rect x="5" y="26" width="1" height="1"/><rect x="6" y="26" width="1" height="1"/><rect x="8" y="26" width="1" height="1"/><rect x="11" y="26" width="1" height="1"/><rect x="13" y="26" width="1" height="1"/><rect x="14" y="26" width="1" height="1"/><rect x="15" y="26" width="1" height="1"/><rect x="18" y="26" width="1" height="1"/><rect x="21" y="26" width="1" height="1"/><rect x="22" y="26" width="1" height="1"/><rect x="23" y="26" width="1" height="1"/><rect x="24" y="26" width="1" height="1"/><rect x="25" y="26" width="1" height="1"/><rect x="26" y="26" width="1" height="1"/><rect x="27" y="26" width="1" height="1"/><rect x="2" y="27" width="1" height="1"/><rect x="4" y="27" width="1" height="1"/><rect x="5" y="27" width="1" height="1"/><rect x="6" y="27" width="1" height="1"/><rect x="8" y="27" width="1" height="1"/><rect x="11" y="27" width="1" height="1"/><rect x="12" y="27" width="1" height="1"/><rect x="17" y="27" width="1" height="1"/><rect x="19" y="27" width="1" height="1"/><rect x="20" y="27" width="1" height="1"/><rect x="21" y="27" width="1" height="1"/><rect x="23" y="27" width="1" height="1"/><rect x="25" y="27" width="1" height="1"/><rect x="27" y="27" width="1" height="1"/><rect x="28" y="27" width="1" height="1"/><rect x="29" y="27" width="1" height="1"/><rect x="2" y="28" width="1" height="1"/><rect x="4" y="28" width="1" height="1"/><rect x="5" y="28" width="1" height="1"/><rect x="6" y="28" width="1" height="1"/><rect x="8" y="28" width="1" height="1"/><rect x="13" y="28" width="1" height="1"/><rect x="15" y="28" width="1" height="1"/><rect x="16" y="28" width="1" height="1"/><rect x="17" y="28" width="1" height="1"/><rect x="18" y="28" width="1" height="1"/><rect x="19" y="28" width="1" height="1"/><rect x="23" y="28" width="1" height="1"/><rect x="24" y="28" width="1" height="1"/><rect x="25" y="28" width="1" height="1"/><rect x="26" y="28" width="1" height="1"/><rect x="27" y="28" width="1" height="1"/><rect x="28" y="28" width="1" height="1"/><rect x="29" y="28" width="1" height="1"/><rect x="2" y="29" width="1" height="1"/><rect x="8" y="29" width="1" height="1"/><rect x="12" y="29" width="1" height="1"/><rect x="15" y="29" width="1" height="1"/><rect x="23" y="29" width="1" height="1"/><rect x="25" y="29" width="1" height="1"/><rect x="27" y="29" width="1" height="1"/><rect x="28" y="29" width="1" height="1"/><rect x="30" y="29" width="1" height="1"/><rect x="2" y="30" width="1" height="1"/><rect x="3" y="30" width="1" height="1"/><rect x="4" y="30" width="1" height="1"/><rect x="5" y="30" width="1" height="1"/><rect x="6" y="30" width="1" height="1"/><rect x="7" y="30" width="1" height="1"/><rect x="8" y="30" width="1" height="1"/><rect x="10" y="30" width="1" height="1"/><rect x="12" y="30" width="1" height="1"/><rect x="13" y="30" width="1" height="1"/><rect x="15" y="30" width="1" height="1"/><rect x="16" y="30" width="1" height="1"/><rect x="19" y="30" width="1" height="1"/><rect x="21" y="30" width="1" height="1"/><rect x="26" y="30" width="1" height="1"/><rect x="27" y="30" width="1" height="1"/><rect x="28" y="30" width="1" height="1"/></g></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Offsets (% of card width)</h2>
+    <div class="offset-row" data-row="name"><span class="label">Name</span><span class="vals">dx 0, dy 0</span><button data-reset="name">Reset</button></div>
+    <div class="offset-row" data-row="photo"><span class="label">Caricature</span><span class="vals">dx 0, dy 0</span><button data-reset="photo">Reset</button></div>
+    <div class="offset-row" data-row="logo"><span class="label">Logo</span><span class="vals">dx 0, dy 0</span><button data-reset="logo">Reset</button></div>
+    <div class="offset-row" data-row="qr"><span class="label">QR code</span><span class="vals">dx 0, dy 0</span><button data-reset="qr">Reset</button></div>
+    <div class="offset-row" data-row="contact"><span class="label">Contact text</span><span class="vals">dx 0, dy 0</span><button data-reset="contact">Reset</button></div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" id="save-btn">Save Layout</button>
+    <button id="reset-all-btn">Reset All</button>
+  </div>
+  <div id="token-row">
+    <input type="password" id="token-input" placeholder="Paste your GitHub token (same one you use to sign in to /admin/)">
+    <button class="btn-primary" id="token-save-btn">Use this token</button>
+  </div>
+  <p id="status"></p>
+</div>
+
+<script>
+  const REPO = 'schubbydoo/StevesBuildsWebSite';
+  const FILE_PATH = 'card-layout.json';
+  const TOKEN_KEY = 'sml_card_layout_token';
+  const KEYS = ['photo', 'name', 'logo', 'qr', 'contact'];
+
+  let offsets = {};
+  KEYS.forEach(k => { offsets[k] = { dx: 0, dy: 0 }; });
+  let activeKey = null;
+
+  function applyOffset(key){
+    const el = document.getElementById('el-' + key);
+    if (!el) return;
+    el.style.setProperty('--dx', offsets[key].dx);
+    el.style.setProperty('--dy', offsets[key].dy);
+    const row = document.querySelector('.offset-row[data-row="' + key + '"] .vals');
+    if (row) row.textContent = 'dx ' + offsets[key].dx.toFixed(2) + ', dy ' + offsets[key].dy.toFixed(2);
+  }
+  function applyAll(){ KEYS.forEach(applyOffset); }
+
+  // ---- load current saved layout + real profile content ----
+  fetch('../card-layout.json')
+    .then(res => res.ok ? res.json() : {})
+    .catch(() => ({}))
+    .then(saved => {
+      saved = saved || {};
+      KEYS.forEach(k => {
+        const o = saved[k];
+        offsets[k] = {
+          dx: (o && typeof o.dx === 'number') ? o.dx : 0,
+          dy: (o && typeof o.dy === 'number') ? o.dy : 0
+        };
+      });
+      applyAll();
+    });
+
+  const mailIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>';
+  const phoneIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+  const globeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg>';
+
+  fetch('../profile.json')
+    .then(res => res.json())
+    .then(profile => {
+      const name = profile.name || '';
+      const firstSpace = name.indexOf(' ');
+      const nameHtml = firstSpace === -1 ? name : name.slice(0, firstSpace) + '<br>' + name.slice(firstSpace + 1);
+      document.getElementById('el-name').innerHTML = nameHtml;
+      document.getElementById('el-photo').src = profile.photoUrl || '';
+      document.getElementById('el-photo').alt = name;
+
+      const rows = [];
+      if (profile.email) rows.push('<a class="biz-card-row" href="mailto:' + profile.email + '">' + mailIcon + '<span>' + profile.email + '</span></a>');
+      if (profile.phone) rows.push('<a class="biz-card-row" href="tel:' + profile.phone.replace(/[^+\d]/g, '') + '">' + phoneIcon + '<span>' + profile.phone + '</span></a>');
+      rows.push('<a class="biz-card-row" href="https://strangemachinelabs.com" target="_blank" rel="noopener">' + globeIcon + '<span>strangemachinelabs.com</span></a>');
+      document.getElementById('el-contact').innerHTML = rows.join('');
+    })
+    .catch(() => {});
+
+  // ---- dragging ----
+  let dragKey = null, dragStartX = 0, dragStartY = 0, dragStartDx = 0, dragStartDy = 0, dragEl = null;
+
+  document.querySelectorAll('.draggable').forEach(el => {
+    el.addEventListener('pointerdown', e => {
+      const key = el.getAttribute('data-key');
+      activeKey = key;
+      dragKey = key;
+      dragEl = el;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      dragStartDx = offsets[key].dx;
+      dragStartDy = offsets[key].dy;
+      el.classList.add('dragging');
+      el.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    el.addEventListener('pointermove', e => {
+      if (dragKey !== el.getAttribute('data-key')) return;
+      const cardRect = document.getElementById('biz-card').getBoundingClientRect();
+      const dxPct = (e.clientX - dragStartX) / cardRect.width * 100;
+      const dyPct = (e.clientY - dragStartY) / cardRect.width * 100;
+      offsets[dragKey] = { dx: dragStartDx + dxPct, dy: dragStartDy + dyPct };
+      applyOffset(dragKey);
+    });
+    const endDrag = e => {
+      if (dragKey !== el.getAttribute('data-key')) return;
+      el.classList.remove('dragging');
+      offsets[dragKey].dx = Math.round(offsets[dragKey].dx * 100) / 100;
+      offsets[dragKey].dy = Math.round(offsets[dragKey].dy * 100) / 100;
+      applyOffset(dragKey);
+      dragKey = null;
+    };
+    el.addEventListener('pointerup', endDrag);
+    el.addEventListener('pointercancel', endDrag);
+    el.addEventListener('focus', () => { activeKey = el.getAttribute('data-key'); });
+  });
+
+  // ---- keyboard nudging ----
+  document.addEventListener('keydown', e => {
+    if (!activeKey) return;
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    e.preventDefault();
+    const step = e.shiftKey ? 1 : 0.1;
+    if (e.key === 'ArrowUp') offsets[activeKey].dy -= step;
+    if (e.key === 'ArrowDown') offsets[activeKey].dy += step;
+    if (e.key === 'ArrowLeft') offsets[activeKey].dx -= step;
+    if (e.key === 'ArrowRight') offsets[activeKey].dx += step;
+    offsets[activeKey].dx = Math.round(offsets[activeKey].dx * 100) / 100;
+    offsets[activeKey].dy = Math.round(offsets[activeKey].dy * 100) / 100;
+    applyOffset(activeKey);
+  });
+
+  // ---- reset buttons ----
+  document.querySelectorAll('[data-reset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-reset');
+      offsets[key] = { dx: 0, dy: 0 };
+      applyOffset(key);
+    });
+  });
+  document.getElementById('reset-all-btn').addEventListener('click', () => {
+    KEYS.forEach(k => { offsets[k] = { dx: 0, dy: 0 }; });
+    applyAll();
+  });
+
+  // ---- save to GitHub ----
+  const statusEl = document.getElementById('status');
+  function showStatus(msg, isError){
+    statusEl.textContent = msg;
+    statusEl.className = isError ? 'error' : 'ok';
+  }
+
+  function getToken(){ return localStorage.getItem(TOKEN_KEY) || ''; }
+  function setToken(t){ localStorage.setItem(TOKEN_KEY, t); }
+
+  document.getElementById('token-save-btn').addEventListener('click', () => {
+    const t = (document.getElementById('token-input').value || '').trim();
+    if (!t) return;
+    setToken(t);
+    document.getElementById('token-row').style.display = 'none';
+    doSave(t);
+  });
+
+  document.getElementById('save-btn').addEventListener('click', () => {
+    const token = getToken();
+    if (!token) {
+      document.getElementById('token-row').style.display = 'flex';
+      showStatus('Paste a GitHub token to save (the same one you use to sign in to /admin/ -- generate one there via "Sign In with Token" if you need a fresh one).');
+      return;
+    }
+    doSave(token);
+  });
+
+  function doSave(token){
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.disabled = true;
+    showStatus('Saving…');
+    const apiUrl = 'https://api.github.com/repos/' + REPO + '/contents/' + FILE_PATH;
+    fetch(apiUrl, { headers: { Authorization: 'token ' + token } })
+      .then(res => {
+        if (res.ok) return res.json().then(data => data.sha);
+        if (res.status === 404) return undefined;
+        if (res.status === 401) { localStorage.removeItem(TOKEN_KEY); throw new Error('That token was rejected. Paste a fresh one.'); }
+        return res.json().then(data => { throw new Error('Could not read current file (' + res.status + '): ' + (data.message || res.statusText)); });
+      })
+      .then(sha => {
+        const payload = {};
+        KEYS.forEach(k => { payload[k] = { dx: offsets[k].dx, dy: offsets[k].dy }; });
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2) + '\n')));
+        const body = { message: 'Update business card layout', content: content };
+        if (sha) body.sha = sha;
+        return fetch(apiUrl, {
+          method: 'PUT',
+          headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+      })
+      .then(res => {
+        if (res.ok) return res.json();
+        if (res.status === 401) { localStorage.removeItem(TOKEN_KEY); }
+        return res.json().then(data => { throw new Error('Save failed (' + res.status + '): ' + (data.message || res.statusText)); });
+      })
+      .then(() => {
+        showStatus('Saved -- the live site will update in about a minute.');
+      })
+      .catch(err => {
+        showStatus('Error: ' + (err && err.message ? err.message : err), true);
+        document.getElementById('token-row').style.display = 'flex';
+      })
+      .finally(() => { saveBtn.disabled = false; });
+  }
+</script>
+</body>
+</html>
