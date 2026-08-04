@@ -1,7 +1,27 @@
 {
-  "photo": { "dx": 0, "dy": 0, "scale": 1 },
-  "name": { "dx": 0, "dy": 0, "scale": 1 },
-  "logo": { "dx": 0, "dy": 0, "scale": 1 },
-  "qr": { "dx": 0, "dy": 0, "scale": 1 },
-  "contact": { "dx": 0, "dy": 0, "scale": 1 }
+  "photo": {
+    "dx": 15.64,
+    "dy": -6.77,
+    "scale": 1.45
+  },
+  "name": {
+    "dx": -0.15,
+    "dy": -7.1,
+    "scale": 1.9
+  },
+  "logo": {
+    "dx": 9.68,
+    "dy": 1.45,
+    "scale": 1.6
+  },
+  "qr": {
+    "dx": 22.59,
+    "dy": 2.58,
+    "scale": 1.3
+  },
+  "contact": {
+    "dx": 18.23,
+    "dy": -6.94,
+    "scale": 1.3
+  }
 }
