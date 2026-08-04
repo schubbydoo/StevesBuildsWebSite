@@ -131,11 +131,13 @@
         const o = layout[key];
         const dx = (o && typeof o.dx === 'number') ? o.dx : 0;
         const dy = (o && typeof o.dy === 'number') ? o.dy : 0;
+        const scale = (o && typeof o.scale === 'number') ? o.scale : 1;
         ids[key].forEach(id => {
           const el = document.getElementById(id);
           if (!el) return;
           el.style.setProperty('--dx', dx);
           el.style.setProperty('--dy', dy);
+          el.style.setProperty('--scale', scale);
         });
       });
     })

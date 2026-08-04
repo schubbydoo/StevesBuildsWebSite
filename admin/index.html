@@ -131,8 +131,9 @@
         var o = layout && layout[key];
         var dx = (o && typeof o.dx === 'number') ? o.dx : 0;
         var dy = (o && typeof o.dy === 'number') ? o.dy : 0;
-        if (!dx && !dy) return '';
-        return ' style="--dx:' + dx + ';--dy:' + dy + '"';
+        var scale = (o && typeof o.scale === 'number') ? o.scale : 1;
+        if (!dx && !dy && scale === 1) return '';
+        return ' style="--dx:' + dx + ';--dy:' + dy + ';--scale:' + scale + '"';
       }
 
       function buildCardInnerHtml(name, photoUrl, email, phone, layout){

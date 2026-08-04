@@ -504,7 +504,7 @@
     line-height:1.2;
     flex-shrink:0;
     margin-left:2.097cqw;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
   }
   .biz-card-photo{
     width:17.742cqw;
@@ -514,14 +514,14 @@
     border:2px solid var(--line);
     background:var(--bg);
     flex-shrink:0;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
   }
   .biz-card-contact{
     display:flex;
     flex-direction:column;
     gap:1.129cqw;
     margin-left:auto;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
   }
   .biz-card-row{
     display:flex;
@@ -553,7 +553,7 @@
     height:30.968cqw;
     width:auto;
     display:block;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
   }
   .biz-card-qr{
     width:17.097cqw;
@@ -565,7 +565,7 @@
     flex-shrink:0;
     margin-top:9.355cqw;
     margin-left:auto;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw));
+    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
   }
   .biz-card-qr svg{width:100%;height:100%;display:block;}
   @media screen and (max-width:480px){
@@ -670,8 +670,10 @@
       var o = layout[key];
       var dx = (o && typeof o.dx === 'number') ? o.dx : 0;
       var dy = (o && typeof o.dy === 'number') ? o.dy : 0;
+      var scale = (o && typeof o.scale === 'number') ? o.scale : 1;
       el.style.setProperty('--dx', dx);
       el.style.setProperty('--dy', dy);
+      el.style.setProperty('--scale', scale);
     });
   }
 
