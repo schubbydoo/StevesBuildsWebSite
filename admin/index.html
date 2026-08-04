@@ -95,6 +95,15 @@
       // sandboxed iframe that can't reliably do canvas capture or print
       // itself. Shares admin/business-card.css (registered below) with the
       // standalone admin/business-card.html print page so both stay in sync.
+      // Register the Google Fonts stylesheet as its own preview style
+      // (not just relying on the @import at the top of business-card.css) --
+      // Sveltia's preview pane doesn't always resolve a nested @import the
+      // same way a normal page <link> does, which was letting JetBrains Mono
+      // silently fail to load here and fall back to a wider system monospace
+      // font, causing the website-URL line to wrap only in this preview even
+      // though the live site and print/export (which both use a real <link>)
+      // rendered fine.
+      CMS.registerPreviewStyle('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
       CMS.registerPreviewStyle('/admin/business-card.css');
 
       var mailIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>';
