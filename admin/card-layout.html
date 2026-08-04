@@ -337,8 +337,13 @@
   function setToken(t){ localStorage.setItem(TOKEN_KEY, t); }
 
   document.getElementById('token-save-btn').addEventListener('click', () => {
-    const t = (document.getElementById('token-input').value || '').trim();
-    if (!t) return;
+    const input = document.getElementById('token-input');
+    const t = (input.value || '').trim();
+    if (!t) {
+      showStatus('Paste a token into the box first -- it looked empty.', true);
+      input.focus();
+      return;
+    }
     setToken(t);
     document.getElementById('token-row').style.display = 'none';
     doSave(t);
@@ -359,38 +364,52 @@
     saveBtn.disabled = true;
     showStatus('Saving…');
     const apiUrl = 'https://api.github.com/repos/' + REPO + '/contents/' + FILE_PATH;
-    fetch(apiUrl, { headers: { Authorization: 'token ' + token } })
-      .then(res => {
-        if (res.ok) return res.json().then(data => data.sha);
-        if (res.status === 404) return undefined;
-        if (res.status === 401) { localStorage.removeItem(TOKEN_KEY); throw new Error('That token was rejected. Paste a fresh one.'); }
-        return res.json().then(data => { throw new Error('Could not read current file (' + res.status + '): ' + (data.message || res.statusText)); });
-      })
-      .then(sha => {
-        const payload = {};
-        KEYS.forEach(k => { payload[k] = { dx: offsets[k].dx, dy: offsets[k].dy, scale: offsets[k].scale }; });
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2) + '\n')));
-        const body = { message: 'Update business card layout', content: content };
-        if (sha) body.sha = sha;
-        return fetch(apiUrl, {
-          method: 'PUT',
-          headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-      })
-      .then(res => {
-        if (res.ok) return res.json();
-        if (res.status === 401) { localStorage.removeItem(TOKEN_KEY); }
-        return res.json().then(data => { throw new Error('Save failed (' + res.status + '): ' + (data.message || res.statusText)); });
-      })
-      .then(() => {
-        showStatus('Saved -- the live site will update in about a minute.');
-      })
-      .catch(err => {
-        showStatus('Error: ' + (err && err.message ? err.message : err), true);
-        document.getElementById('token-row').style.display = 'flex';
-      })
-      .finally(() => { saveBtn.disabled = false; });
+    try {
+      fetch(apiUrl, { headers: { Authorization: 'token ' + token } })
+        .then(res => {
+          if (res.ok) return res.json().then(data => data.sha);
+          if (res.status === 404) return undefined;
+          if (res.status === 401) { localStorage.removeItem(TOKEN_KEY); throw new Error('That token was rejected. Paste a fresh one.'); }
+          return res.json().then(data => { throw new Error('Could not read current file (' + res.status + '): ' + (data.message || res.statusText)); });
+        })
+        .then(sha => {
+          const payload = {};
+          KEYS.forEach(k => { payload[k] = { dx: offsets[k].dx, dy: offsets[k].dy, scale: offsets[k].scale }; });
+          const content = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2) + '\n')));
+          const body = { message: 'Update business card layout', content: content };
+          if (sha) body.sha = sha;
+          return fetch(apiUrl, {
+            method: 'PUT',
+            headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+        })
+        .then(res => {
+          if (res.ok) return res.json();
+          if (res.status === 401) { localStorage.removeItem(TOKEN_KEY); }
+          return res.json().then(data => { throw new Error('Save failed (' + res.status + '): ' + (data.message || res.statusText)); });
+        })
+        .then(() => {
+          showStatus('Saved -- the live site will update in about a minute.');
+          window.alert('Saved. The live site will update in about a minute.');
+        })
+        .catch(err => {
+          const msg = (err && err.message) ? err.message : String(err);
+          console.error('card-layout save failed:', err);
+          showStatus('Error: ' + msg, true);
+          window.alert('Save failed: ' + msg);
+          document.getElementById('token-row').style.display = 'flex';
+        })
+        .finally(() => { saveBtn.disabled = false; });
+    } catch (err) {
+      // Catches any synchronous throw before the fetch chain even starts
+      // (e.g. a malformed payload) so a bug here can never look like
+      // nothing happened when the button was clicked.
+      console.error('card-layout save threw synchronously:', err);
+      saveBtn.disabled = false;
+      showStatus('Error: ' + (err && err.message ? err.message : err), true);
+      window.alert('Save failed: ' + (err && err.message ? err.message : err));
+    }
   }
 </script>
 </body>
