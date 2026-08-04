@@ -181,6 +181,12 @@
   function applyOffset(key){
     const el = document.getElementById('el-' + key);
     if (!el) return;
+    // Guard against a missing/undefined scale ever reaching setProperty --
+    // an invalid --scale value invalidates the *whole* transform
+    // declaration (translate included), which is what broke dragging
+    // last round: pointermove was replacing the offsets object with one
+    // that only had dx/dy, silently dropping scale.
+    if (typeof offsets[key].scale !== 'number') offsets[key].scale = 1;
     el.style.setProperty('--dx', offsets[key].dx);
     el.style.setProperty('--dy', offsets[key].dy);
     el.style.setProperty('--scale', offsets[key].scale);
@@ -250,7 +256,8 @@
       const cardRect = document.getElementById('biz-card').getBoundingClientRect();
       const dxPct = (e.clientX - dragStartX) / cardRect.width * 100;
       const dyPct = (e.clientY - dragStartY) / cardRect.width * 100;
-      offsets[dragKey] = { dx: dragStartDx + dxPct, dy: dragStartDy + dyPct };
+      offsets[dragKey].dx = dragStartDx + dxPct;
+      offsets[dragKey].dy = dragStartDy + dyPct;
       applyOffset(dragKey);
     });
     const endDrag = e => {
