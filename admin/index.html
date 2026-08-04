@@ -5,96 +5,16 @@
     <meta name="robots" content="noindex" />
     <title>Steve's Builds — Admin</title>
     <link rel="stylesheet" href="business-card.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   </head>
   <body>
-    <!-- Hidden, off-screen business-card element used ONLY for printing and
-         PNG/JPG export. It lives here in the top-level admin page (not
-         inside the CMS preview iframe below) because that iframe is
-         sandboxed by Sveltia CMS and blocks canvas image capture / print —
-         doing the actual work up here, in the real page origin, avoids that
-         entirely. The preview iframe just asks this page to do the work via
-         postMessage. See the next script block for the listener. -->
-    <div id="card-export-wrap" style="position:fixed;left:-99999px;top:0;" aria-hidden="true">
-      <div id="card-export" class="biz-card card-bleed"></div>
-    </div>
-
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 
     <script>
-      // --- Top-level page: handles postMessage requests from the preview
-      // iframe's business-card component (print / download PNG / download
-      // JPG). Runs here, not inside the sandboxed iframe, so html2canvas,
-      // window.print(), and file downloads all work normally.
-      (function () {
-        var exportEl = document.getElementById('card-export');
-
-        function respond(source, type, extra) {
-          if (!source) return;
-          var msg = Object.assign({ type: type }, extra || {});
-          try { source.postMessage(msg, '*'); } catch (err) { console.error('[business-card] failed to postMessage response', err); }
-        }
-
-        window.addEventListener('message', function (event) {
-          var data = event.data;
-          if (!data || typeof data !== 'object' || typeof data.type !== 'string' || data.type.indexOf('sml-card-') !== 0) return;
-
-          exportEl.innerHTML = data.html || '';
-
-          if (data.type === 'sml-card-print') {
-            try {
-              window.print();
-              respond(event.source, 'sml-card-print-done');
-            } catch (err) {
-              console.error('[business-card] print failed', err);
-              respond(event.source, 'sml-card-print-error', { message: String(err && err.message ? err.message : err) });
-            }
-            return;
-          }
-
-          if (data.type === 'sml-card-download') {
-            var format = data.format === 'jpg' ? 'jpg' : 'png';
-            if (typeof html2canvas !== 'function') {
-              console.error('[business-card] html2canvas is not loaded');
-              respond(event.source, 'sml-card-download-error', { message: 'html2canvas failed to load — check your internet connection and try again.' });
-              return;
-            }
-            html2canvas(exportEl, { scale: 6.25, backgroundColor: '#0b0d0f', useCORS: true }).then(function (canvas) {
-              var mime = format === 'png' ? 'image/png' : 'image/jpeg';
-              var quality = format === 'png' ? undefined : 0.95;
-              canvas.toBlob(function (blob) {
-                if (!blob) {
-                  console.error('[business-card] canvas.toBlob returned no blob');
-                  respond(event.source, 'sml-card-download-error', { message: 'Could not generate the image file.' });
-                  return;
-                }
-                var url = URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = 'strange-machine-labs-business-card.' + format;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                respond(event.source, 'sml-card-download-done', { format: format });
-              }, mime, quality);
-            }).catch(function (err) {
-              console.error('[business-card] html2canvas failed', err);
-              respond(event.source, 'sml-card-download-error', { message: String(err && err.message ? err.message : err) });
-            });
-          }
-        });
-      })();
-    </script>
-
-    <script>
-      // --- CMS preview pane: live business-card preview inside the
-      // 'Contact info' editor, with Print/Download buttons that hand off
-      // the actual work to the top-level page above via postMessage (see
-      // the previous <script> block) since this preview renders inside a
-      // sandboxed iframe that can't reliably do canvas capture or print
-      // itself. Shares admin/business-card.css (registered below) with the
-      // standalone admin/business-card.html print page so both stay in sync.
+      // --- CMS preview pane: read-only business-card preview inside the
+      // 'Contact info' editor. This mirrors exactly what the live site
+      // renders -- no print/export logic lives here anymore; that all
+      // moved to admin/card-layout.html, which also handles drag/resize
+      // positioning and now Print/Save as PDF + PNG/JPG download too.
       // Register the Google Fonts stylesheet as its own preview style
       // (not just relying on the @import at the top of business-card.css) --
       // Sveltia's preview pane doesn't always resolve a nested @import the
@@ -112,7 +32,7 @@
 
       var QR_SVG = '<svg viewBox="0 0 33 33" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><rect width="33" height="33" fill="#fff"/><g fill="#0b0d0f"><rect x="2" y="2" width="1" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="5" y="2" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="8" y="2" width="1" height="1"/><rect x="11" y="2" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="15" y="2" width="1" height="1"/><rect x="16" y="2" width="1" height="1"/><rect x="17" y="2" width="1" height="1"/><rect x="20" y="2" width="1" height="1"/><rect x="24" y="2" width="1" height="1"/><rect x="25" y="2" width="1" height="1"/><rect x="26" y="2" width="1" height="1"/><rect x="27" y="2" width="1" height="1"/><rect x="28" y="2" width="1" height="1"/><rect x="29" y="2" width="1" height="1"/><rect x="30" y="2" width="1" height="1"/><rect x="2" y="3" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="17" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="30" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="5" y="4" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="10" y="4" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/><rect x="14" y="4" width="1" height="1"/><rect x="16" y="4" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="1" height="1"/><rect x="22" y="4" width="1" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="26" y="4" width="1" height="1"/><rect x="27" y="4" width="1" height="1"/><rect x="28" y="4" width="1" height="1"/><rect x="30" y="4" width="1" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="11" y="5" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/><rect x="13" y="5" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="16" y="5" width="1" height="1"/><rect x="17" y="5" width="1" height="1"/><rect x="19" y="5" width="1" height="1"/><rect x="22" y="5" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="26" y="5" width="1" height="1"/><rect x="27" y="5" width="1" height="1"/><rect x="28" y="5" width="1" height="1"/><rect x="30" y="5" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/><rect x="5" y="6" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="17" y="6" width="1" height="1"/><rect x="20" y="6" width="1" height="1"/><rect x="21" y="6" width="1" height="1"/><rect x="22" y="6" width="1" height="1"/><rect x="24" y="6" width="1" height="1"/><rect x="26" y="6" width="1" height="1"/><rect x="27" y="6" width="1" height="1"/><rect x="28" y="6" width="1" height="1"/><rect x="30" y="6" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="8" y="7" width="1" height="1"/><rect x="11" y="7" width="1" height="1"/><rect x="12" y="7" width="1" height="1"/><rect x="15" y="7" width="1" height="1"/><rect x="16" y="7" width="1" height="1"/><rect x="18" y="7" width="1" height="1"/><rect x="20" y="7" width="1" height="1"/><rect x="24" y="7" width="1" height="1"/><rect x="30" y="7" width="1" height="1"/><rect x="2" y="8" width="1" height="1"/><rect x="3" y="8" width="1" height="1"/><rect x="4" y="8" width="1" height="1"/><rect x="5" y="8" width="1" height="1"/><rect x="6" y="8" width="1" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="12" y="8" width="1" height="1"/><rect x="14" y="8" width="1" height="1"/><rect x="16" y="8" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="20" y="8" width="1" height="1"/><rect x="22" y="8" width="1" height="1"/><rect x="24" y="8" width="1" height="1"/><rect x="25" y="8" width="1" height="1"/><rect x="26" y="8" width="1" height="1"/><rect x="27" y="8" width="1" height="1"/><rect x="28" y="8" width="1" height="1"/><rect x="29" y="8" width="1" height="1"/><rect x="30" y="8" width="1" height="1"/><rect x="10" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="12" y="9" width="1" height="1"/><rect x="15" y="9" width="1" height="1"/><rect x="21" y="9" width="1" height="1"/><rect x="22" y="9" width="1" height="1"/><rect x="2" y="10" width="1" height="1"/><rect x="8" y="10" width="1" height="1"/><rect x="10" y="10" width="1" height="1"/><rect x="12" y="10" width="1" height="1"/><rect x="14" y="10" width="1" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="17" y="10" width="1" height="1"/><rect x="19" y="10" width="1" height="1"/><rect x="21" y="10" width="1" height="1"/><rect x="23" y="10" width="1" height="1"/><rect x="24" y="10" width="1" height="1"/><rect x="27" y="10" width="1" height="1"/><rect x="28" y="10" width="1" height="1"/><rect x="29" y="10" width="1" height="1"/><rect x="2" y="11" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/><rect x="4" y="11" width="1" height="1"/><rect x="6" y="11" width="1" height="1"/><rect x="9" y="11" width="1" height="1"/><rect x="10" y="11" width="1" height="1"/><rect x="11" y="11" width="1" height="1"/><rect x="13" y="11" width="1" height="1"/><rect x="16" y="11" width="1" height="1"/><rect x="20" y="11" width="1" height="1"/><rect x="21" y="11" width="1" height="1"/><rect x="25" y="11" width="1" height="1"/><rect x="26" y="11" width="1" height="1"/><rect x="28" y="11" width="1" height="1"/><rect x="29" y="11" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="4" y="12" width="1" height="1"/><rect x="5" y="12" width="1" height="1"/><rect x="7" y="12" width="1" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="10" y="12" width="1" height="1"/><rect x="12" y="12" width="1" height="1"/><rect x="13" y="12" width="1" height="1"/><rect x="14" y="12" width="1" height="1"/><rect x="19" y="12" width="1" height="1"/><rect x="20" y="12" width="1" height="1"/><rect x="22" y="12" width="1" height="1"/><rect x="24" y="12" width="1" height="1"/><rect x="25" y="12" width="1" height="1"/><rect x="26" y="12" width="1" height="1"/><rect x="4" y="13" width="1" height="1"/><rect x="5" y="13" width="1" height="1"/><rect x="6" y="13" width="1" height="1"/><rect x="7" y="13" width="1" height="1"/><rect x="9" y="13" width="1" height="1"/><rect x="10" y="13" width="1" height="1"/><rect x="11" y="13" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="17" y="13" width="1" height="1"/><rect x="18" y="13" width="1" height="1"/><rect x="20" y="13" width="1" height="1"/><rect x="24" y="13" width="1" height="1"/><rect x="26" y="13" width="1" height="1"/><rect x="27" y="13" width="1" height="1"/><rect x="3" y="14" width="1" height="1"/><rect x="6" y="14" width="1" height="1"/><rect x="8" y="14" width="1" height="1"/><rect x="9" y="14" width="1" height="1"/><rect x="12" y="14" width="1" height="1"/><rect x="14" y="14" width="1" height="1"/><rect x="15" y="14" width="1" height="1"/><rect x="16" y="14" width="1" height="1"/><rect x="22" y="14" width="1" height="1"/><rect x="24" y="14" width="1" height="1"/><rect x="25" y="14" width="1" height="1"/><rect x="30" y="14" width="1" height="1"/><rect x="2" y="15" width="1" height="1"/><rect x="4" y="15" width="1" height="1"/><rect x="5" y="15" width="1" height="1"/><rect x="9" y="15" width="1" height="1"/><rect x="13" y="15" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="15" y="15" width="1" height="1"/><rect x="16" y="15" width="1" height="1"/><rect x="21" y="15" width="1" height="1"/><rect x="22" y="15" width="1" height="1"/><rect x="24" y="15" width="1" height="1"/><rect x="25" y="15" width="1" height="1"/><rect x="26" y="15" width="1" height="1"/><rect x="29" y="15" width="1" height="1"/><rect x="30" y="15" width="1" height="1"/><rect x="3" y="16" width="1" height="1"/><rect x="4" y="16" width="1" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="8" y="16" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/><rect x="14" y="16" width="1" height="1"/><rect x="15" y="16" width="1" height="1"/><rect x="16" y="16" width="1" height="1"/><rect x="17" y="16" width="1" height="1"/><rect x="18" y="16" width="1" height="1"/><rect x="19" y="16" width="1" height="1"/><rect x="20" y="16" width="1" height="1"/><rect x="27" y="16" width="1" height="1"/><rect x="28" y="16" width="1" height="1"/><rect x="2" y="17" width="1" height="1"/><rect x="3" y="17" width="1" height="1"/><rect x="4" y="17" width="1" height="1"/><rect x="5" y="17" width="1" height="1"/><rect x="7" y="17" width="1" height="1"/><rect x="10" y="17" width="1" height="1"/><rect x="11" y="17" width="1" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="13" y="17" width="1" height="1"/><rect x="15" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="18" y="17" width="1" height="1"/><rect x="22" y="17" width="1" height="1"/><rect x="23" y="17" width="1" height="1"/><rect x="26" y="17" width="1" height="1"/><rect x="28" y="17" width="1" height="1"/><rect x="30" y="17" width="1" height="1"/><rect x="2" y="18" width="1" height="1"/><rect x="5" y="18" width="1" height="1"/><rect x="7" y="18" width="1" height="1"/><rect x="8" y="18" width="1" height="1"/><rect x="10" y="18" width="1" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="12" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="17" y="18" width="1" height="1"/><rect x="19" y="18" width="1" height="1"/><rect x="20" y="18" width="1" height="1"/><rect x="21" y="18" width="1" height="1"/><rect x="25" y="18" width="1" height="1"/><rect x="27" y="18" width="1" height="1"/><rect x="28" y="18" width="1" height="1"/><rect x="2" y="19" width="1" height="1"/><rect x="5" y="19" width="1" height="1"/><rect x="6" y="19" width="1" height="1"/><rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="18" y="19" width="1" height="1"/><rect x="19" y="19" width="1" height="1"/><rect x="20" y="19" width="1" height="1"/><rect x="21" y="19" width="1" height="1"/><rect x="22" y="19" width="1" height="1"/><rect x="24" y="19" width="1" height="1"/><rect x="25" y="19" width="1" height="1"/><rect x="26" y="19" width="1" height="1"/><rect x="28" y="19" width="1" height="1"/><rect x="29" y="19" width="1" height="1"/><rect x="30" y="19" width="1" height="1"/><rect x="2" y="20" width="1" height="1"/><rect x="3" y="20" width="1" height="1"/><rect x="6" y="20" width="1" height="1"/><rect x="7" y="20" width="1" height="1"/><rect x="8" y="20" width="1" height="1"/><rect x="9" y="20" width="1" height="1"/><rect x="10" y="20" width="1" height="1"/><rect x="12" y="20" width="1" height="1"/><rect x="15" y="20" width="1" height="1"/><rect x="16" y="20" width="1" height="1"/><rect x="18" y="20" width="1" height="1"/><rect x="21" y="20" width="1" height="1"/><rect x="24" y="20" width="1" height="1"/><rect x="25" y="20" width="1" height="1"/><rect x="26" y="20" width="1" height="1"/><rect x="27" y="20" width="1" height="1"/><rect x="30" y="20" width="1" height="1"/><rect x="2" y="21" width="1" height="1"/><rect x="4" y="21" width="1" height="1"/><rect x="12" y="21" width="1" height="1"/><rect x="14" y="21" width="1" height="1"/><rect x="16" y="21" width="1" height="1"/><rect x="17" y="21" width="1" height="1"/><rect x="18" y="21" width="1" height="1"/><rect x="20" y="21" width="1" height="1"/><rect x="21" y="21" width="1" height="1"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="21" width="1" height="1"/><rect x="26" y="21" width="1" height="1"/><rect x="2" y="22" width="1" height="1"/><rect x="4" y="22" width="1" height="1"/><rect x="5" y="22" width="1" height="1"/><rect x="6" y="22" width="1" height="1"/><rect x="8" y="22" width="1" height="1"/><rect x="9" y="22" width="1" height="1"/><rect x="10" y="22" width="1" height="1"/><rect x="11" y="22" width="1" height="1"/><rect x="12" y="22" width="1" height="1"/><rect x="13" y="22" width="1" height="1"/><rect x="19" y="22" width="1" height="1"/><rect x="22" y="22" width="1" height="1"/><rect x="23" y="22" width="1" height="1"/><rect x="24" y="22" width="1" height="1"/><rect x="25" y="22" width="1" height="1"/><rect x="26" y="22" width="1" height="1"/><rect x="28" y="22" width="1" height="1"/><rect x="29" y="22" width="1" height="1"/><rect x="30" y="22" width="1" height="1"/><rect x="10" y="23" width="1" height="1"/><rect x="11" y="23" width="1" height="1"/><rect x="15" y="23" width="1" height="1"/><rect x="18" y="23" width="1" height="1"/><rect x="20" y="23" width="1" height="1"/><rect x="22" y="23" width="1" height="1"/><rect x="26" y="23" width="1" height="1"/><rect x="27" y="23" width="1" height="1"/><rect x="2" y="24" width="1" height="1"/><rect x="3" y="24" width="1" height="1"/><rect x="4" y="24" width="1" height="1"/><rect x="5" y="24" width="1" height="1"/><rect x="6" y="24" width="1" height="1"/><rect x="7" y="24" width="1" height="1"/><rect x="8" y="24" width="1" height="1"/><rect x="11" y="24" width="1" height="1"/><rect x="12" y="24" width="1" height="1"/><rect x="13" y="24" width="1" height="1"/><rect x="14" y="24" width="1" height="1"/><rect x="15" y="24" width="1" height="1"/><rect x="16" y="24" width="1" height="1"/><rect x="17" y="24" width="1" height="1"/><rect x="18" y="24" width="1" height="1"/><rect x="19" y="24" width="1" height="1"/><rect x="20" y="24" width="1" height="1"/><rect x="21" y="24" width="1" height="1"/><rect x="22" y="24" width="1" height="1"/><rect x="24" y="24" width="1" height="1"/><rect x="26" y="24" width="1" height="1"/><rect x="27" y="24" width="1" height="1"/><rect x="28" y="24" width="1" height="1"/><rect x="2" y="25" width="1" height="1"/><rect x="8" y="25" width="1" height="1"/><rect x="11" y="25" width="1" height="1"/><rect x="14" y="25" width="1" height="1"/><rect x="15" y="25" width="1" height="1"/><rect x="17" y="25" width="1" height="1"/><rect x="18" y="25" width="1" height="1"/><rect x="21" y="25" width="1" height="1"/><rect x="22" y="25" width="1" height="1"/><rect x="26" y="25" width="1" height="1"/><rect x="29" y="25" width="1" height="1"/><rect x="30" y="25" width="1" height="1"/><rect x="2" y="26" width="1" height="1"/><rect x="4" y="26" width="1" height="1"/><rect x="5" y="26" width="1" height="1"/><rect x="6" y="26" width="1" height="1"/><rect x="8" y="26" width="1" height="1"/><rect x="11" y="26" width="1" height="1"/><rect x="13" y="26" width="1" height="1"/><rect x="14" y="26" width="1" height="1"/><rect x="15" y="26" width="1" height="1"/><rect x="18" y="26" width="1" height="1"/><rect x="21" y="26" width="1" height="1"/><rect x="22" y="26" width="1" height="1"/><rect x="23" y="26" width="1" height="1"/><rect x="24" y="26" width="1" height="1"/><rect x="25" y="26" width="1" height="1"/><rect x="26" y="26" width="1" height="1"/><rect x="27" y="26" width="1" height="1"/><rect x="2" y="27" width="1" height="1"/><rect x="4" y="27" width="1" height="1"/><rect x="5" y="27" width="1" height="1"/><rect x="6" y="27" width="1" height="1"/><rect x="8" y="27" width="1" height="1"/><rect x="11" y="27" width="1" height="1"/><rect x="12" y="27" width="1" height="1"/><rect x="17" y="27" width="1" height="1"/><rect x="19" y="27" width="1" height="1"/><rect x="20" y="27" width="1" height="1"/><rect x="21" y="27" width="1" height="1"/><rect x="23" y="27" width="1" height="1"/><rect x="25" y="27" width="1" height="1"/><rect x="27" y="27" width="1" height="1"/><rect x="28" y="27" width="1" height="1"/><rect x="29" y="27" width="1" height="1"/><rect x="2" y="28" width="1" height="1"/><rect x="4" y="28" width="1" height="1"/><rect x="5" y="28" width="1" height="1"/><rect x="6" y="28" width="1" height="1"/><rect x="8" y="28" width="1" height="1"/><rect x="13" y="28" width="1" height="1"/><rect x="15" y="28" width="1" height="1"/><rect x="16" y="28" width="1" height="1"/><rect x="17" y="28" width="1" height="1"/><rect x="18" y="28" width="1" height="1"/><rect x="19" y="28" width="1" height="1"/><rect x="23" y="28" width="1" height="1"/><rect x="24" y="28" width="1" height="1"/><rect x="25" y="28" width="1" height="1"/><rect x="26" y="28" width="1" height="1"/><rect x="27" y="28" width="1" height="1"/><rect x="28" y="28" width="1" height="1"/><rect x="29" y="28" width="1" height="1"/><rect x="2" y="29" width="1" height="1"/><rect x="8" y="29" width="1" height="1"/><rect x="12" y="29" width="1" height="1"/><rect x="15" y="29" width="1" height="1"/><rect x="23" y="29" width="1" height="1"/><rect x="25" y="29" width="1" height="1"/><rect x="27" y="29" width="1" height="1"/><rect x="28" y="29" width="1" height="1"/><rect x="30" y="29" width="1" height="1"/><rect x="2" y="30" width="1" height="1"/><rect x="3" y="30" width="1" height="1"/><rect x="4" y="30" width="1" height="1"/><rect x="5" y="30" width="1" height="1"/><rect x="6" y="30" width="1" height="1"/><rect x="7" y="30" width="1" height="1"/><rect x="8" y="30" width="1" height="1"/><rect x="10" y="30" width="1" height="1"/><rect x="12" y="30" width="1" height="1"/><rect x="13" y="30" width="1" height="1"/><rect x="15" y="30" width="1" height="1"/><rect x="16" y="30" width="1" height="1"/><rect x="19" y="30" width="1" height="1"/><rect x="21" y="30" width="1" height="1"/><rect x="26" y="30" width="1" height="1"/><rect x="27" y="30" width="1" height="1"/><rect x="28" y="30" width="1" height="1"/></g></svg>';
 
-      // Reads card-layout.json (small {dx,dy} nudges per element, in %
+      // Reads card-layout.json (small {dx,dy,scale} nudges per element, in %
       // of card width, set by the drag tool at admin/card-layout.html) and
       // caches it. Every place that builds card HTML shares this so a
       // saved nudge shows up everywhere -- site, this CMS preview, and
@@ -165,25 +85,7 @@
         );
       }
 
-      function cardBtnStyle(primary, disabled){
-        return {
-          fontFamily: "'Space Grotesk',sans-serif",
-          fontSize: '13px',
-          fontWeight: 500,
-          borderRadius: '8px',
-          border: '2px solid ' + (primary ? '#39ff88' : '#2a3136'),
-          background: '#14171a',
-          color: primary ? '#39ff88' : '#e8ebed',
-          padding: '9px 14px',
-          cursor: disabled ? 'default' : 'pointer',
-          opacity: disabled ? 0.5 : 1
-        };
-      }
-
       var CardPreview = createClass({
-        getInitialState: function () {
-          return { busy: false, status: '' };
-        },
         componentDidMount: function () {
           var self = this;
           this._mounted = true;
@@ -192,40 +94,9 @@
               if (self._mounted) self.forceUpdate();
             });
           }
-          this._onMessage = function (event) {
-            var data = event.data;
-            if (!data || typeof data !== 'object' || typeof data.type !== 'string' || data.type.indexOf('sml-card-') !== 0) return;
-            if (data.type === 'sml-card-print-done') {
-              self.setState({ busy: false, status: '' });
-            } else if (data.type === 'sml-card-print-error') {
-              self.setState({ busy: false, status: 'Print failed: ' + (data.message || 'unknown error') });
-            } else if (data.type === 'sml-card-download-done') {
-              self.setState({ busy: false, status: (data.format || '').toUpperCase() + ' downloaded — check your downloads folder.' });
-            } else if (data.type === 'sml-card-download-error') {
-              self.setState({ busy: false, status: 'Could not generate the image: ' + (data.message || 'unknown error') });
-            }
-          };
-          this.props.window.addEventListener('message', this._onMessage);
         },
         componentWillUnmount: function () {
           this._mounted = false;
-          if (this._onMessage) this.props.window.removeEventListener('message', this._onMessage);
-        },
-        sendToParent: function (type, extra) {
-          if (this.state.busy) return;
-          this.setState({ busy: true, status: type === 'sml-card-print' ? 'Opening print dialog…' : 'Rendering…' });
-          var msg = Object.assign({ type: type, html: this._innerHtml }, extra || {});
-          try {
-            this.props.window.parent.postMessage(msg, '*');
-          } catch (err) {
-            this.setState({ busy: false, status: 'Could not reach the admin page: ' + (err && err.message ? err.message : err) });
-          }
-        },
-        handlePrint: function () {
-          this.sendToParent('sml-card-print');
-        },
-        handleDownload: function (format) {
-          this.sendToParent('sml-card-download', { format: format });
         },
         render: function () {
           var entry = this.props.entry;
@@ -237,7 +108,6 @@
           var photoUrl = photoAsset ? photoAsset.url : '';
 
           var innerHtml = buildCardInnerHtml(name, photoUrl, email, phone, _cardLayoutCache);
-          this._innerHtml = innerHtml;
 
           return h(
             'div',
@@ -245,16 +115,34 @@
             h('div', { className: 'biz-card', dangerouslySetInnerHTML: { __html: innerHtml } }),
             h(
               'div',
-              { style: { display: 'flex', gap: '10px', marginTop: '18px', flexWrap: 'wrap' } },
-              h('button', { disabled: this.state.busy, onClick: this.handlePrint, style: cardBtnStyle(true, this.state.busy) }, 'Print / Save as PDF'),
-              h('button', { disabled: this.state.busy, onClick: this.handleDownload.bind(this, 'png'), style: cardBtnStyle(false, this.state.busy) }, 'Download PNG'),
-              h('button', { disabled: this.state.busy, onClick: this.handleDownload.bind(this, 'jpg'), style: cardBtnStyle(false, this.state.busy) }, 'Download JPG'),
-              h('a', { href: '/admin/card-layout.html', target: '_blank', rel: 'noopener', style: Object.assign({ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }, cardBtnStyle(false, false)) }, 'Adjust Layout \u2192')
+              { style: { marginTop: '18px' } },
+              h(
+                'a',
+                {
+                  href: '/admin/card-layout.html',
+                  target: '_blank',
+                  rel: 'noopener',
+                  style: {
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    fontFamily: "'Space Grotesk',sans-serif",
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    borderRadius: '8px',
+                    border: '2px solid #39ff88',
+                    background: '#14171a',
+                    color: '#39ff88',
+                    padding: '9px 14px'
+                  }
+                },
+                'Adjust Layout, Print, or Download →'
+              )
             ),
             h(
               'p',
-              { style: { fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', color: this.state.status.indexOf('failed') > -1 || this.state.status.indexOf('Could not') > -1 ? '#ff6a3d' : '#8b969c', lineHeight: '1.6', maxWidth: '560px', marginTop: '12px' } },
-              this.state.status || 'Walgreens-ready 3.625" × 2.125" bleed design (trims to 3.5" × 2"). Print/Save as PDF, or download a 600 DPI PNG/JPG to upload directly — no need to leave this page.'
+              { style: { fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', color: '#8b969c', lineHeight: '1.6', maxWidth: '560px', marginTop: '12px' } },
+              'This mirrors the live site exactly. To reposition anything, print, or download a PNG/JPG, use the layout tool above.'
             )
           );
         }
