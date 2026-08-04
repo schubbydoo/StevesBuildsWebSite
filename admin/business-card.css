@@ -49,6 +49,12 @@ body{
   --panel:#fefefc;
   --text:#0b0d0f;
   --line:#dcdfe1;
+  /* Darker, more saturated green than the site-wide --accent -- the
+     site's neon mint (#39ff88) has almost no contrast against white
+     (measured ~1.3:1), which is what made the mail/phone/globe icons
+     look washed out. This tone keeps the lime-green brand feel (closer
+     to the logo's own green) while clearing WCAG AA (~4.9:1). */
+  --accent:#5c7a00;
   width:620px;
   max-width:100%;
   aspect-ratio:1.75/1;
@@ -205,6 +211,19 @@ body{
      card's solid background still fills the full bleed size so
      trimming never reveals white edges. */
   @page{ size:3.625in 2.125in; margin:0; }
+  /* visibility:hidden (unlike display:none) keeps hidden elements in
+     normal document flow, so the page underneath the card -- toolbar,
+     instructions, buttons on admin/card-layout.html, or Sveltia's own
+     CMS chrome -- was still contributing its full (tall) height to the
+     document. At a 2.125in-tall page size that reflowed into 7-8 mostly
+     blank print pages after the one with the actual card, which is
+     almost certainly what looked like "no feedback" -- the print dialog
+     did open, just buried under a multi-page preview. Collapsing
+     html/body to the page height and hiding overflow keeps it to the
+     single page the card actually needs; .biz-card is taken out of
+     normal flow via position:fixed below so it isn't affected by the
+     collapsed height. */
+  html, body{ height:2.125in; overflow:hidden; }
   body *{ visibility:hidden; }
   .biz-card, .biz-card *{ visibility:visible; }
   .biz-card{

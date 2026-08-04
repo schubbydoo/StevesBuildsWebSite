@@ -169,25 +169,56 @@
 
   document.getElementById('print-btn').addEventListener('click', () => window.print());
 
+  // Some browsers (notably Safari, in some versions/settings) silently
+  // swallow a programmatic download triggered after an async gap like
+  // html2canvas's render -- no error, nothing lands in the downloads
+  // folder. Always showing the rendered image in an on-page preview
+  // (with its own download link + right-click-to-save hint) guarantees
+  // a visible result regardless of what the browser did with the
+  // automatic download attempt. See admin/card-layout.html for the
+  // same pattern.
+  function showImagePreview(url, filename){
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.innerHTML =
+      '<div style="background:#14171a;border:2px solid #2a3136;border-radius:12px;padding:20px;max-width:90vw;max-height:90vh;overflow:auto;text-align:center;">' +
+        '<img src="' + url + '" style="max-width:100%;max-height:55vh;display:block;margin:0 auto 14px;border-radius:6px;background:#fefefc;">' +
+        '<p style="font-family:\'JetBrains Mono\',monospace;font-size:12px;color:#8b969c;margin:0 0 14px;max-width:420px;">If it didn\'t save to your downloads automatically, right-click (or press and hold) the image above and choose "Save Image As...".</p>' +
+        '<a href="' + url + '" download="' + filename + '" style="display:inline-block;font-family:\'Space Grotesk\',sans-serif;font-weight:500;font-size:13px;padding:9px 16px;border-radius:8px;border:2px solid #39ff88;color:#39ff88;text-decoration:none;margin-right:8px;">Download again</a>' +
+        '<button id="close-preview-btn" style="font-family:\'Space Grotesk\',sans-serif;font-weight:500;font-size:13px;padding:9px 16px;border-radius:8px;border:2px solid #2a3136;background:#14171a;color:#e8ebed;cursor:pointer;">Close</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    overlay.querySelector('#close-preview-btn').addEventListener('click', close);
+    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  }
+
   function exportCardImage(format, btn){
     const el = document.getElementById('biz-card-export');
     const originalText = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Rendering…';
-    html2canvas(el, { scale: 6.25, backgroundColor: '#0b0d0f', useCORS: true }).then(canvas => {
+    html2canvas(el, { scale: 6.25, backgroundColor: '#fefefc', useCORS: true }).then(canvas => {
       const mime = format === 'png' ? 'image/png' : 'image/jpeg';
       const quality = format === 'png' ? undefined : 0.95;
       canvas.toBlob(blob => {
+        if (!blob) {
+          alert('Could not generate the image -- no image data came back.');
+          btn.disabled = false;
+          btn.textContent = originalText;
+          return;
+        }
+        const filename = `strange-machine-labs-business-card.${format}`;
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `strange-machine-labs-business-card.${format}`;
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
         btn.disabled = false;
         btn.textContent = originalText;
+        showImagePreview(url, filename);
       }, mime, quality);
     }).catch(err => {
       console.error(err);
