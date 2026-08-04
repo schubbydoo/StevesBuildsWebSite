@@ -38,30 +38,41 @@ body{
   border:2px solid var(--line);
   border-radius:14px;
   box-shadow:7px 7px 0 var(--accent2);
-  padding:22px 44px 22px 24px;
+  padding:3.548cqw 7.097cqw 3.548cqw 3.871cqw;
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  gap:4px;
+  gap:0.645cqw;
   color:var(--text);
+  /* container-type makes the "base" sizes below scale fluidly with
+     however wide .biz-card actually renders (via cqw units), instead of
+     staying fixed px regardless of context. This fixes places that embed
+     the card at less than its 620px design width without a matching
+     viewport size -- e.g. Sveltia's CMS preview pane, which is a fraction
+     of the browser window rather than the window itself, so the old
+     @media(max-width:480px) mobile tier never triggered there even
+     though the card itself had way less than 480px to work with. cqw
+     values below are just px/620*100 -- at a 620px-wide container they
+     render pixel-identical to the old fixed sizes. */
+  container-type:inline-size;
 }
 .biz-card-top{
   display:flex;
   align-items:center;
-  gap:16px;
+  gap:2.581cqw;
   flex:0 0 auto;
 }
 .biz-card-name{
-  font-size:26px;
+  font-size:4.194cqw;
   font-weight:700;
   line-height:1.2;
   flex-shrink:0;
-  margin-left:13px;
+  margin-left:2.097cqw;
 }
 .biz-card-photo{
-  width:110px;
-  height:110px;
+  width:17.742cqw;
+  height:17.742cqw;
   border-radius:50%;
   object-fit:cover;
   border:2px solid var(--line);
@@ -71,15 +82,15 @@ body{
 .biz-card-contact{
   display:flex;
   flex-direction:column;
-  gap:7px;
+  gap:1.129cqw;
   margin-left:auto;
 }
 .biz-card-row{
   display:flex;
   align-items:center;
-  gap:9px;
+  gap:1.452cqw;
   font-family:'JetBrains Mono',monospace;
-  font-size:19px;
+  font-size:3.065cqw;
   color:var(--text);
   overflow:hidden;
   text-decoration:none;
@@ -89,31 +100,31 @@ body{
   overflow-wrap:anywhere;
 }
 .biz-card-row svg{
-  width:21px;
-  height:21px;
+  width:3.387cqw;
+  height:3.387cqw;
   flex-shrink:0;
   color:var(--accent);
 }
 .biz-card-bottom{
   display:flex;
   align-items:flex-start;
-  gap:18px;
+  gap:2.903cqw;
   flex:0 0 auto;
 }
 .biz-card-logo{
-  height:192px;
+  height:30.968cqw;
   width:auto;
   display:block;
 }
 .biz-card-qr{
-  width:106px;
-  height:106px;
+  width:17.097cqw;
+  height:17.097cqw;
   background:#fff;
   border-radius:8px;
-  padding:5px;
+  padding:0.806cqw;
   box-sizing:border-box;
   flex-shrink:0;
-  margin-top:58px;
+  margin-top:9.355cqw;
   margin-left:auto;
 }
 .biz-card-qr svg{width:100%;height:100%;display:block;}
