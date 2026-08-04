@@ -25,12 +25,12 @@ No files to download, no git, no manual uploads.
 - `hero.json` — the pill tag, headline, and subtitle at the very top of the site.
 - `profile.json` — your name, photo, email, and social links (shown in the bar at the top of the site).
 - `projects.json` — the list of projects (title, description, categories, video, cover image, links). This is the bulk of the site's content.
-- `admin/index.html` + `admin/config.yml` — Sveltia CMS, a real content-management tool pointed at this GitHub repo. This is what renders the `/admin/` page. `admin/index.html` also registers the live business-card preview (with Print/Download buttons) that shows up in the Contact info editor.
-- `admin/business-card.css` — the shared business-card design (fonts, colors, sizing, Walgreens bleed spec). Used by both `admin/business-card.html` and the live preview in `admin/index.html`, so there's one source of truth for how the card looks.
+- `admin/index.html` + `admin/config.yml` — Sveltia CMS, a real content-management tool pointed at this GitHub repo. This is what renders the `/admin/` page. `admin/index.html` also registers a read-only business-card preview that shows up in the Contact info editor, mirroring the live site exactly, with a link out to the layout tool below for any positioning, printing, or downloading.
+- `admin/business-card.css` — the shared business-card design (fonts, colors, sizing, Walgreens bleed spec). Used by `admin/business-card.html`, `admin/card-layout.html`, and the read-only preview in `admin/index.html`, so there's one source of truth for how the card looks.
 - `admin/image-tool.html` — a standalone helper for framing photos (project covers or your contact photo) before uploading them. Not part of the CMS itself, just a prep tool.
-- `admin/business-card.html` — a standalone page that renders your business card (pulled live from `profile.json`) with Print/Save-as-PDF and PNG/JPG download buttons. A backup to the live preview in `/admin/` — not part of the CMS itself, just a tool.
-- `admin/card-layout.html` — a drag tool for nudging the business card's caricature, name, logo, QR code, and contact text into position by eye, instead of describing tweaks to have them coded up.
-- `card-layout.json` — the {dx, dy} position nudges saved by the drag tool above. Read by the site, the CMS preview, and the print/export page so a saved nudge shows up everywhere at once.
+- `admin/business-card.html` — a standalone page that renders your business card (pulled live from `profile.json`) with Print/Save-as-PDF and PNG/JPG download buttons. A backup to `admin/card-layout.html` — not part of the CMS itself, just a tool.
+- `admin/card-layout.html` — the main business-card tool: drag the caricature, name, logo, QR code, or contact text into position by eye, scroll/pinch or +/- to resize any piece, then Print/Save as PDF or download a PNG/JPG right from the same page — instead of describing tweaks to have them coded up.
+- `card-layout.json` — the {dx, dy, scale} position and size nudges saved by the drag tool above. Read by the site, the CMS preview, and the print/export pages so a saved nudge shows up everywhere at once.
 - `admin/uploads/` — where photos you upload through the CMS actually live.
 - `images/` — static site assets not managed through the CMS: the homepage/business-card logo and a couple of unused legacy files.
 - `wrangler.jsonc` — tells Cloudflare this is a plain static site (no build step).
@@ -73,14 +73,13 @@ In `/admin/`, under **Homepage projects → Project list**, each project has:
 
 ### Business card layout
 
-`/admin/card-layout.html` (also linked as "Adjust Layout" from the business-card preview in `/admin/`) shows the actual card and lets you drag the caricature, name, logo, QR code, or contact text directly instead of asking for pixel-level tweaks.
+`/admin/card-layout.html` (also linked as "Adjust Layout, Print, or Download" from the business-card preview in `/admin/`) shows the actual card and lets you drag the caricature, name, logo, QR code, or contact text directly instead of asking for pixel-level tweaks — and it's also where you print or download the card (see "Business card" below).
 
-1. Drag any piece to nudge it. Arrow keys nudge whatever you last touched (hold Shift for a bigger step).
-2. **Reset** next to a row clears just that piece; **Reset All** clears everything.
-3. Click **Save Layout**. The first time, it'll ask for a GitHub token — use the same one you use to sign in to `/admin/` (or generate a fresh one the same way, see below).
+1. Drag any piece to nudge it. Scroll or pinch over a piece to resize it; arrow keys nudge position and +/- keys nudge size, both on whatever you last touched (hold Shift for bigger steps).
+2. **Reset** next to a row clears just that piece back to its default position and size; **Reset All** clears everything.
+3. Click **Save Layout** to make a change permanent. The first time, it'll ask for a GitHub token — use the same one you use to sign in to `/admin/` (or generate a fresh one the same way, see below).
 4. The site rebuilds automatically, same as any other Publish — live within about a minute.
-
-This only moves things; it doesn't resize them. If something needs to be bigger or smaller, or the card needs a bigger change, just ask.
+5. **Print / Save as PDF** and the **Download PNG/JPG** buttons on this same page work off of whatever's on screen right now, saved or not — so you can print or export a one-off tweak without saving it first.
 
 ### Image framing tool
 
@@ -95,13 +94,14 @@ This only moves things; it doesn't resize them. If something needs to be bigger 
 
 ### Business card
 
-Three ways to see and use it — all pull live from **Contact info**, so update your info once and everywhere reflects it:
+A few ways to see and use it — all pull live from **Contact info**, so update your info once and everywhere reflects it:
 
 - **On the live site**: click your photo at the top of the site — it pops up a business card in the same on-page overlay style as the video player.
-- **Right inside `/admin/`**: open the **Contact info** editor and look at the preview pane on the right — it shows your business card updating live as you type, with **Print / Save as PDF**, **Download PNG**, and **Download JPG** buttons right underneath. This is the easiest way to check the card and get a file before you commit to anything — no extra page to open.
-- **Standalone page**: `/admin/business-card.html` (bookmark it) has the same preview and the same three buttons, as a backup in case you ever want it outside the editor.
+- **The layout tool** (`/admin/card-layout.html`, also linked from the Contact info preview): drag pieces into position, resize them, then hit **Print / Save as PDF**, **Download PNG**, or **Download JPG** right there. This is the main place to fine-tune the card and get a print-ready file, all in one page.
+- **Right inside `/admin/`**: open the **Contact info** editor and look at the preview pane on the right — it's a plain, read-only mirror of the live site's card, so you can sanity-check your info as you type, with an **Adjust Layout, Print, or Download →** button that jumps straight to the layout tool above.
+- **Standalone page**: `/admin/business-card.html` (bookmark it) has its own preview with the same Print/Download buttons, as a backup in case you ever want it outside the layout tool.
 
-All three give you the same Walgreens Photo-compliant design: a 3.625" × 2.125" bleed canvas (background fills the full page so trimming never leaves a white edge) that trims to the standard 3.5" × 2" card, with all text/logo/QR kept inside a 3.375" × 1.875" safe area. **Print / Save as PDF** opens your browser's print dialog. **Download PNG/JPG** instead saves a 600 DPI image straight to your computer — handy since Walgreens' own upload flow asks for an image file rather than a PDF. PNG keeps text and the QR code sharpest; JPG is a smaller file if there's an upload size limit.
+All of these give you the same Walgreens Photo-compliant design: a 3.625" × 2.125" bleed canvas (background fills the full page so trimming never leaves a white edge) that trims to the standard 3.5" × 2" card, with all text/logo/QR kept inside a 3.375" × 1.875" safe area. **Print / Save as PDF** opens your browser's print dialog. **Download PNG/JPG** instead saves a 600 DPI image straight to your computer — handy since Walgreens' own upload flow asks for an image file rather than a PDF. PNG keeps text and the QR code sharpest; JPG is a smaller file if there's an upload size limit.
 
 Email, phone, and the website line are all clickable/tappable on the card. Social links intentionally aren't shown on the card itself -- visitors can find those on the website. The card uses its own cropped copy of the logo (with the small tagline line removed, since it's illegible at business-card size) -- if you ever swap the logo in **Homepage header**, ask me and I'll update the card's cropped version to match (it's a separate file, not automatically linked).
 
