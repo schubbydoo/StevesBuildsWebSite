@@ -476,6 +476,14 @@
     max-width:660px;
   }
   .biz-card{
+    /* White-card palette, scoped locally (not at :root) so it doesn't
+       recolor the rest of the (dark-themed) site -- see
+       admin/business-card.css for the full explanation, this block is a
+       duplicated copy kept in sync with that shared stylesheet. */
+    --bg:#fefefc;
+    --panel:#fefefc;
+    --text:#0b0d0f;
+    --line:#dcdfe1;
     width:620px;
     max-width:100%;
     aspect-ratio:1.75/1;
@@ -511,7 +519,7 @@
     height:17.742cqw;
     border-radius:50%;
     object-fit:cover;
-    border:2px solid var(--line);
+    /* No border -- seamless with the white card background. */
     background:var(--bg);
     flex-shrink:0;
     transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));

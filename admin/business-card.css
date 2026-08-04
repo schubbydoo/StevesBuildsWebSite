@@ -9,10 +9,22 @@
    Layout: a top row (name / photo / contact info) stacked above a bottom
    row (logo / QR code), rather than the earlier left-column/right-column
    split. The logo uses a separate, tightly-cropped image
-   (logo-strange-machine-card.png) with the small illegible tagline line
-   removed, so the visible artwork can render bigger. Social-media rows
+   (logo-strange-machine-card.png) -- its own white background, cropped
+   snug to the artwork (tagline included, just small). Social-media rows
    were intentionally dropped from the business card -- visitors can find
-   those on the website itself. */
+   those on the website itself.
+
+   Color scheme: the card is white with dark text/border, which is the
+   OPPOSITE of the site's own dark theme. Rather than touching the shared
+   --bg/--panel/--text/--line variables at :root (which would also
+   recolor every admin tool page that loads this stylesheet, since they
+   share body{color:var(--text)} etc.), the white-card colors are
+   redeclared locally on .biz-card itself. Custom properties set on an
+   element override the :root value for everything inside that element,
+   so .biz-card-row, .biz-card-name, etc. all pick up the local dark
+   text/white background automatically, while the rest of any page this
+   is embedded in (buttons, headers, notes) keeps the original dark
+   theme. */
 
 :root{
   --bg:#0b0d0f;
@@ -31,6 +43,12 @@ body{
 
 /* --- business card --- */
 .biz-card{
+  /* White-card palette, scoped locally so it doesn't leak into the rest
+     of whatever page this is embedded in -- see comment above. */
+  --bg:#fefefc;
+  --panel:#fefefc;
+  --text:#0b0d0f;
+  --line:#dcdfe1;
   width:620px;
   max-width:100%;
   aspect-ratio:1.75/1;
@@ -76,7 +94,7 @@ body{
   height:17.742cqw;
   border-radius:50%;
   object-fit:cover;
-  border:2px solid var(--line);
+  /* No border -- seamless with the white card background. */
   background:var(--bg);
   flex-shrink:0;
   transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
