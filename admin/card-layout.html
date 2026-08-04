@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Strange Machine Labs — Business Card Layout</title>
 <link rel="stylesheet" href="business-card.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   /* Card design (fonts, :root vars, .biz-card, etc.) lives in
      business-card.css -- shared with the CMS preview, the print page,
@@ -105,6 +106,14 @@
   .btn-primary{border-color:var(--accent);color:var(--accent);}
   .btn-primary:hover{box-shadow:4px 4px 0 var(--accent);}
   .btn-primary:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none;}
+  .toolbar-note{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.6;
+    max-width:600px;
+    margin:10px 0 0;
+  }
   #token-row{display:none;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap;}
   #token-row input{
     font-family:'JetBrains Mono',monospace;
@@ -132,7 +141,7 @@
 <div class="wrap">
   <span class="tag">business card</span>
   <h1>Business card layout</h1>
-  <p class="note">Drag the caricature, name, logo, QR code, or contact text to nudge its position. Scroll (or pinch, on trackpad/touch) over a piece to resize it. Arrow keys nudge position and +/- keys nudge size, both on whatever you last touched (hold Shift for bigger steps). Everything here mirrors the real card exactly, so what you see is what prints and what shows on the site. Hit <strong>Save Layout</strong> when you're happy with it -- the site updates automatically within about a minute, same as publishing from <a href="/admin/" style="color:var(--accent)">Contact info</a>.</p>
+  <p class="note">Drag the caricature, name, logo, QR code, or contact text to nudge its position. Scroll (or pinch, on trackpad/touch) over a piece to resize it. Arrow keys nudge position and +/- keys nudge size, both on whatever you last touched (hold Shift for bigger steps). Everything here mirrors the real card exactly, so what you see is what prints and what shows on the site. Hit <strong>Save Layout</strong> when you're happy with it -- the site updates automatically within about a minute, same as publishing from <a href="/admin/" style="color:var(--accent)">Contact info</a>. <strong>Print / Save as PDF</strong> and the PNG/JPG downloads below use whatever's on screen right now, saved or not, so you can print a one-off without saving first.</p>
 
   <div class="stage">
     <div class="biz-card" id="biz-card">
@@ -160,12 +169,30 @@
   <div class="toolbar">
     <button class="btn-primary" id="save-btn">Save Layout</button>
     <button id="reset-all-btn">Reset All</button>
+    <button id="print-btn">Print / Save as PDF</button>
+    <button id="png-btn">Download PNG</button>
+    <button id="jpg-btn">Download JPG</button>
   </div>
+  <p class="toolbar-note">Walgreens-ready 3.625&Prime; &times; 2.125&Prime; bleed design (trims to 3.5&Prime; &times; 2&Prime;). PNG/JPG downloads are 600 DPI.</p>
   <div id="token-row">
     <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" id="token-input" placeholder="Paste your GitHub token (same one you use to sign in to /admin/)">
     <button class="btn-primary" id="token-save-btn">Use this token</button>
   </div>
   <p id="status"></p>
+</div>
+
+<div id="biz-card-export-wrap" style="position:fixed;left:-99999px;top:0;" aria-hidden="true">
+  <div class="biz-card card-bleed" id="biz-card-export">
+    <div class="biz-card-top">
+      <div class="biz-card-name" id="card-name-x"></div>
+      <img class="biz-card-photo" id="card-photo-x" src="" alt="">
+      <div class="biz-card-contact" id="card-contact-x"></div>
+    </div>
+    <div class="biz-card-bottom">
+      <img class="biz-card-logo" id="card-logo-x" src="../images/logo-strange-machine-card.png" alt="Strange Machine Labs">
+      <div class="biz-card-qr" id="card-qr-x"><svg viewBox="0 0 33 33" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><rect width="33" height="33" fill="#fff"/><g fill="#0b0d0f"><rect x="2" y="2" width="1" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="5" y="2" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="8" y="2" width="1" height="1"/><rect x="11" y="2" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="15" y="2" width="1" height="1"/><rect x="16" y="2" width="1" height="1"/><rect x="17" y="2" width="1" height="1"/><rect x="20" y="2" width="1" height="1"/><rect x="24" y="2" width="1" height="1"/><rect x="25" y="2" width="1" height="1"/><rect x="26" y="2" width="1" height="1"/><rect x="27" y="2" width="1" height="1"/><rect x="28" y="2" width="1" height="1"/><rect x="29" y="2" width="1" height="1"/><rect x="30" y="2" width="1" height="1"/><rect x="2" y="3" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="17" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="30" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="5" y="4" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="10" y="4" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/><rect x="14" y="4" width="1" height="1"/><rect x="16" y="4" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="1" height="1"/><rect x="22" y="4" width="1" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="26" y="4" width="1" height="1"/><rect x="27" y="4" width="1" height="1"/><rect x="28" y="4" width="1" height="1"/><rect x="30" y="4" width="1" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="11" y="5" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/><rect x="13" y="5" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="16" y="5" width="1" height="1"/><rect x="17" y="5" width="1" height="1"/><rect x="19" y="5" width="1" height="1"/><rect x="22" y="5" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="26" y="5" width="1" height="1"/><rect x="27" y="5" width="1" height="1"/><rect x="28" y="5" width="1" height="1"/><rect x="30" y="5" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/><rect x="5" y="6" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="17" y="6" width="1" height="1"/><rect x="20" y="6" width="1" height="1"/><rect x="21" y="6" width="1" height="1"/><rect x="22" y="6" width="1" height="1"/><rect x="24" y="6" width="1" height="1"/><rect x="26" y="6" width="1" height="1"/><rect x="27" y="6" width="1" height="1"/><rect x="28" y="6" width="1" height="1"/><rect x="30" y="6" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="8" y="7" width="1" height="1"/><rect x="11" y="7" width="1" height="1"/><rect x="12" y="7" width="1" height="1"/><rect x="15" y="7" width="1" height="1"/><rect x="16" y="7" width="1" height="1"/><rect x="18" y="7" width="1" height="1"/><rect x="20" y="7" width="1" height="1"/><rect x="24" y="7" width="1" height="1"/><rect x="30" y="7" width="1" height="1"/><rect x="2" y="8" width="1" height="1"/><rect x="3" y="8" width="1" height="1"/><rect x="4" y="8" width="1" height="1"/><rect x="5" y="8" width="1" height="1"/><rect x="6" y="8" width="1" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="12" y="8" width="1" height="1"/><rect x="14" y="8" width="1" height="1"/><rect x="16" y="8" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="20" y="8" width="1" height="1"/><rect x="22" y="8" width="1" height="1"/><rect x="24" y="8" width="1" height="1"/><rect x="25" y="8" width="1" height="1"/><rect x="26" y="8" width="1" height="1"/><rect x="27" y="8" width="1" height="1"/><rect x="28" y="8" width="1" height="1"/><rect x="29" y="8" width="1" height="1"/><rect x="30" y="8" width="1" height="1"/><rect x="10" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="12" y="9" width="1" height="1"/><rect x="15" y="9" width="1" height="1"/><rect x="21" y="9" width="1" height="1"/><rect x="22" y="9" width="1" height="1"/><rect x="2" y="10" width="1" height="1"/><rect x="8" y="10" width="1" height="1"/><rect x="10" y="10" width="1" height="1"/><rect x="12" y="10" width="1" height="1"/><rect x="14" y="10" width="1" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="17" y="10" width="1" height="1"/><rect x="19" y="10" width="1" height="1"/><rect x="21" y="10" width="1" height="1"/><rect x="23" y="10" width="1" height="1"/><rect x="24" y="10" width="1" height="1"/><rect x="27" y="10" width="1" height="1"/><rect x="28" y="10" width="1" height="1"/><rect x="29" y="10" width="1" height="1"/><rect x="2" y="11" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/><rect x="4" y="11" width="1" height="1"/><rect x="6" y="11" width="1" height="1"/><rect x="9" y="11" width="1" height="1"/><rect x="10" y="11" width="1" height="1"/><rect x="11" y="11" width="1" height="1"/><rect x="13" y="11" width="1" height="1"/><rect x="16" y="11" width="1" height="1"/><rect x="20" y="11" width="1" height="1"/><rect x="21" y="11" width="1" height="1"/><rect x="25" y="11" width="1" height="1"/><rect x="26" y="11" width="1" height="1"/><rect x="28" y="11" width="1" height="1"/><rect x="29" y="11" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="4" y="12" width="1" height="1"/><rect x="5" y="12" width="1" height="1"/><rect x="7" y="12" width="1" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="10" y="12" width="1" height="1"/><rect x="12" y="12" width="1" height="1"/><rect x="13" y="12" width="1" height="1"/><rect x="14" y="12" width="1" height="1"/><rect x="19" y="12" width="1" height="1"/><rect x="20" y="12" width="1" height="1"/><rect x="22" y="12" width="1" height="1"/><rect x="24" y="12" width="1" height="1"/><rect x="25" y="12" width="1" height="1"/><rect x="26" y="12" width="1" height="1"/><rect x="4" y="13" width="1" height="1"/><rect x="5" y="13" width="1" height="1"/><rect x="6" y="13" width="1" height="1"/><rect x="7" y="13" width="1" height="1"/><rect x="9" y="13" width="1" height="1"/><rect x="10" y="13" width="1" height="1"/><rect x="11" y="13" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="17" y="13" width="1" height="1"/><rect x="18" y="13" width="1" height="1"/><rect x="20" y="13" width="1" height="1"/><rect x="24" y="13" width="1" height="1"/><rect x="26" y="13" width="1" height="1"/><rect x="27" y="13" width="1" height="1"/><rect x="3" y="14" width="1" height="1"/><rect x="6" y="14" width="1" height="1"/><rect x="8" y="14" width="1" height="1"/><rect x="9" y="14" width="1" height="1"/><rect x="12" y="14" width="1" height="1"/><rect x="14" y="14" width="1" height="1"/><rect x="15" y="14" width="1" height="1"/><rect x="16" y="14" width="1" height="1"/><rect x="22" y="14" width="1" height="1"/><rect x="24" y="14" width="1" height="1"/><rect x="25" y="14" width="1" height="1"/><rect x="30" y="14" width="1" height="1"/><rect x="2" y="15" width="1" height="1"/><rect x="4" y="15" width="1" height="1"/><rect x="5" y="15" width="1" height="1"/><rect x="9" y="15" width="1" height="1"/><rect x="13" y="15" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="15" y="15" width="1" height="1"/><rect x="16" y="15" width="1" height="1"/><rect x="21" y="15" width="1" height="1"/><rect x="22" y="15" width="1" height="1"/><rect x="24" y="15" width="1" height="1"/><rect x="25" y="15" width="1" height="1"/><rect x="26" y="15" width="1" height="1"/><rect x="29" y="15" width="1" height="1"/><rect x="30" y="15" width="1" height="1"/><rect x="3" y="16" width="1" height="1"/><rect x="4" y="16" width="1" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="8" y="16" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/><rect x="14" y="16" width="1" height="1"/><rect x="15" y="16" width="1" height="1"/><rect x="16" y="16" width="1" height="1"/><rect x="17" y="16" width="1" height="1"/><rect x="18" y="16" width="1" height="1"/><rect x="19" y="16" width="1" height="1"/><rect x="20" y="16" width="1" height="1"/><rect x="27" y="16" width="1" height="1"/><rect x="28" y="16" width="1" height="1"/><rect x="2" y="17" width="1" height="1"/><rect x="3" y="17" width="1" height="1"/><rect x="4" y="17" width="1" height="1"/><rect x="5" y="17" width="1" height="1"/><rect x="7" y="17" width="1" height="1"/><rect x="10" y="17" width="1" height="1"/><rect x="11" y="17" width="1" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="13" y="17" width="1" height="1"/><rect x="15" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="18" y="17" width="1" height="1"/><rect x="22" y="17" width="1" height="1"/><rect x="23" y="17" width="1" height="1"/><rect x="26" y="17" width="1" height="1"/><rect x="28" y="17" width="1" height="1"/><rect x="30" y="17" width="1" height="1"/><rect x="2" y="18" width="1" height="1"/><rect x="5" y="18" width="1" height="1"/><rect x="7" y="18" width="1" height="1"/><rect x="8" y="18" width="1" height="1"/><rect x="10" y="18" width="1" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="12" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="17" y="18" width="1" height="1"/><rect x="19" y="18" width="1" height="1"/><rect x="20" y="18" width="1" height="1"/><rect x="21" y="18" width="1" height="1"/><rect x="25" y="18" width="1" height="1"/><rect x="27" y="18" width="1" height="1"/><rect x="28" y="18" width="1" height="1"/><rect x="2" y="19" width="1" height="1"/><rect x="5" y="19" width="1" height="1"/><rect x="6" y="19" width="1" height="1"/><rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="18" y="19" width="1" height="1"/><rect x="19" y="19" width="1" height="1"/><rect x="20" y="19" width="1" height="1"/><rect x="21" y="19" width="1" height="1"/><rect x="22" y="19" width="1" height="1"/><rect x="24" y="19" width="1" height="1"/><rect x="25" y="19" width="1" height="1"/><rect x="26" y="19" width="1" height="1"/><rect x="28" y="19" width="1" height="1"/><rect x="29" y="19" width="1" height="1"/><rect x="30" y="19" width="1" height="1"/><rect x="2" y="20" width="1" height="1"/><rect x="3" y="20" width="1" height="1"/><rect x="6" y="20" width="1" height="1"/><rect x="7" y="20" width="1" height="1"/><rect x="8" y="20" width="1" height="1"/><rect x="9" y="20" width="1" height="1"/><rect x="10" y="20" width="1" height="1"/><rect x="12" y="20" width="1" height="1"/><rect x="15" y="20" width="1" height="1"/><rect x="16" y="20" width="1" height="1"/><rect x="18" y="20" width="1" height="1"/><rect x="21" y="20" width="1" height="1"/><rect x="24" y="20" width="1" height="1"/><rect x="25" y="20" width="1" height="1"/><rect x="26" y="20" width="1" height="1"/><rect x="27" y="20" width="1" height="1"/><rect x="30" y="20" width="1" height="1"/><rect x="2" y="21" width="1" height="1"/><rect x="4" y="21" width="1" height="1"/><rect x="12" y="21" width="1" height="1"/><rect x="14" y="21" width="1" height="1"/><rect x="16" y="21" width="1" height="1"/><rect x="17" y="21" width="1" height="1"/><rect x="18" y="21" width="1" height="1"/><rect x="20" y="21" width="1" height="1"/><rect x="21" y="21" width="1" height="1"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="21" width="1" height="1"/><rect x="26" y="21" width="1" height="1"/><rect x="2" y="22" width="1" height="1"/><rect x="4" y="22" width="1" height="1"/><rect x="5" y="22" width="1" height="1"/><rect x="6" y="22" width="1" height="1"/><rect x="8" y="22" width="1" height="1"/><rect x="9" y="22" width="1" height="1"/><rect x="10" y="22" width="1" height="1"/><rect x="11" y="22" width="1" height="1"/><rect x="12" y="22" width="1" height="1"/><rect x="13" y="22" width="1" height="1"/><rect x="19" y="22" width="1" height="1"/><rect x="22" y="22" width="1" height="1"/><rect x="23" y="22" width="1" height="1"/><rect x="24" y="22" width="1" height="1"/><rect x="25" y="22" width="1" height="1"/><rect x="26" y="22" width="1" height="1"/><rect x="28" y="22" width="1" height="1"/><rect x="29" y="22" width="1" height="1"/><rect x="30" y="22" width="1" height="1"/><rect x="10" y="23" width="1" height="1"/><rect x="11" y="23" width="1" height="1"/><rect x="15" y="23" width="1" height="1"/><rect x="18" y="23" width="1" height="1"/><rect x="20" y="23" width="1" height="1"/><rect x="22" y="23" width="1" height="1"/><rect x="26" y="23" width="1" height="1"/><rect x="27" y="23" width="1" height="1"/><rect x="2" y="24" width="1" height="1"/><rect x="3" y="24" width="1" height="1"/><rect x="4" y="24" width="1" height="1"/><rect x="5" y="24" width="1" height="1"/><rect x="6" y="24" width="1" height="1"/><rect x="7" y="24" width="1" height="1"/><rect x="8" y="24" width="1" height="1"/><rect x="11" y="24" width="1" height="1"/><rect x="12" y="24" width="1" height="1"/><rect x="13" y="24" width="1" height="1"/><rect x="14" y="24" width="1" height="1"/><rect x="15" y="24" width="1" height="1"/><rect x="16" y="24" width="1" height="1"/><rect x="17" y="24" width="1" height="1"/><rect x="18" y="24" width="1" height="1"/><rect x="19" y="24" width="1" height="1"/><rect x="20" y="24" width="1" height="1"/><rect x="21" y="24" width="1" height="1"/><rect x="22" y="24" width="1" height="1"/><rect x="24" y="24" width="1" height="1"/><rect x="26" y="24" width="1" height="1"/><rect x="27" y="24" width="1" height="1"/><rect x="28" y="24" width="1" height="1"/><rect x="2" y="25" width="1" height="1"/><rect x="8" y="25" width="1" height="1"/><rect x="11" y="25" width="1" height="1"/><rect x="14" y="25" width="1" height="1"/><rect x="15" y="25" width="1" height="1"/><rect x="17" y="25" width="1" height="1"/><rect x="18" y="25" width="1" height="1"/><rect x="21" y="25" width="1" height="1"/><rect x="22" y="25" width="1" height="1"/><rect x="26" y="25" width="1" height="1"/><rect x="29" y="25" width="1" height="1"/><rect x="30" y="25" width="1" height="1"/><rect x="2" y="26" width="1" height="1"/><rect x="4" y="26" width="1" height="1"/><rect x="5" y="26" width="1" height="1"/><rect x="6" y="26" width="1" height="1"/><rect x="8" y="26" width="1" height="1"/><rect x="11" y="26" width="1" height="1"/><rect x="13" y="26" width="1" height="1"/><rect x="14" y="26" width="1" height="1"/><rect x="15" y="26" width="1" height="1"/><rect x="18" y="26" width="1" height="1"/><rect x="21" y="26" width="1" height="1"/><rect x="22" y="26" width="1" height="1"/><rect x="23" y="26" width="1" height="1"/><rect x="24" y="26" width="1" height="1"/><rect x="25" y="26" width="1" height="1"/><rect x="26" y="26" width="1" height="1"/><rect x="27" y="26" width="1" height="1"/><rect x="2" y="27" width="1" height="1"/><rect x="4" y="27" width="1" height="1"/><rect x="5" y="27" width="1" height="1"/><rect x="6" y="27" width="1" height="1"/><rect x="8" y="27" width="1" height="1"/><rect x="11" y="27" width="1" height="1"/><rect x="12" y="27" width="1" height="1"/><rect x="17" y="27" width="1" height="1"/><rect x="19" y="27" width="1" height="1"/><rect x="20" y="27" width="1" height="1"/><rect x="21" y="27" width="1" height="1"/><rect x="23" y="27" width="1" height="1"/><rect x="25" y="27" width="1" height="1"/><rect x="27" y="27" width="1" height="1"/><rect x="28" y="27" width="1" height="1"/><rect x="29" y="27" width="1" height="1"/><rect x="2" y="28" width="1" height="1"/><rect x="4" y="28" width="1" height="1"/><rect x="5" y="28" width="1" height="1"/><rect x="6" y="28" width="1" height="1"/><rect x="8" y="28" width="1" height="1"/><rect x="13" y="28" width="1" height="1"/><rect x="15" y="28" width="1" height="1"/><rect x="16" y="28" width="1" height="1"/><rect x="17" y="28" width="1" height="1"/><rect x="18" y="28" width="1" height="1"/><rect x="19" y="28" width="1" height="1"/><rect x="23" y="28" width="1" height="1"/><rect x="24" y="28" width="1" height="1"/><rect x="25" y="28" width="1" height="1"/><rect x="26" y="28" width="1" height="1"/><rect x="27" y="28" width="1" height="1"/><rect x="28" y="28" width="1" height="1"/><rect x="29" y="28" width="1" height="1"/><rect x="2" y="29" width="1" height="1"/><rect x="8" y="29" width="1" height="1"/><rect x="12" y="29" width="1" height="1"/><rect x="15" y="29" width="1" height="1"/><rect x="23" y="29" width="1" height="1"/><rect x="25" y="29" width="1" height="1"/><rect x="27" y="29" width="1" height="1"/><rect x="28" y="29" width="1" height="1"/><rect x="30" y="29" width="1" height="1"/><rect x="2" y="30" width="1" height="1"/><rect x="3" y="30" width="1" height="1"/><rect x="4" y="30" width="1" height="1"/><rect x="5" y="30" width="1" height="1"/><rect x="6" y="30" width="1" height="1"/><rect x="7" y="30" width="1" height="1"/><rect x="8" y="30" width="1" height="1"/><rect x="10" y="30" width="1" height="1"/><rect x="12" y="30" width="1" height="1"/><rect x="13" y="30" width="1" height="1"/><rect x="15" y="30" width="1" height="1"/><rect x="16" y="30" width="1" height="1"/><rect x="19" y="30" width="1" height="1"/><rect x="21" y="30" width="1" height="1"/><rect x="26" y="30" width="1" height="1"/><rect x="27" y="30" width="1" height="1"/><rect x="28" y="30" width="1" height="1"/></g></svg></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -179,17 +206,22 @@
   let activeKey = null;
 
   function applyOffset(key){
-    const el = document.getElementById('el-' + key);
-    if (!el) return;
     // Guard against a missing/undefined scale ever reaching setProperty --
     // an invalid --scale value invalidates the *whole* transform
     // declaration (translate included), which is what broke dragging
     // last round: pointermove was replacing the offsets object with one
     // that only had dx/dy, silently dropping scale.
     if (typeof offsets[key].scale !== 'number') offsets[key].scale = 1;
-    el.style.setProperty('--dx', offsets[key].dx);
-    el.style.setProperty('--dy', offsets[key].dy);
-    el.style.setProperty('--scale', offsets[key].scale);
+    // Apply to both the visible draggable element AND the hidden
+    // card-bleed export clone, so Print/PNG/JPG always reflect whatever
+    // is on screen right now -- live dragging, not just the saved file.
+    ['el-' + key, 'card-' + key + '-x'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.setProperty('--dx', offsets[key].dx);
+      el.style.setProperty('--dy', offsets[key].dy);
+      el.style.setProperty('--scale', offsets[key].scale);
+    });
     const row = document.querySelector('.offset-row[data-row="' + key + '"] .vals');
     if (row) row.textContent = 'dx ' + offsets[key].dx.toFixed(2) + ', dy ' + offsets[key].dy.toFixed(2) + ', scale ' + offsets[key].scale.toFixed(2);
   }
@@ -225,12 +257,16 @@
       document.getElementById('el-name').innerHTML = nameHtml;
       document.getElementById('el-photo').src = profile.photoUrl || '';
       document.getElementById('el-photo').alt = name;
+      document.getElementById('card-name-x').innerHTML = nameHtml;
+      document.getElementById('card-photo-x').src = profile.photoUrl || '';
+      document.getElementById('card-photo-x').alt = name;
 
       const rows = [];
       if (profile.email) rows.push('<a class="biz-card-row" href="mailto:' + profile.email + '">' + mailIcon + '<span>' + profile.email + '</span></a>');
       if (profile.phone) rows.push('<a class="biz-card-row" href="tel:' + profile.phone.replace(/[^+\d]/g, '') + '">' + phoneIcon + '<span>' + profile.phone + '</span></a>');
       rows.push('<a class="biz-card-row" href="https://strangemachinelabs.com" target="_blank" rel="noopener">' + globeIcon + '<span>strangemachinelabs.com</span></a>');
       document.getElementById('el-contact').innerHTML = rows.join('');
+      document.getElementById('card-contact-x').innerHTML = rows.join('');
     })
     .catch(() => {});
 
@@ -411,6 +447,42 @@
       window.alert('Save failed: ' + (err && err.message ? err.message : err));
     }
   }
+
+  // ---- print / PNG / JPG (reuses the same html2canvas approach as
+  // admin/business-card.html: the hidden .card-bleed clone above, kept
+  // live-synced with the visible card's offsets by applyOffset()) ----
+  document.getElementById('print-btn').addEventListener('click', () => window.print());
+
+  function exportCardImage(format, btn){
+    const el = document.getElementById('biz-card-export');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Rendering…';
+    html2canvas(el, { scale: 6.25, backgroundColor: '#0b0d0f', useCORS: true }).then(canvas => {
+      const mime = format === 'png' ? 'image/png' : 'image/jpeg';
+      const quality = format === 'png' ? undefined : 0.95;
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'strange-machine-labs-business-card.' + format;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }, mime, quality);
+    }).catch(err => {
+      console.error(err);
+      window.alert('Could not generate the image: ' + (err && err.message ? err.message : err));
+      btn.disabled = false;
+      btn.textContent = originalText;
+    });
+  }
+
+  document.getElementById('png-btn').addEventListener('click', e => exportCardImage('png', e.currentTarget));
+  document.getElementById('jpg-btn').addEventListener('click', e => exportCardImage('jpg', e.currentTarget));
 </script>
 </body>
 </html>
