@@ -4,195 +4,69 @@
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
     <title>Steve's Builds — Admin</title>
-    <link rel="stylesheet" href="business-card.css">
   </head>
   <body>
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 
     <script>
-      // --- CMS preview pane: read-only business-card preview inside the
-      // 'Contact info' editor. This mirrors exactly what the live site
-      // renders -- no print/export logic lives here anymore; that all
-      // moved to admin/card-layout.html, which also handles drag/resize
-      // positioning and now Print/Save as PDF + PNG/JPG download too.
-      // Register the Google Fonts stylesheet as its own preview style
-      // (not just relying on the @import at the top of business-card.css) --
-      // Sveltia's preview pane doesn't always resolve a nested @import the
-      // same way a normal page <link> does, which was letting JetBrains Mono
-      // silently fail to load here and fall back to a wider system monospace
-      // font, causing the website-URL line to wrap only in this preview even
-      // though the live site and print/export (which both use a real <link>)
-      // rendered fine.
+      // --- CMS preview pane for the 'Contact info' editor ---
+      //
+      // This deliberately does NOT render the business card any more.
+      //
+      // It used to mirror the card here, which meant the card had to render
+      // correctly inside Sveltia's preview iframe -- a container whose width
+      // this project can neither see nor control, and which is narrower than
+      // any real surface the card actually ships on. That environment was the
+      // source of a long string of problems (content reading as clipped at
+      // the card's edge, a zoom:0.7 hack to compensate, a re-render race that
+      // made the card visibly jump scale on load) none of which were bugs in
+      // the card itself -- they were artifacts of previewing it somewhere it
+      // was never designed to fit.
+      //
+      // The card now has exactly two real surfaces, both full-width and both
+      // driven by the same shared CSS and the same card-layout.json:
+      //   * admin/card-layout.html -- adjust, print, download
+      //   * the live site's "Click to contact" popup
+      // Anything that needs checking is checked there, where what you see is
+      // what prints. This pane is just a signpost to the layout tool.
       CMS.registerPreviewStyle('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
-      CMS.registerPreviewStyle('/admin/business-card.css');
-
-      var mailIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>';
-      var phoneIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
-      var globeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg>';
-
-      var QR_SVG = '<svg viewBox="0 0 33 33" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><rect width="33" height="33" fill="#fff"/><g fill="#0b0d0f"><rect x="2" y="2" width="1" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="5" y="2" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="8" y="2" width="1" height="1"/><rect x="11" y="2" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="15" y="2" width="1" height="1"/><rect x="16" y="2" width="1" height="1"/><rect x="17" y="2" width="1" height="1"/><rect x="20" y="2" width="1" height="1"/><rect x="24" y="2" width="1" height="1"/><rect x="25" y="2" width="1" height="1"/><rect x="26" y="2" width="1" height="1"/><rect x="27" y="2" width="1" height="1"/><rect x="28" y="2" width="1" height="1"/><rect x="29" y="2" width="1" height="1"/><rect x="30" y="2" width="1" height="1"/><rect x="2" y="3" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="17" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="30" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="5" y="4" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="10" y="4" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/><rect x="14" y="4" width="1" height="1"/><rect x="16" y="4" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="1" height="1"/><rect x="22" y="4" width="1" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="26" y="4" width="1" height="1"/><rect x="27" y="4" width="1" height="1"/><rect x="28" y="4" width="1" height="1"/><rect x="30" y="4" width="1" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="11" y="5" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/><rect x="13" y="5" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="16" y="5" width="1" height="1"/><rect x="17" y="5" width="1" height="1"/><rect x="19" y="5" width="1" height="1"/><rect x="22" y="5" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="26" y="5" width="1" height="1"/><rect x="27" y="5" width="1" height="1"/><rect x="28" y="5" width="1" height="1"/><rect x="30" y="5" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/><rect x="5" y="6" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="17" y="6" width="1" height="1"/><rect x="20" y="6" width="1" height="1"/><rect x="21" y="6" width="1" height="1"/><rect x="22" y="6" width="1" height="1"/><rect x="24" y="6" width="1" height="1"/><rect x="26" y="6" width="1" height="1"/><rect x="27" y="6" width="1" height="1"/><rect x="28" y="6" width="1" height="1"/><rect x="30" y="6" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="8" y="7" width="1" height="1"/><rect x="11" y="7" width="1" height="1"/><rect x="12" y="7" width="1" height="1"/><rect x="15" y="7" width="1" height="1"/><rect x="16" y="7" width="1" height="1"/><rect x="18" y="7" width="1" height="1"/><rect x="20" y="7" width="1" height="1"/><rect x="24" y="7" width="1" height="1"/><rect x="30" y="7" width="1" height="1"/><rect x="2" y="8" width="1" height="1"/><rect x="3" y="8" width="1" height="1"/><rect x="4" y="8" width="1" height="1"/><rect x="5" y="8" width="1" height="1"/><rect x="6" y="8" width="1" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="12" y="8" width="1" height="1"/><rect x="14" y="8" width="1" height="1"/><rect x="16" y="8" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="20" y="8" width="1" height="1"/><rect x="22" y="8" width="1" height="1"/><rect x="24" y="8" width="1" height="1"/><rect x="25" y="8" width="1" height="1"/><rect x="26" y="8" width="1" height="1"/><rect x="27" y="8" width="1" height="1"/><rect x="28" y="8" width="1" height="1"/><rect x="29" y="8" width="1" height="1"/><rect x="30" y="8" width="1" height="1"/><rect x="10" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="12" y="9" width="1" height="1"/><rect x="15" y="9" width="1" height="1"/><rect x="21" y="9" width="1" height="1"/><rect x="22" y="9" width="1" height="1"/><rect x="2" y="10" width="1" height="1"/><rect x="8" y="10" width="1" height="1"/><rect x="10" y="10" width="1" height="1"/><rect x="12" y="10" width="1" height="1"/><rect x="14" y="10" width="1" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="17" y="10" width="1" height="1"/><rect x="19" y="10" width="1" height="1"/><rect x="21" y="10" width="1" height="1"/><rect x="23" y="10" width="1" height="1"/><rect x="24" y="10" width="1" height="1"/><rect x="27" y="10" width="1" height="1"/><rect x="28" y="10" width="1" height="1"/><rect x="29" y="10" width="1" height="1"/><rect x="2" y="11" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/><rect x="4" y="11" width="1" height="1"/><rect x="6" y="11" width="1" height="1"/><rect x="9" y="11" width="1" height="1"/><rect x="10" y="11" width="1" height="1"/><rect x="11" y="11" width="1" height="1"/><rect x="13" y="11" width="1" height="1"/><rect x="16" y="11" width="1" height="1"/><rect x="20" y="11" width="1" height="1"/><rect x="21" y="11" width="1" height="1"/><rect x="25" y="11" width="1" height="1"/><rect x="26" y="11" width="1" height="1"/><rect x="28" y="11" width="1" height="1"/><rect x="29" y="11" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="4" y="12" width="1" height="1"/><rect x="5" y="12" width="1" height="1"/><rect x="7" y="12" width="1" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="10" y="12" width="1" height="1"/><rect x="12" y="12" width="1" height="1"/><rect x="13" y="12" width="1" height="1"/><rect x="14" y="12" width="1" height="1"/><rect x="19" y="12" width="1" height="1"/><rect x="20" y="12" width="1" height="1"/><rect x="22" y="12" width="1" height="1"/><rect x="24" y="12" width="1" height="1"/><rect x="25" y="12" width="1" height="1"/><rect x="26" y="12" width="1" height="1"/><rect x="4" y="13" width="1" height="1"/><rect x="5" y="13" width="1" height="1"/><rect x="6" y="13" width="1" height="1"/><rect x="7" y="13" width="1" height="1"/><rect x="9" y="13" width="1" height="1"/><rect x="10" y="13" width="1" height="1"/><rect x="11" y="13" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="17" y="13" width="1" height="1"/><rect x="18" y="13" width="1" height="1"/><rect x="20" y="13" width="1" height="1"/><rect x="24" y="13" width="1" height="1"/><rect x="26" y="13" width="1" height="1"/><rect x="27" y="13" width="1" height="1"/><rect x="3" y="14" width="1" height="1"/><rect x="6" y="14" width="1" height="1"/><rect x="8" y="14" width="1" height="1"/><rect x="9" y="14" width="1" height="1"/><rect x="12" y="14" width="1" height="1"/><rect x="14" y="14" width="1" height="1"/><rect x="15" y="14" width="1" height="1"/><rect x="16" y="14" width="1" height="1"/><rect x="22" y="14" width="1" height="1"/><rect x="24" y="14" width="1" height="1"/><rect x="25" y="14" width="1" height="1"/><rect x="30" y="14" width="1" height="1"/><rect x="2" y="15" width="1" height="1"/><rect x="4" y="15" width="1" height="1"/><rect x="5" y="15" width="1" height="1"/><rect x="9" y="15" width="1" height="1"/><rect x="13" y="15" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="15" y="15" width="1" height="1"/><rect x="16" y="15" width="1" height="1"/><rect x="21" y="15" width="1" height="1"/><rect x="22" y="15" width="1" height="1"/><rect x="24" y="15" width="1" height="1"/><rect x="25" y="15" width="1" height="1"/><rect x="26" y="15" width="1" height="1"/><rect x="29" y="15" width="1" height="1"/><rect x="30" y="15" width="1" height="1"/><rect x="3" y="16" width="1" height="1"/><rect x="4" y="16" width="1" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="8" y="16" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/><rect x="14" y="16" width="1" height="1"/><rect x="15" y="16" width="1" height="1"/><rect x="16" y="16" width="1" height="1"/><rect x="17" y="16" width="1" height="1"/><rect x="18" y="16" width="1" height="1"/><rect x="19" y="16" width="1" height="1"/><rect x="20" y="16" width="1" height="1"/><rect x="27" y="16" width="1" height="1"/><rect x="28" y="16" width="1" height="1"/><rect x="2" y="17" width="1" height="1"/><rect x="3" y="17" width="1" height="1"/><rect x="4" y="17" width="1" height="1"/><rect x="5" y="17" width="1" height="1"/><rect x="7" y="17" width="1" height="1"/><rect x="10" y="17" width="1" height="1"/><rect x="11" y="17" width="1" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="13" y="17" width="1" height="1"/><rect x="15" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="18" y="17" width="1" height="1"/><rect x="22" y="17" width="1" height="1"/><rect x="23" y="17" width="1" height="1"/><rect x="26" y="17" width="1" height="1"/><rect x="28" y="17" width="1" height="1"/><rect x="30" y="17" width="1" height="1"/><rect x="2" y="18" width="1" height="1"/><rect x="5" y="18" width="1" height="1"/><rect x="7" y="18" width="1" height="1"/><rect x="8" y="18" width="1" height="1"/><rect x="10" y="18" width="1" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="12" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="17" y="18" width="1" height="1"/><rect x="19" y="18" width="1" height="1"/><rect x="20" y="18" width="1" height="1"/><rect x="21" y="18" width="1" height="1"/><rect x="25" y="18" width="1" height="1"/><rect x="27" y="18" width="1" height="1"/><rect x="28" y="18" width="1" height="1"/><rect x="2" y="19" width="1" height="1"/><rect x="5" y="19" width="1" height="1"/><rect x="6" y="19" width="1" height="1"/><rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="18" y="19" width="1" height="1"/><rect x="19" y="19" width="1" height="1"/><rect x="20" y="19" width="1" height="1"/><rect x="21" y="19" width="1" height="1"/><rect x="22" y="19" width="1" height="1"/><rect x="24" y="19" width="1" height="1"/><rect x="25" y="19" width="1" height="1"/><rect x="26" y="19" width="1" height="1"/><rect x="28" y="19" width="1" height="1"/><rect x="29" y="19" width="1" height="1"/><rect x="30" y="19" width="1" height="1"/><rect x="2" y="20" width="1" height="1"/><rect x="3" y="20" width="1" height="1"/><rect x="6" y="20" width="1" height="1"/><rect x="7" y="20" width="1" height="1"/><rect x="8" y="20" width="1" height="1"/><rect x="9" y="20" width="1" height="1"/><rect x="10" y="20" width="1" height="1"/><rect x="12" y="20" width="1" height="1"/><rect x="15" y="20" width="1" height="1"/><rect x="16" y="20" width="1" height="1"/><rect x="18" y="20" width="1" height="1"/><rect x="21" y="20" width="1" height="1"/><rect x="24" y="20" width="1" height="1"/><rect x="25" y="20" width="1" height="1"/><rect x="26" y="20" width="1" height="1"/><rect x="27" y="20" width="1" height="1"/><rect x="30" y="20" width="1" height="1"/><rect x="2" y="21" width="1" height="1"/><rect x="4" y="21" width="1" height="1"/><rect x="12" y="21" width="1" height="1"/><rect x="14" y="21" width="1" height="1"/><rect x="16" y="21" width="1" height="1"/><rect x="17" y="21" width="1" height="1"/><rect x="18" y="21" width="1" height="1"/><rect x="20" y="21" width="1" height="1"/><rect x="21" y="21" width="1" height="1"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="21" width="1" height="1"/><rect x="26" y="21" width="1" height="1"/><rect x="2" y="22" width="1" height="1"/><rect x="4" y="22" width="1" height="1"/><rect x="5" y="22" width="1" height="1"/><rect x="6" y="22" width="1" height="1"/><rect x="8" y="22" width="1" height="1"/><rect x="9" y="22" width="1" height="1"/><rect x="10" y="22" width="1" height="1"/><rect x="11" y="22" width="1" height="1"/><rect x="12" y="22" width="1" height="1"/><rect x="13" y="22" width="1" height="1"/><rect x="19" y="22" width="1" height="1"/><rect x="22" y="22" width="1" height="1"/><rect x="23" y="22" width="1" height="1"/><rect x="24" y="22" width="1" height="1"/><rect x="25" y="22" width="1" height="1"/><rect x="26" y="22" width="1" height="1"/><rect x="28" y="22" width="1" height="1"/><rect x="29" y="22" width="1" height="1"/><rect x="30" y="22" width="1" height="1"/><rect x="10" y="23" width="1" height="1"/><rect x="11" y="23" width="1" height="1"/><rect x="15" y="23" width="1" height="1"/><rect x="18" y="23" width="1" height="1"/><rect x="20" y="23" width="1" height="1"/><rect x="22" y="23" width="1" height="1"/><rect x="26" y="23" width="1" height="1"/><rect x="27" y="23" width="1" height="1"/><rect x="2" y="24" width="1" height="1"/><rect x="3" y="24" width="1" height="1"/><rect x="4" y="24" width="1" height="1"/><rect x="5" y="24" width="1" height="1"/><rect x="6" y="24" width="1" height="1"/><rect x="7" y="24" width="1" height="1"/><rect x="8" y="24" width="1" height="1"/><rect x="11" y="24" width="1" height="1"/><rect x="12" y="24" width="1" height="1"/><rect x="13" y="24" width="1" height="1"/><rect x="14" y="24" width="1" height="1"/><rect x="15" y="24" width="1" height="1"/><rect x="16" y="24" width="1" height="1"/><rect x="17" y="24" width="1" height="1"/><rect x="18" y="24" width="1" height="1"/><rect x="19" y="24" width="1" height="1"/><rect x="20" y="24" width="1" height="1"/><rect x="21" y="24" width="1" height="1"/><rect x="22" y="24" width="1" height="1"/><rect x="24" y="24" width="1" height="1"/><rect x="26" y="24" width="1" height="1"/><rect x="27" y="24" width="1" height="1"/><rect x="28" y="24" width="1" height="1"/><rect x="2" y="25" width="1" height="1"/><rect x="8" y="25" width="1" height="1"/><rect x="11" y="25" width="1" height="1"/><rect x="14" y="25" width="1" height="1"/><rect x="15" y="25" width="1" height="1"/><rect x="17" y="25" width="1" height="1"/><rect x="18" y="25" width="1" height="1"/><rect x="21" y="25" width="1" height="1"/><rect x="22" y="25" width="1" height="1"/><rect x="26" y="25" width="1" height="1"/><rect x="29" y="25" width="1" height="1"/><rect x="30" y="25" width="1" height="1"/><rect x="2" y="26" width="1" height="1"/><rect x="4" y="26" width="1" height="1"/><rect x="5" y="26" width="1" height="1"/><rect x="6" y="26" width="1" height="1"/><rect x="8" y="26" width="1" height="1"/><rect x="11" y="26" width="1" height="1"/><rect x="13" y="26" width="1" height="1"/><rect x="14" y="26" width="1" height="1"/><rect x="15" y="26" width="1" height="1"/><rect x="18" y="26" width="1" height="1"/><rect x="21" y="26" width="1" height="1"/><rect x="22" y="26" width="1" height="1"/><rect x="23" y="26" width="1" height="1"/><rect x="24" y="26" width="1" height="1"/><rect x="25" y="26" width="1" height="1"/><rect x="26" y="26" width="1" height="1"/><rect x="27" y="26" width="1" height="1"/><rect x="2" y="27" width="1" height="1"/><rect x="4" y="27" width="1" height="1"/><rect x="5" y="27" width="1" height="1"/><rect x="6" y="27" width="1" height="1"/><rect x="8" y="27" width="1" height="1"/><rect x="11" y="27" width="1" height="1"/><rect x="12" y="27" width="1" height="1"/><rect x="17" y="27" width="1" height="1"/><rect x="19" y="27" width="1" height="1"/><rect x="20" y="27" width="1" height="1"/><rect x="21" y="27" width="1" height="1"/><rect x="23" y="27" width="1" height="1"/><rect x="25" y="27" width="1" height="1"/><rect x="27" y="27" width="1" height="1"/><rect x="28" y="27" width="1" height="1"/><rect x="29" y="27" width="1" height="1"/><rect x="2" y="28" width="1" height="1"/><rect x="4" y="28" width="1" height="1"/><rect x="5" y="28" width="1" height="1"/><rect x="6" y="28" width="1" height="1"/><rect x="8" y="28" width="1" height="1"/><rect x="13" y="28" width="1" height="1"/><rect x="15" y="28" width="1" height="1"/><rect x="16" y="28" width="1" height="1"/><rect x="17" y="28" width="1" height="1"/><rect x="18" y="28" width="1" height="1"/><rect x="19" y="28" width="1" height="1"/><rect x="23" y="28" width="1" height="1"/><rect x="24" y="28" width="1" height="1"/><rect x="25" y="28" width="1" height="1"/><rect x="26" y="28" width="1" height="1"/><rect x="27" y="28" width="1" height="1"/><rect x="28" y="28" width="1" height="1"/><rect x="29" y="28" width="1" height="1"/><rect x="2" y="29" width="1" height="1"/><rect x="8" y="29" width="1" height="1"/><rect x="12" y="29" width="1" height="1"/><rect x="15" y="29" width="1" height="1"/><rect x="23" y="29" width="1" height="1"/><rect x="25" y="29" width="1" height="1"/><rect x="27" y="29" width="1" height="1"/><rect x="28" y="29" width="1" height="1"/><rect x="30" y="29" width="1" height="1"/><rect x="2" y="30" width="1" height="1"/><rect x="3" y="30" width="1" height="1"/><rect x="4" y="30" width="1" height="1"/><rect x="5" y="30" width="1" height="1"/><rect x="6" y="30" width="1" height="1"/><rect x="7" y="30" width="1" height="1"/><rect x="8" y="30" width="1" height="1"/><rect x="10" y="30" width="1" height="1"/><rect x="12" y="30" width="1" height="1"/><rect x="13" y="30" width="1" height="1"/><rect x="15" y="30" width="1" height="1"/><rect x="16" y="30" width="1" height="1"/><rect x="19" y="30" width="1" height="1"/><rect x="21" y="30" width="1" height="1"/><rect x="26" y="30" width="1" height="1"/><rect x="27" y="30" width="1" height="1"/><rect x="28" y="30" width="1" height="1"/></g></svg>';
-
-      // Reads card-layout.json (small {dx,dy,scale} nudges per element, in %
-      // of card width, set by the drag tool at admin/card-layout.html) and
-      // caches it. Every place that builds card HTML shares this so a
-      // saved nudge shows up everywhere -- site, this CMS preview, and
-      // print/export -- without needing per-tier code.
-      var _cardLayoutCache = null;
-      var _cardLayoutPromise = null;
-      function fetchCardLayout(){
-        if (_cardLayoutPromise) return _cardLayoutPromise;
-        _cardLayoutPromise = fetch('/card-layout.json')
-          .then(function (r) { return r.ok ? r.json() : {}; })
-          .catch(function () { return {}; })
-          .then(function (data) { _cardLayoutCache = data || {}; return _cardLayoutCache; });
-        return _cardLayoutPromise;
-      }
-      function layoutStyleAttr(layout, key){
-        var o = layout && layout[key];
-        var dx = (o && typeof o.dx === 'number') ? o.dx : 0;
-        var dy = (o && typeof o.dy === 'number') ? o.dy : 0;
-        var scale = (o && typeof o.scale === 'number') ? o.scale : 1;
-        if (!dx && !dy && scale === 1) return '';
-        return ' style="--dx:' + dx + ';--dy:' + dy + ';--scale:' + scale + '"';
-      }
-
-      function buildCardInnerHtml(name, photoUrl, email, phone, layout){
-        layout = layout || {};
-        var photo = photoUrl
-          ? '<img class="biz-card-photo" src="' + photoUrl + '" alt=""' + layoutStyleAttr(layout, 'photo') + '>'
-          : '<div class="biz-card-photo"' + layoutStyleAttr(layout, 'photo') + '></div>';
-
-        var firstSpace = (name || '').indexOf(' ');
-        var nameHtml = firstSpace === -1
-          ? (name || '')
-          : name.slice(0, firstSpace) + '<br>' + name.slice(firstSpace + 1);
-
-        var rows = [];
-        if (email) rows.push('<a class="biz-card-row" href="mailto:' + email + '">' + mailIcon + '<span>' + email + '</span></a>');
-        if (phone) rows.push('<a class="biz-card-row" href="tel:' + phone.replace(/[^+\d]/g, '') + '">' + phoneIcon + '<span>' + phone + '</span></a>');
-        rows.push('<a class="biz-card-row" href="https://strangemachinelabs.com" target="_blank" rel="noopener">' + globeIcon + '<span>strangemachinelabs.com</span></a>');
-
-        return (
-          '<div class="biz-card-top">' +
-            '<div class="biz-card-name"' + layoutStyleAttr(layout, 'name') + '>' + nameHtml + '</div>' +
-            photo +
-            '<div class="biz-card-contact"' + layoutStyleAttr(layout, 'contact') + '>' + rows.join('') + '</div>' +
-          '</div>' +
-          '<div class="biz-card-bottom">' +
-            '<img class="biz-card-logo" src="https://strangemachinelabs.com/images/logo-strange-machine-card.png" alt="Strange Machine Labs"' + layoutStyleAttr(layout, 'logo') + '>' +
-            '<div class="biz-card-qr"' + layoutStyleAttr(layout, 'qr') + '>' + QR_SVG + '</div>' +
-          '</div>'
-        );
-      }
 
       var CardPreview = createClass({
-        getInitialState: function () {
-          return { ready: !!_cardLayoutCache };
-        },
-        componentDidMount: function () {
-          var self = this;
-          this._mounted = true;
-          if (!_cardLayoutCache) {
-            fetchCardLayout().then(function () {
-              // setState (not forceUpdate) -- render() below branches on
-              // this.state.ready so the card only ever paints once
-              // card-layout.json has actually loaded.
-              if (self._mounted) self.setState({ ready: true });
-            });
-          }
-        },
-        componentWillUnmount: function () {
-          this._mounted = false;
-        },
         render: function () {
-          var entry = this.props.entry;
-          var name = entry.getIn(['data', 'name']) || '';
-          var photoPath = entry.getIn(['data', 'photoUrl']) || '';
-          var email = entry.getIn(['data', 'email']) || '';
-          var phone = entry.getIn(['data', 'phone']) || '';
-          var photoAsset = photoPath ? this.props.getAsset(photoPath) : null;
-          var photoUrl = photoAsset ? photoAsset.url : '';
-
-          var wrapperStyle = { padding: '32px 24px', background: '#0b0d0f', minHeight: '100%', boxSizing: 'border-box' };
-
-          if (!this.state.ready) {
-            // React always commits this component's first render before
-            // componentDidMount runs, and card-layout.json (the saved
-            // --dx/--dy/--scale nudges) only finishes loading after
-            // that, asynchronously. Rendering the card on that first
-            // pass used to mean it painted once at its unscaled default
-            // (every CSS var() falls back to scale:1/dx:0/dy:0 with no
-            // saved layout applied yet), then jumped a moment later to
-            // Steve's actual saved scale (up to 1.9x) once the fetch
-            // resolved -- a visible "pop" on every single reload/entry
-            // switch that read as the preview scaling wrong. Showing a
-            // plain loading line instead of the card until the real
-            // layout is known means the first frame the user actually
-            // sees here is already correct -- no intermediate wrong-
-            // scaled paint.
-            return h('div', { style: wrapperStyle },
-              h('p', { style: { fontFamily: "'JetBrains Mono',monospace", fontSize: '12px', color: '#8b969c' } }, 'Loading preview…')
-            );
-          }
-
-          var innerHtml = buildCardInnerHtml(name, photoUrl, email, phone, _cardLayoutCache);
-
           return h(
             'div',
-            wrapperStyle,
-            // Traced the actual cause (not guessing this time): compared
-            // computed scrollWidth/clientWidth on every contact row
-            // between this preview and the live site -- nothing is
-            // being text-clipped internally, scrollWidth === clientWidth
-            // everywhere, identical on both. Steve's saved scale values
-            // (name 1.9x, contact 1.3x, etc.) genuinely paint content
-            // past the card's own edge on every surface -- CSS
-            // transform:scale doesn't reserve extra layout room for the
-            // bigger visual size. The site and the layout tool have wide
-            // open surrounding space for that overflow to spill into
-            // unnoticed; whatever fixed-width container Sveltia mounts
-            // this preview in does not, so the exact same overflow reads
-            // as text getting cut off. zoom (not transform) shrinks the
-            // card and everything it paints -- including that overflow
-            // -- together, and unlike transform it also shrinks the
-            // layout space reserved for it, so there's no gap to
-            // compensate for. Confirmed via direct measurement this
-            // reduces the overflow amount by the same ~22% as the zoom
-            // factor (e.g. 52px of overflow contact-row-vs-card-edge
-            // become ~41px at zoom 0.78); dropped to 0.7 here for extra
-            // margin since the exact width Sveltia gives this preview
-            // isn't something this code can see or control.
-            h('div', { className: 'biz-card', style: { zoom: 0.7 }, dangerouslySetInnerHTML: { __html: innerHtml } }),
+            { style: { padding: '32px 24px', background: '#0b0d0f', minHeight: '100%', boxSizing: 'border-box' } },
             h(
-              'div',
-              { style: { marginTop: '18px' } },
-              h(
-                'a',
-                {
-                  href: '/admin/card-layout.html',
-                  target: '_blank',
-                  rel: 'noopener',
-                  style: {
-                    textDecoration: 'none',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    fontFamily: "'Space Grotesk',sans-serif",
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    borderRadius: '8px',
-                    border: '2px solid #39ff88',
-                    background: '#14171a',
-                    color: '#39ff88',
-                    padding: '9px 14px'
-                  }
-                },
-                'Adjust Layout, Print, or Download →'
-              )
+              'p',
+              { style: { fontFamily: "'Space Grotesk',sans-serif", fontSize: '14px', color: '#e8ebed', lineHeight: '1.6', maxWidth: '460px', margin: '0 0 18px' } },
+              'The name, photo, email and phone you set here feed the business card. The card itself is designed, previewed, printed and downloaded in the layout tool.'
+            ),
+            h(
+              'a',
+              {
+                href: '/admin/card-layout.html',
+                target: '_blank',
+                rel: 'noopener',
+                style: {
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  fontFamily: "'Space Grotesk',sans-serif",
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  borderRadius: '8px',
+                  border: '2px solid #39ff88',
+                  background: '#14171a',
+                  color: '#39ff88',
+                  padding: '9px 14px'
+                }
+              },
+              'Open the card layout tool →'
             ),
             h(
               'p',
-              { style: { fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', color: '#8b969c', lineHeight: '1.6', maxWidth: '560px', marginTop: '12px' } },
-              'This mirrors the live site exactly. To reposition anything, print, or download a PNG/JPG, use the layout tool above.'
+              { style: { fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', color: '#8b969c', lineHeight: '1.6', maxWidth: '460px', marginTop: '14px' } },
+              'Remember to Publish here first if you changed anything above — the layout tool reads the published values.'
             )
           );
         }

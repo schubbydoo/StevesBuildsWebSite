@@ -157,21 +157,19 @@ body{
   transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
 }
 .biz-card-qr svg{width:100%;height:100%;display:block;}
-@media screen and (max-width:480px){
-  .biz-card{
-    padding:14px 26px 14px 14px;
-    gap:5px;
-  }
-  .biz-card-top{gap:9px;}
-  .biz-card-photo{width:64px;height:64px;}
-  .biz-card-name{font-size:15px;line-height:1.15;margin-left:8px;}
-  .biz-card-contact{gap:4px;}
-  .biz-card-row{font-size:11px;gap:5px;}
-  .biz-card-row svg{width:12px;height:12px;}
-  .biz-card-bottom{gap:10px;}
-  .biz-card-logo{height:110px;}
-  .biz-card-qr{width:62px;height:62px;padding:3px;margin-top:35px;margin-left:auto;}
-}
+/* NOTE: there is deliberately no fixed-px "mobile tier" here anymore.
+   There used to be an @media screen and (max-width:480px) block that
+   re-declared photo/name/logo/QR/contact sizes in fixed px. It predated
+   the container-query (cqw) sizing above and directly contradicted it:
+   cqw sizes are a fixed percentage of the card's own width, so they stay
+   proportional at ANY card size, whereas that block snapped them back to
+   absolute pixels below a viewport breakpoint. The result was that on a
+   phone the elements stopped being proportional to the card while the
+   saved --dx/--dy offsets (still in cqw) and --scale (still applied)
+   kept scaling with it -- so the pieces drifted out of register and the
+   contact text wrapped, which is exactly the "not scaling holistically
+   on small screens" report. cqw alone handles every width correctly, so
+   the breakpoint is gone and there is now ONE sizing tier for the card. */
 /* --- end business card --- */
 
 /* Same bleed-safe sizing as @media print below, but as a plain class so
@@ -185,19 +183,21 @@ body{
   border-radius:0;
   box-shadow:none;
   border:none;
-  padding:0.13in 0.25in 0.13in 0.13in;
-  gap:0.05in;
+  /* padding/gap intentionally NOT redeclared -- the shared cqw values
+     resolve here to 0.129in top/bottom, 0.140in left, 0.257in right and a
+     0.023in gap, all of which clear the 0.125in print safe area, while
+     keeping the export proportionally identical to the screen render. */
   background:var(--bg);
 }
-.card-bleed .biz-card-top{gap:0.09in;}
-.card-bleed .biz-card-photo{width:60px;height:60px;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
-.card-bleed .biz-card-name{font-size:15px;line-height:1.2;margin-left:0.075in;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
-.card-bleed .biz-card-contact{gap:5px;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
-.card-bleed .biz-card-row{font-size:10px;gap:5px;}
-.card-bleed .biz-card-row svg{width:12px;height:12px;}
-.card-bleed .biz-card-bottom{gap:0.1in;}
-.card-bleed .biz-card-logo{height:1.15in;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
-.card-bleed .biz-card-qr{width:0.62in;height:0.62in;border-radius:4px;padding:4px;margin-top:0.325in;margin-left:auto;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
+/* No per-element size overrides for the export clone on purpose: .biz-card
+   declares container-type:inline-size and .card-bleed sets width:3.625in,
+   so 1cqw resolves to 0.03625in inside this clone -- exactly the constant
+   the old hand-written .card-bleed overrides were multiplying --dx/--dy by.
+   Letting the shared cqw rules apply therefore reproduces the same
+   geometry while guaranteeing the PNG/JPG export stays proportionally
+   identical to what's on screen instead of drifting as a parallel set of
+   hand-maintained numbers (which is what made the downloaded image not
+   match the layout tool). Only the box itself is redefined above. */
 
 @media print{
   /* Walgreens Photo business-card spec: 3.5x2 trim, 3.625x2.125 bleed,
@@ -236,18 +236,12 @@ body{
     border-radius:0;
     box-shadow:none;
     border:none;
-    padding:0.13in 0.25in 0.13in 0.13in;
-    gap:0.05in;
+    /* padding/gap inherited from the shared cqw rules -- see .card-bleed. */
     background:var(--bg);
   }
-  .biz-card-top{gap:0.09in;}
-  .biz-card-photo{width:60px;height:60px;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
-  .biz-card-name{font-size:15px;line-height:1.2;margin-left:0.075in;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
-  .biz-card-contact{gap:5px;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
-  .biz-card-row{font-size:10px;gap:5px;}
-  .biz-card-row svg{width:12px;height:12px;}
-  .biz-card-bottom{gap:0.1in;}
-  .biz-card-logo{height:1.15in;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
-  .biz-card-qr{width:0.62in;height:0.62in;border-radius:4px;padding:4px;margin-top:0.325in;margin-left:auto;transform:translate(calc(var(--dx,0) * 0.03625in), calc(var(--dy,0) * 0.03625in)) scale(var(--scale,1));}
+  /* Element sizes intentionally inherited from the shared cqw rules --
+     same reasoning as the .card-bleed clone above: at width:3.625in,
+     1cqw == 0.03625in, so print matches screen proportionally with no
+     parallel set of numbers to keep in sync. */
   #biz-card-export{ display:none !important; }
 }
