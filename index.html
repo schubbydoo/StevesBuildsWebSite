@@ -498,20 +498,40 @@
      here is positioned proportionally, so there is no cqw-vs-px conflict
      to create -- it is just ordinary responsive type sizing. */
   .contact-card{
-    background:#fefefc;
-    color:#0b0d0f;
-    border:2px solid #dcdfe1;
-    border-radius:14px;
+    /* Same visual idiom as the rest of the site: --panel fill, 2px --line
+       border, and the offset hard shadow used on .card / .modal-video-wrap.
+       This used to be a white card with dark text, which was inherited from
+       the *printed* card's palette -- correct on paper, but a bright slab
+       against a dark page. The printed card keeps that white palette over
+       in admin/business-card.css; this dialog is site chrome and should
+       read as site chrome. */
+    background:var(--panel);
+    color:var(--text);
+    border:2px solid var(--line);
+    border-radius:12px;
     box-shadow:7px 7px 0 var(--accent2);
     padding:30px 28px;
     width:100%;
     box-sizing:border-box;
+  }
+  .contact-card-label{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--accent);
+    border:2px solid var(--accent);
+    border-radius:6px;
+    padding:3px 10px;
+    margin-bottom:16px;
   }
   .contact-card-name{
     font-family:'Space Grotesk',sans-serif;
     font-size:28px;
     font-weight:700;
     line-height:1.15;
+    color:var(--text);
     margin:0 0 20px;
   }
   .contact-card-rows{display:flex;flex-direction:column;gap:14px;}
@@ -522,17 +542,18 @@
     font-family:'JetBrains Mono',monospace;
     font-size:15px;
     line-height:1.4;
-    color:#0b0d0f;
+    color:var(--text);
     text-decoration:none;
     overflow-wrap:anywhere;
+    transition:color .18s ease;
   }
   .contact-card-row svg{
     width:20px;
     height:20px;
     flex-shrink:0;
-    color:#5c7a00;
+    color:var(--accent);
   }
-  .contact-card-row:hover{color:#5c7a00;}
+  .contact-card-row:hover{color:var(--accent);}
   @media (max-width:480px){
     .contact-card{padding:24px 20px;}
     .contact-card-name{font-size:23px;margin:0 0 16px;}
@@ -581,6 +602,7 @@
   <div class="modal-box card-modal-box">
     <button class="modal-close" id="card-modal-close" aria-label="Close">&times;</button>
     <div class="contact-card">
+      <span class="contact-card-label">Contact</span>
       <div class="contact-card-name" id="card-name"></div>
       <div class="contact-card-rows" id="card-contact"></div>
     </div>
