@@ -473,119 +473,71 @@
   }
   .qr-share:hover .qr-label{color:var(--accent);}
   .card-modal-box{
-    max-width:660px;
+    max-width:430px;
   }
-  .biz-card{
-    /* White-card palette, scoped locally (not at :root) so it doesn't
-       recolor the rest of the (dark-themed) site -- see
-       admin/business-card.css for the full explanation, this block is a
-       duplicated copy kept in sync with that shared stylesheet. */
-    --bg:#fefefc;
-    --panel:#fefefc;
-    --text:#0b0d0f;
-    --line:#dcdfe1;
-    /* See admin/business-card.css for why this differs from the
-       site-wide --accent -- it's a contrast fix for icons on white. */
-    --accent:#5c7a00;
-    width:620px;
-    max-width:100%;
-    aspect-ratio:1.75/1;
-    background:var(--panel);
-    border:2px solid var(--line);
+  /* --- "Click to contact" panel ---------------------------------------
+     Deliberately NOT the printed business card.
+
+     The caricature, logo and QR code all already appear on the landing
+     page directly behind this dialog, so repeating them here bought
+     nothing -- while costing the one thing that kept breaking: three
+     images whose size and position come from card-layout.json's
+     --dx/--dy/--scale, values hand-tuned against a 3.5in printed card,
+     being asked to also hold together in a phone-width dialog. On a
+     narrow screen they had nowhere to go and overhung the panel.
+
+     So this panel is plain text and inline icons. No images, no
+     transform:scale, no container queries, nothing wired to the card's
+     saved layout -- there is simply nothing left that can fall out of
+     proportion. The full card design still lives in
+     admin/card-layout.html for print/PNG/JPG; the two are independent by
+     design now, which also retires the old "index.html must duplicate
+     business-card.css" sync hazard.
+
+     The px breakpoint below is safe in a way the card's was not: nothing
+     here is positioned proportionally, so there is no cqw-vs-px conflict
+     to create -- it is just ordinary responsive type sizing. */
+  .contact-card{
+    background:#fefefc;
+    color:#0b0d0f;
+    border:2px solid #dcdfe1;
     border-radius:14px;
     box-shadow:7px 7px 0 var(--accent2);
-    padding:3.548cqw 7.097cqw 3.548cqw 3.871cqw;
+    padding:30px 28px;
+    width:100%;
     box-sizing:border-box;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    gap:0.645cqw;
-    color:var(--text);
-    container-type:inline-size;
   }
-  .biz-card-top{
-    display:flex;
-    align-items:center;
-    gap:2.581cqw;
-    flex:0 0 auto;
-  }
-  .biz-card-name{
-    font-size:4.194cqw;
+  .contact-card-name{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:28px;
     font-weight:700;
-    line-height:1.2;
-    flex-shrink:0;
-    margin-left:2.097cqw;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
+    line-height:1.15;
+    margin:0 0 20px;
   }
-  .biz-card-photo{
-    width:17.742cqw;
-    height:17.742cqw;
-    border-radius:50%;
-    object-fit:cover;
-    /* No border -- seamless with the white card background. */
-    background:var(--bg);
-    flex-shrink:0;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
-  }
-  .biz-card-contact{
-    display:flex;
-    flex-direction:column;
-    gap:1.129cqw;
-    margin-left:auto;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
-  }
-  .biz-card-row{
+  .contact-card-rows{display:flex;flex-direction:column;gap:14px;}
+  .contact-card-row{
     display:flex;
     align-items:center;
-    gap:1.452cqw;
+    gap:13px;
     font-family:'JetBrains Mono',monospace;
-    font-size:3.065cqw;
-    color:var(--text);
-    overflow:hidden;
+    font-size:15px;
+    line-height:1.4;
+    color:#0b0d0f;
     text-decoration:none;
-  }
-  .biz-card-row:hover{color:var(--accent);}
-  .biz-card-row span{
     overflow-wrap:anywhere;
   }
-  .biz-card-row svg{
-    width:3.387cqw;
-    height:3.387cqw;
+  .contact-card-row svg{
+    width:20px;
+    height:20px;
     flex-shrink:0;
-    color:var(--accent);
+    color:#5c7a00;
   }
-  .biz-card-bottom{
-    display:flex;
-    align-items:flex-start;
-    gap:2.903cqw;
-    flex:0 0 auto;
-  }
-  .biz-card-logo{
-    height:30.968cqw;
-    width:auto;
-    display:block;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
-  }
-  .biz-card-qr{
-    width:17.097cqw;
-    height:17.097cqw;
-    background:#fff;
-    border-radius:8px;
-    padding:0.806cqw;
-    box-sizing:border-box;
-    flex-shrink:0;
-    margin-top:9.355cqw;
-    margin-left:auto;
-    transform:translate(calc(var(--dx,0) * 1cqw), calc(var(--dy,0) * 1cqw)) scale(var(--scale,1));
-  }
-  .biz-card-qr svg{width:100%;height:100%;display:block;}
-  /* No fixed-px mobile tier here on purpose -- must stay in sync with
-     admin/business-card.css, which dropped the same block. The cqw sizes
-     above are a percentage of the card's own width and so already hold
-     their proportions at every screen size; the old
-     @media(max-width:480px) block snapped them back to absolute pixels
-     while the saved --dx/--dy (cqw) and --scale kept scaling, which is
-     what made the card come apart on phones. */
+  .contact-card-row:hover{color:#5c7a00;}
+  @media (max-width:480px){
+    .contact-card{padding:24px 20px;}
+    .contact-card-name{font-size:23px;margin:0 0 16px;}
+    .contact-card-row{font-size:14px;gap:11px;}
+    .contact-card-row svg{width:18px;height:18px;}
   }
 </style>
 </head>
@@ -628,16 +580,9 @@
 <div class="modal-backdrop" id="card-modal-backdrop">
   <div class="modal-box card-modal-box">
     <button class="modal-close" id="card-modal-close" aria-label="Close">&times;</button>
-    <div class="biz-card">
-      <div class="biz-card-top">
-        <div class="biz-card-name" id="card-name"></div>
-        <img class="biz-card-photo" id="card-photo" src="" alt="">
-        <div class="biz-card-contact" id="card-contact"></div>
-      </div>
-      <div class="biz-card-bottom">
-        <img class="biz-card-logo" id="card-logo" src="images/logo-strange-machine-card.png" alt="Strange Machine Labs">
-        <div class="biz-card-qr" id="card-qr"></div>
-      </div>
+    <div class="contact-card">
+      <div class="contact-card-name" id="card-name"></div>
+      <div class="contact-card-rows" id="card-contact"></div>
     </div>
   </div>
 </div>
@@ -655,31 +600,12 @@
     .then(renderProfile)
     .catch(() => {});
 
-  // Small {dx,dy} position nudges per element (% of card width), set via
-  // the drag tool at admin/card-layout.html. Applied as CSS custom
-  // properties the card's transform:translate() rules read -- see
-  // admin/business-card.css. Missing file / fetch failure just means no
-  // nudges (every element defaults to its normal position).
-  fetch('card-layout.json')
-    .then(res => res.ok ? res.json() : {})
-    .then(applyCardLayout)
-    .catch(() => {});
-
-  function applyCardLayout(layout){
-    layout = layout || {};
-    var ids = { photo: 'card-photo', name: 'card-name', logo: 'card-logo', qr: 'card-qr', contact: 'card-contact' };
-    Object.keys(ids).forEach(function (key) {
-      var el = document.getElementById(ids[key]);
-      if (!el) return;
-      var o = layout[key];
-      var dx = (o && typeof o.dx === 'number') ? o.dx : 0;
-      var dy = (o && typeof o.dy === 'number') ? o.dy : 0;
-      var scale = (o && typeof o.scale === 'number') ? o.scale : 1;
-      el.style.setProperty('--dx', dx);
-      el.style.setProperty('--dy', dy);
-      el.style.setProperty('--scale', scale);
-    });
-  }
+  // No card-layout.json fetch here any more. Those {dx,dy,scale} nudges
+  // position the caricature/logo/QR on the printed card, and this dialog
+  // no longer shows any of them -- so the site has nothing to apply them
+  // to. That also removes a render race this file used to have (the card
+  // painting unscaled for a beat before the fetch landed). The layout
+  // tool at admin/card-layout.html still owns those values for print.
 
   const mailIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>`;
   const phoneIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
@@ -703,26 +629,15 @@
   }
 
   function renderCard(profile){
-    const cardPhoto = document.getElementById('card-photo');
-    cardPhoto.src = profile.photoUrl || '';
-    cardPhoto.alt = profile.name || '';
-
-    const name = profile.name || '';
-    const firstSpace = name.indexOf(' ');
-    document.getElementById('card-name').innerHTML = firstSpace === -1
-      ? name
-      : name.slice(0, firstSpace) + '<br>' + name.slice(firstSpace + 1);
+    // Full name on one line -- the first/last <br> split exists to fit the
+    // fixed-width printed card and would only cause an odd break here.
+    document.getElementById('card-name').textContent = profile.name || '';
 
     const rows = [];
-    if (profile.email) rows.push(`<a class="biz-card-row" href="mailto:${profile.email}">${mailIcon}<span>${profile.email}</span></a>`);
-    if (profile.phone) rows.push(`<a class="biz-card-row" href="tel:${profile.phone.replace(/[^+\d]/g, '')}">${phoneIcon}<span>${profile.phone}</span></a>`);
-    rows.push(`<a class="biz-card-row" href="https://strangemachinelabs.com" target="_blank" rel="noopener">${globeIcon}<span>strangemachinelabs.com</span></a>`);
-
+    if (profile.email) rows.push(`<a class="contact-card-row" href="mailto:${profile.email}">${mailIcon}<span>${profile.email}</span></a>`);
+    if (profile.phone) rows.push(`<a class="contact-card-row" href="tel:${profile.phone.replace(/[^+\d]/g, '')}">${phoneIcon}<span>${profile.phone}</span></a>`);
+    rows.push(`<a class="contact-card-row" href="https://strangemachinelabs.com" target="_blank" rel="noopener">${globeIcon}<span>strangemachinelabs.com</span></a>`);
     document.getElementById('card-contact').innerHTML = rows.join('');
-
-    const topQr = document.querySelector('.qr-code svg');
-    const cardQr = document.getElementById('card-qr');
-    if (topQr && cardQr && !cardQr.innerHTML) cardQr.innerHTML = topQr.outerHTML;
   }
 
   fetch('projects.json')
