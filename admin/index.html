@@ -86,12 +86,18 @@
       }
 
       var CardPreview = createClass({
+        getInitialState: function () {
+          return { ready: !!_cardLayoutCache };
+        },
         componentDidMount: function () {
           var self = this;
           this._mounted = true;
           if (!_cardLayoutCache) {
             fetchCardLayout().then(function () {
-              if (self._mounted) self.forceUpdate();
+              // setState (not forceUpdate) -- render() below branches on
+              // this.state.ready so the card only ever paints once
+              // card-layout.json has actually loaded.
+              if (self._mounted) self.setState({ ready: true });
             });
           }
         },
@@ -107,11 +113,33 @@
           var photoAsset = photoPath ? this.props.getAsset(photoPath) : null;
           var photoUrl = photoAsset ? photoAsset.url : '';
 
+          var wrapperStyle = { padding: '32px 24px', background: '#0b0d0f', minHeight: '100%', boxSizing: 'border-box' };
+
+          if (!this.state.ready) {
+            // React always commits this component's first render before
+            // componentDidMount runs, and card-layout.json (the saved
+            // --dx/--dy/--scale nudges) only finishes loading after
+            // that, asynchronously. Rendering the card on that first
+            // pass used to mean it painted once at its unscaled default
+            // (every CSS var() falls back to scale:1/dx:0/dy:0 with no
+            // saved layout applied yet), then jumped a moment later to
+            // Steve's actual saved scale (up to 1.9x) once the fetch
+            // resolved -- a visible "pop" on every single reload/entry
+            // switch that read as the preview scaling wrong. Showing a
+            // plain loading line instead of the card until the real
+            // layout is known means the first frame the user actually
+            // sees here is already correct -- no intermediate wrong-
+            // scaled paint.
+            return h('div', { style: wrapperStyle },
+              h('p', { style: { fontFamily: "'JetBrains Mono',monospace", fontSize: '12px', color: '#8b969c' } }, 'Loading preview…')
+            );
+          }
+
           var innerHtml = buildCardInnerHtml(name, photoUrl, email, phone, _cardLayoutCache);
 
           return h(
             'div',
-            { style: { padding: '32px 24px', background: '#0b0d0f', minHeight: '100%', boxSizing: 'border-box' } },
+            wrapperStyle,
             // Traced the actual cause (not guessing this time): compared
             // computed scrollWidth/clientWidth on every contact row
             // between this preview and the live site -- nothing is

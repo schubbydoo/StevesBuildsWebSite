@@ -135,6 +135,20 @@
   }
   #status.error{color:var(--accent2);}
   #status.ok{color:var(--accent);}
+
+  /* Hidden until both card-layout.json (the saved --dx/--dy/--scale
+     nudges) and profile.json (name/photo/contact) have loaded and been
+     applied -- see the two fetch() calls below. Without this, the card
+     paints once at its unscaled default (every transform's var()
+     fallback is dx:0/dy:0/scale:1 until the inline --scale etc. custom
+     properties get set), then jumps to Steve's actual saved scale (up
+     to 1.9x) a beat later once the fetch resolves -- a visible "pop" on
+     every single reload that reads as the card scaling wrong. Hiding it
+     until both are ready means the very first paint the user actually
+     sees is already correct. visibility (not display) keeps the .stage
+     box the same height throughout, so nothing else on the page jumps
+     when the card appears. */
+  #biz-card{ visibility:hidden; }
 </style>
 </head>
 <body>
@@ -228,7 +242,7 @@
   function applyAll(){ KEYS.forEach(applyOffset); }
 
   // ---- load current saved layout + real profile content ----
-  fetch('../card-layout.json')
+  const cardLayoutReady = fetch('../card-layout.json')
     .then(res => res.ok ? res.json() : {})
     .catch(() => ({}))
     .then(saved => {
@@ -248,7 +262,7 @@
   const phoneIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
   const globeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg>';
 
-  fetch('../profile.json')
+  const profileReady = fetch('../profile.json')
     .then(res => res.json())
     .then(profile => {
       const name = profile.name || '';
@@ -269,6 +283,12 @@
       document.getElementById('card-contact-x').innerHTML = rows.join('');
     })
     .catch(() => {});
+
+  // Reveal the card only once both loads above have applied -- see the
+  // #biz-card{visibility:hidden} comment for why.
+  Promise.all([cardLayoutReady, profileReady]).then(() => {
+    document.getElementById('biz-card').style.visibility = 'visible';
+  });
 
   // ---- dragging ----
   let dragKey = null, dragStartX = 0, dragStartY = 0, dragStartDx = 0, dragStartDy = 0, dragEl = null;
