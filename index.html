@@ -5,6 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Strange Machine Labs</title>
 <meta name="description" content="Strange Machine Labs — bringing a little magic through technology, one bad idea at a time.">
+
+<!-- Link preview card. iMessage, WhatsApp, Slack et al. fetch these when
+     someone pastes strangemachinelabs.com into a message, and render the
+     logo as one big tappable tile instead of a bare blue URL. og:image
+     must be an absolute URL -- relative paths are silently dropped by
+     most unfurlers -- and Apple caps the image around 1MB. -->
+<link rel="canonical" href="https://strangemachinelabs.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strange Machine Labs">
+<meta property="og:url" content="https://strangemachinelabs.com/">
+<meta property="og:title" content="Strange Machine Labs">
+<meta property="og:description" content="Because ordinary is boring. Hardware, software, strangeware — curiosity engineered.">
+<meta property="og:image" content="https://strangemachinelabs.com/images/og-preview.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Strange Machine Labs — because ordinary is boring">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Strange Machine Labs">
+<meta name="twitter:description" content="Because ordinary is boring. Hardware, software, strangeware — curiosity engineered.">
+<meta name="twitter:image" content="https://strangemachinelabs.com/images/og-preview.png">
+<meta name="theme-color" content="#0b0d0f">
+
+<link rel="icon" href="images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="images/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -364,6 +391,12 @@
     font-size:12px;
     border-top:1px solid var(--line);
   }
+  footer a{
+    color:inherit;
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+  }
+  footer a:hover{color:var(--accent);border-bottom-color:var(--accent);}
   .top-bar{
     max-width:var(--content-max);
     margin:0 auto;
@@ -582,7 +615,7 @@
     <p class="empty">Loading projects…</p>
   </div>
 </main>
-<footer>STEVE SCHUBERT · SHSCHUBERT@GMAIL.COM</footer>
+<footer id="site-footer">STEVE SCHUBERT · <a href="mailto:steve@strangemachinelabs.com">STEVE@STRANGEMACHINELABS.COM</a></footer>
 
 <div class="modal-backdrop" id="modal-backdrop">
   <div class="modal-box">
@@ -648,6 +681,16 @@
     col.addEventListener('click', openCardModal);
 
     renderCard(profile);
+    renderFooter(profile);
+  }
+
+  // Footer carries the same name/email as the contact card. Driving it from
+  // profile.json means the two can't drift apart the next time either one
+  // changes; the markup in the HTML is the fallback if the fetch fails.
+  function renderFooter(profile){
+    if (!profile.name || !profile.email) return;
+    document.getElementById('site-footer').innerHTML =
+      `${profile.name.toUpperCase()} · <a href="mailto:${profile.email}">${profile.email.toUpperCase()}</a>`;
   }
 
   function renderCard(profile){
