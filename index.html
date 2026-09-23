@@ -6,11 +6,12 @@
 <title>Strange Machine Labs</title>
 <meta name="description" content="Strange Machine Labs — bringing a little magic through technology, one bad idea at a time.">
 
-<!-- Link preview card. iMessage, WhatsApp, Slack et al. fetch these when
-     someone pastes strangemachinelabs.com into a message, and render the
-     logo as one big tappable tile instead of a bare blue URL. og:image
-     must be an absolute URL -- relative paths are silently dropped by
-     most unfurlers -- and Apple caps the image around 1MB. -->
+<!-- Link preview card: iMessage, WhatsApp and Slack read these when someone
+     pastes the URL into a message and render the logo as one tappable tile
+     instead of a bare blue link. Keep the tag names out of the prose here --
+     some unfurlers scrape with a regex rather than an HTML parser, and the
+     first match wins, so a mention in a comment can shadow the real tag.
+     The preview URLs must be absolute; relative paths get dropped. -->
 <link rel="canonical" href="https://strangemachinelabs.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Strange Machine Labs">
@@ -18,6 +19,7 @@
 <meta property="og:title" content="Strange Machine Labs">
 <meta property="og:description" content="Because ordinary is boring. Hardware, software, strangeware — curiosity engineered.">
 <meta property="og:image" content="https://strangemachinelabs.com/images/og-preview.png">
+<meta property="og:image:secure_url" content="https://strangemachinelabs.com/images/og-preview.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
